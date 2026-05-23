@@ -1,0 +1,2894 @@
+{
+  "version": "1.0",
+  "framework_count": 164,
+  "categories": [
+    "Strategy Process, Problem Solving & Decision-Making",
+    "Growth, Innovation & Disruption",
+    "Industry & Market Structure",
+    "Competitive & Business-Level Strategy",
+    "Corporate & Portfolio Strategy",
+    "Business Model & Value Proposition",
+    "Customer, Marketing & Brand",
+    "Capabilities, Organization & Operating Model",
+    "Digital, Data, Platforms & Ecosystems",
+    "International & Global Strategy",
+    "Operations, Supply Chain & Efficiency",
+    "Risk, Uncertainty & Scenarios",
+    "Social Impact, ESG & Public Value"
+  ],
+  "frameworks": {
+    "RAPID Decision-rights Framework": {
+      "name": "RAPID Decision-rights Framework",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "rapid-decision-rights-framework",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "rapid",
+        "rights",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Influence Map": {
+      "name": "Influence Map",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "influence-map",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "influence",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "Kotter's Eight Steps for Change": {
+      "name": "Kotter's Eight Steps for Change",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "kotter-s-eight-steps-for-change",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "kotter",
+        "eight",
+        "steps",
+        "for"
+      ],
+      "leaf_affinity": null
+    },
+    "Rogers Diffusion of Innovations Curve": {
+      "name": "Rogers Diffusion of Innovations Curve",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "rogers-diffusion-of-innovations-curve",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "rogers",
+        "diffusion",
+        "innovations",
+        "curve"
+      ],
+      "leaf_affinity": null
+    },
+    "Issue Tree": {
+      "name": "Issue Tree",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "issue-tree",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "issue",
+        "tree"
+      ],
+      "leaf_affinity": null
+    },
+    "Hypothesis-driven Problem Solving": {
+      "name": "Hypothesis-driven Problem Solving",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "hypothesis-driven-problem-solving",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "hypothesis",
+        "driven",
+        "problem",
+        "solving"
+      ],
+      "leaf_affinity": null
+    },
+    "MECE Principle": {
+      "name": "MECE Principle",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "mece-principle",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "mece",
+        "principle"
+      ],
+      "leaf_affinity": null
+    },
+    "Stakeholder Mapping": {
+      "name": "Stakeholder Mapping",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "stakeholder-mapping",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "stakeholder",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "RASCI Framework": {
+      "name": "RASCI Framework",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "rasci-framework",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "rasci",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Decision Quality Chain": {
+      "name": "Decision Quality Chain",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "decision-quality-chain",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "quality",
+        "chain"
+      ],
+      "leaf_affinity": null
+    },
+    "ADKAR Change Management Model": {
+      "name": "ADKAR Change Management Model",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "adkar-change-management-model",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "adkar",
+        "management",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Strategic Planning Rhythm": {
+      "name": "Strategic Planning Rhythm",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "strategic-planning-rhythm",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "strategic",
+        "planning",
+        "rhythm"
+      ],
+      "leaf_affinity": null
+    },
+    "Hoshin Kanri": {
+      "name": "Hoshin Kanri",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "hoshin-kanri",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "hoshin",
+        "kanri"
+      ],
+      "leaf_affinity": null
+    },
+    "Management Flight Simulators": {
+      "name": "Management Flight Simulators",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "management-flight-simulators",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "management",
+        "flight",
+        "simulators"
+      ],
+      "leaf_affinity": null
+    },
+    "Lewin's Force Field Analysis": {
+      "name": "Lewin's Force Field Analysis",
+      "category": "Strategy Process, Problem Solving & Decision-Making",
+      "slug": "lewin-s-force-field-analysis",
+      "file": "references/01-strategy-process.md",
+      "tags": [
+        "decision",
+        "process",
+        "structuring",
+        "alignment",
+        "change",
+        "lewin",
+        "force",
+        "field",
+        "analysis"
+      ],
+      "leaf_affinity": null
+    },
+    "Ansoff Product–Market Growth Matrix": {
+      "name": "Ansoff Product–Market Growth Matrix",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "ansoff-product-market-growth-matrix",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "ansoff",
+        "product",
+        "market",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Innovation Ambition Matrix": {
+      "name": "Innovation Ambition Matrix",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "innovation-ambition-matrix",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "ambition",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "McKinsey Seven Degrees of Freedom for Growth": {
+      "name": "McKinsey Seven Degrees of Freedom for Growth",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "mckinsey-seven-degrees-of-freedom-for-growth",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "mckinsey",
+        "seven",
+        "degrees",
+        "freedom",
+        "for"
+      ],
+      "leaf_affinity": null
+    },
+    "Jobs to Be Done Framework": {
+      "name": "Jobs to Be Done Framework",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "jobs-to-be-done-framework",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "jobs",
+        "done",
+        "framework"
+      ],
+      "leaf_affinity": "demand-validation"
+    },
+    "Disruptive Innovation Theory": {
+      "name": "Disruptive Innovation Theory",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "disruptive-innovation-theory",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "disruptive",
+        "theory"
+      ],
+      "leaf_affinity": "disruption-risk"
+    },
+    "Blue Ocean Strategy Canvas": {
+      "name": "Blue Ocean Strategy Canvas",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "blue-ocean-strategy-canvas",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "blue",
+        "ocean",
+        "strategy",
+        "canvas"
+      ],
+      "leaf_affinity": "differentiation-test"
+    },
+    "Blue Ocean Four Actions Framework": {
+      "name": "Blue Ocean Four Actions Framework",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "blue-ocean-four-actions-framework",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "blue",
+        "ocean",
+        "four",
+        "actions",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "10 Types of Innovation": {
+      "name": "10 Types of Innovation",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "10-types-of-innovation",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "types"
+      ],
+      "leaf_affinity": null
+    },
+    "Stage-Gate Innovation Process": {
+      "name": "Stage-Gate Innovation Process",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "stage-gate-innovation-process",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "stage",
+        "gate",
+        "process"
+      ],
+      "leaf_affinity": null
+    },
+    "Ambidextrous Organization Framework": {
+      "name": "Ambidextrous Organization Framework",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "ambidextrous-organization-framework",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "ambidextrous",
+        "organization",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Real Options Logic": {
+      "name": "Real Options Logic",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "real-options-logic",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "real",
+        "options",
+        "logic"
+      ],
+      "leaf_affinity": null
+    },
+    "Platform Launch & Scaling Lifecycle": {
+      "name": "Platform Launch & Scaling Lifecycle",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "platform-launch-scaling-lifecycle",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "platform",
+        "launch",
+        "lifecycle"
+      ],
+      "leaf_affinity": null
+    },
+    "AARRR Pirate Metrics Funnel": {
+      "name": "AARRR Pirate Metrics Funnel",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "aarrr-pirate-metrics-funnel",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "aarrr",
+        "pirate",
+        "metrics",
+        "funnel"
+      ],
+      "leaf_affinity": "growth-engine"
+    },
+    "Growth Flywheel Framework": {
+      "name": "Growth Flywheel Framework",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "growth-flywheel-framework",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "flywheel",
+        "framework"
+      ],
+      "leaf_affinity": "growth-engine"
+    },
+    "Network Effects Map": {
+      "name": "Network Effects Map",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "network-effects-map",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "network",
+        "effects",
+        "map"
+      ],
+      "leaf_affinity": "platform-leverage"
+    },
+    "MVP Learning Loop": {
+      "name": "MVP Learning Loop",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "mvp-learning-loop",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "mvp",
+        "learning",
+        "loop"
+      ],
+      "leaf_affinity": null
+    },
+    "Design Thinking Double Diamond": {
+      "name": "Design Thinking Double Diamond",
+      "category": "Growth, Innovation & Disruption",
+      "slug": "design-thinking-double-diamond",
+      "file": "references/02-growth-innovation.md",
+      "tags": [
+        "growth",
+        "innovation",
+        "tam",
+        "disruption",
+        "scaling",
+        "platform-launch",
+        "design",
+        "thinking",
+        "double",
+        "diamond"
+      ],
+      "leaf_affinity": null
+    },
+    "Porter's Five Forces": {
+      "name": "Porter's Five Forces",
+      "category": "Industry & Market Structure",
+      "slug": "porter-s-five-forces",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "porter",
+        "five",
+        "forces"
+      ],
+      "leaf_affinity": "industry-attractiveness"
+    },
+    "Extended Five Forces": {
+      "name": "Extended Five Forces",
+      "category": "Industry & Market Structure",
+      "slug": "extended-five-forces",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "extended",
+        "five",
+        "forces"
+      ],
+      "leaf_affinity": "industry-attractiveness"
+    },
+    "PEST Analysis": {
+      "name": "PEST Analysis",
+      "category": "Industry & Market Structure",
+      "slug": "pest-analysis",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "pest",
+        "analysis"
+      ],
+      "leaf_affinity": null
+    },
+    "PESTEL / STEEP / STEEPLE Framework": {
+      "name": "PESTEL / STEEP / STEEPLE Framework",
+      "category": "Industry & Market Structure",
+      "slug": "pestel-steep-steeple-framework",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "pestel",
+        "steep",
+        "steeple",
+        "framework"
+      ],
+      "leaf_affinity": "macro-tailwind"
+    },
+    "Industry Life Cycle Model": {
+      "name": "Industry Life Cycle Model",
+      "category": "Industry & Market Structure",
+      "slug": "industry-life-cycle-model",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "life",
+        "cycle",
+        "model"
+      ],
+      "leaf_affinity": "lifecycle-stage"
+    },
+    "Technology Adoption Life Cycle": {
+      "name": "Technology Adoption Life Cycle",
+      "category": "Industry & Market Structure",
+      "slug": "technology-adoption-life-cycle",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "technology",
+        "adoption",
+        "life",
+        "cycle"
+      ],
+      "leaf_affinity": null
+    },
+    "S-Curve of Industry / Technology Evolution": {
+      "name": "S-Curve of Industry / Technology Evolution",
+      "category": "Industry & Market Structure",
+      "slug": "s-curve-of-industry-technology-evolution",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "curve",
+        "technology",
+        "evolution"
+      ],
+      "leaf_affinity": "lifecycle-stage"
+    },
+    "Strategic Inflection Point Framework": {
+      "name": "Strategic Inflection Point Framework",
+      "category": "Industry & Market Structure",
+      "slug": "strategic-inflection-point-framework",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "strategic",
+        "inflection",
+        "point",
+        "framework"
+      ],
+      "leaf_affinity": "narrative-shift"
+    },
+    "Market Attractiveness–Competitive Position": {
+      "name": "Market Attractiveness–Competitive Position",
+      "category": "Industry & Market Structure",
+      "slug": "market-attractiveness-competitive-position",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "market",
+        "attractiveness",
+        "competitive",
+        "position"
+      ],
+      "leaf_affinity": null
+    },
+    "Competitor Response Profile": {
+      "name": "Competitor Response Profile",
+      "category": "Industry & Market Structure",
+      "slug": "competitor-response-profile",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "competitor",
+        "response",
+        "profile"
+      ],
+      "leaf_affinity": null
+    },
+    "Market Mapping / Landscape Mapping": {
+      "name": "Market Mapping / Landscape Mapping",
+      "category": "Industry & Market Structure",
+      "slug": "market-mapping-landscape-mapping",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "market",
+        "mapping",
+        "landscape"
+      ],
+      "leaf_affinity": null
+    },
+    "Ecosystem Mapping": {
+      "name": "Ecosystem Mapping",
+      "category": "Industry & Market Structure",
+      "slug": "ecosystem-mapping",
+      "file": "references/03-industry-market.md",
+      "tags": [
+        "industry",
+        "market-structure",
+        "rivalry",
+        "lifecycle",
+        "macro",
+        "ecosystem",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "Porter's Generic Strategies": {
+      "name": "Porter's Generic Strategies",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "porter-s-generic-strategies",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "porter",
+        "generic",
+        "strategies"
+      ],
+      "leaf_affinity": null
+    },
+    "Treacy & Wiersema Value Disciplines": {
+      "name": "Treacy & Wiersema Value Disciplines",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "treacy-wiersema-value-disciplines",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "treacy",
+        "wiersema",
+        "value",
+        "disciplines"
+      ],
+      "leaf_affinity": null
+    },
+    "Bowman's Strategy Clock": {
+      "name": "Bowman's Strategy Clock",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "bowman-s-strategy-clock",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "bowman",
+        "strategy",
+        "clock"
+      ],
+      "leaf_affinity": null
+    },
+    "Porter's Value Chain": {
+      "name": "Porter's Value Chain",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "porter-s-value-chain",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "porter",
+        "value",
+        "chain"
+      ],
+      "leaf_affinity": null
+    },
+    "Experience Curve": {
+      "name": "Experience Curve",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "experience-curve",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "experience",
+        "curve"
+      ],
+      "leaf_affinity": null
+    },
+    "Relative Cost Positioning Framework": {
+      "name": "Relative Cost Positioning Framework",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "relative-cost-positioning-framework",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "relative",
+        "cost",
+        "positioning",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Key Success Factors Analysis": {
+      "name": "Key Success Factors Analysis",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "key-success-factors-analysis",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "key",
+        "success",
+        "factors",
+        "analysis"
+      ],
+      "leaf_affinity": null
+    },
+    "Strategic Group Mapping": {
+      "name": "Strategic Group Mapping",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "strategic-group-mapping",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "strategic",
+        "group",
+        "mapping"
+      ],
+      "leaf_affinity": "identity-test"
+    },
+    "Game Theory / Co-opetition Framework": {
+      "name": "Game Theory / Co-opetition Framework",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "game-theory-co-opetition-framework",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "game",
+        "theory",
+        "opetition",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Value Net": {
+      "name": "Value Net",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "value-net",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "value",
+        "net"
+      ],
+      "leaf_affinity": null
+    },
+    "Delta Model": {
+      "name": "Delta Model",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "delta-model",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "delta",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Resource-Based View": {
+      "name": "Resource-Based View",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "resource-based-view",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "resource",
+        "based",
+        "view"
+      ],
+      "leaf_affinity": "moat-test"
+    },
+    "VRIO / VRIN Analysis": {
+      "name": "VRIO / VRIN Analysis",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "vrio-vrin-analysis",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "vrin",
+        "analysis"
+      ],
+      "leaf_affinity": "moat-test"
+    },
+    "Core Competence Framework": {
+      "name": "Core Competence Framework",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "core-competence-framework",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "core",
+        "competence",
+        "framework"
+      ],
+      "leaf_affinity": "moat-test"
+    },
+    "PIMS Model": {
+      "name": "PIMS Model",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "pims-model",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "pims",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "ADL Life Cycle-Competitive Position Matrix": {
+      "name": "ADL Life Cycle-Competitive Position Matrix",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "adl-life-cycle-competitive-position-matrix",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "adl",
+        "life",
+        "cycle",
+        "competitive",
+        "position",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Shell Directional Policy Matrix": {
+      "name": "Shell Directional Policy Matrix",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "shell-directional-policy-matrix",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "shell",
+        "directional",
+        "policy",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "BCG Time-based Competition Framework": {
+      "name": "BCG Time-based Competition Framework",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "bcg-time-based-competition-framework",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "bcg",
+        "time",
+        "based",
+        "competition",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Profit Pool Mapping": {
+      "name": "Profit Pool Mapping",
+      "category": "Competitive & Business-Level Strategy",
+      "slug": "profit-pool-mapping",
+      "file": "references/04-competitive-strategy.md",
+      "tags": [
+        "competitive-position",
+        "moat",
+        "differentiation",
+        "cost-position",
+        "vrio",
+        "value-chain",
+        "strategic-group",
+        "profit",
+        "pool",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "BCG Growth-Share Matrix": {
+      "name": "BCG Growth-Share Matrix",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "bcg-growth-share-matrix",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "bcg",
+        "growth",
+        "share",
+        "matrix"
+      ],
+      "leaf_affinity": "portfolio-balance"
+    },
+    "GE-McKinsey Nine-Box Matrix": {
+      "name": "GE-McKinsey Nine-Box Matrix",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "ge-mckinsey-nine-box-matrix",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "mckinsey",
+        "nine",
+        "box",
+        "matrix"
+      ],
+      "leaf_affinity": "portfolio-balance"
+    },
+    "BCG Advantage Matrix": {
+      "name": "BCG Advantage Matrix",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "bcg-advantage-matrix",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "bcg",
+        "advantage",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Ashridge Portfolio Display": {
+      "name": "Ashridge Portfolio Display",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "ashridge-portfolio-display",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "ashridge",
+        "display"
+      ],
+      "leaf_affinity": null
+    },
+    "Parenting Advantage Framework": {
+      "name": "Parenting Advantage Framework",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "parenting-advantage-framework",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "parenting",
+        "advantage",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Corporate Scope Matrix": {
+      "name": "Corporate Scope Matrix",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "corporate-scope-matrix",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "corporate",
+        "scope",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Role of the Center / Corporate Parenting": {
+      "name": "Role of the Center / Corporate Parenting",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "role-of-the-center-corporate-parenting",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "role",
+        "the",
+        "center",
+        "corporate",
+        "parenting"
+      ],
+      "leaf_affinity": null
+    },
+    "Make-Buy-Ally / Vertical Integration": {
+      "name": "Make-Buy-Ally / Vertical Integration",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "make-buy-ally-vertical-integration",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "make",
+        "buy",
+        "ally",
+        "vertical",
+        "integration"
+      ],
+      "leaf_affinity": null
+    },
+    "Adjacency Expansion Matrix": {
+      "name": "Adjacency Expansion Matrix",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "adjacency-expansion-matrix",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "adjacency",
+        "expansion",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "McKinsey Three Horizons of Growth": {
+      "name": "McKinsey Three Horizons of Growth",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "mckinsey-three-horizons-of-growth",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "mckinsey",
+        "three",
+        "horizons",
+        "growth"
+      ],
+      "leaf_affinity": "growth-pipeline"
+    },
+    "Corporate Value Creation Logic": {
+      "name": "Corporate Value Creation Logic",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "corporate-value-creation-logic",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "corporate",
+        "value",
+        "creation",
+        "logic"
+      ],
+      "leaf_affinity": null
+    },
+    "SBU Segmentation Framework": {
+      "name": "SBU Segmentation Framework",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "sbu-segmentation-framework",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "sbu",
+        "segmentation",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Strategic Control Map": {
+      "name": "Strategic Control Map",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "strategic-control-map",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "strategic",
+        "control",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "Portfolio Value Gap Analysis": {
+      "name": "Portfolio Value Gap Analysis",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "portfolio-value-gap-analysis",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "value",
+        "gap",
+        "analysis"
+      ],
+      "leaf_affinity": null
+    },
+    "Capital Allocation Framework": {
+      "name": "Capital Allocation Framework",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "capital-allocation-framework",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "capital",
+        "allocation",
+        "framework"
+      ],
+      "leaf_affinity": "capital-discipline"
+    },
+    "Core vs Non-core Portfolio Framework": {
+      "name": "Core vs Non-core Portfolio Framework",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "core-vs-non-core-portfolio-framework",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "core",
+        "non",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Restructuring / Portfolio Pruning": {
+      "name": "Restructuring / Portfolio Pruning",
+      "category": "Corporate & Portfolio Strategy",
+      "slug": "restructuring-portfolio-pruning",
+      "file": "references/05-corporate-portfolio.md",
+      "tags": [
+        "portfolio",
+        "capital-allocation",
+        "diversification",
+        "make-buy",
+        "ma",
+        "spinoff",
+        "restructuring",
+        "pruning"
+      ],
+      "leaf_affinity": null
+    },
+    "Business Model Canvas": {
+      "name": "Business Model Canvas",
+      "category": "Business Model & Value Proposition",
+      "slug": "business-model-canvas",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "business",
+        "model",
+        "canvas"
+      ],
+      "leaf_affinity": "business-model-coherence"
+    },
+    "Lean Canvas": {
+      "name": "Lean Canvas",
+      "category": "Business Model & Value Proposition",
+      "slug": "lean-canvas",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "lean",
+        "canvas"
+      ],
+      "leaf_affinity": null
+    },
+    "Value Proposition Canvas": {
+      "name": "Value Proposition Canvas",
+      "category": "Business Model & Value Proposition",
+      "slug": "value-proposition-canvas",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "value",
+        "proposition",
+        "canvas"
+      ],
+      "leaf_affinity": null
+    },
+    "Operating Model Canvas": {
+      "name": "Operating Model Canvas",
+      "category": "Business Model & Value Proposition",
+      "slug": "operating-model-canvas",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "operating",
+        "model",
+        "canvas"
+      ],
+      "leaf_affinity": null
+    },
+    "Profit Formula Framework": {
+      "name": "Profit Formula Framework",
+      "category": "Business Model & Value Proposition",
+      "slug": "profit-formula-framework",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "profit",
+        "formula",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Business Model Patterns Library": {
+      "name": "Business Model Patterns Library",
+      "category": "Business Model & Value Proposition",
+      "slug": "business-model-patterns-library",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "business",
+        "model",
+        "patterns",
+        "library"
+      ],
+      "leaf_affinity": null
+    },
+    "Two-sided Platform Business Model": {
+      "name": "Two-sided Platform Business Model",
+      "category": "Business Model & Value Proposition",
+      "slug": "two-sided-platform-business-model",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "two",
+        "sided",
+        "business",
+        "model"
+      ],
+      "leaf_affinity": "platform-leverage"
+    },
+    "B2B2C Value Chain Mapping": {
+      "name": "B2B2C Value Chain Mapping",
+      "category": "Business Model & Value Proposition",
+      "slug": "b2b2c-value-chain-mapping",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "b2b2c",
+        "value",
+        "chain",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "Service-Dominant Logic": {
+      "name": "Service-Dominant Logic",
+      "category": "Business Model & Value Proposition",
+      "slug": "service-dominant-logic",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "service",
+        "dominant",
+        "logic"
+      ],
+      "leaf_affinity": null
+    },
+    "Razor-and-Blades Business Model Pattern": {
+      "name": "Razor-and-Blades Business Model Pattern",
+      "category": "Business Model & Value Proposition",
+      "slug": "razor-and-blades-business-model-pattern",
+      "file": "references/06-business-model.md",
+      "tags": [
+        "business-model",
+        "monetisation",
+        "pricing",
+        "platform",
+        "value-proposition",
+        "razor",
+        "and",
+        "blades",
+        "business",
+        "model",
+        "pattern"
+      ],
+      "leaf_affinity": null
+    },
+    "STP Framework": {
+      "name": "STP Framework",
+      "category": "Customer, Marketing & Brand",
+      "slug": "stp-framework",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "stp",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "4Ps Marketing Mix": {
+      "name": "4Ps Marketing Mix",
+      "category": "Customer, Marketing & Brand",
+      "slug": "4ps-marketing-mix",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "4ps",
+        "marketing",
+        "mix"
+      ],
+      "leaf_affinity": null
+    },
+    "7Ps Marketing Mix": {
+      "name": "7Ps Marketing Mix",
+      "category": "Customer, Marketing & Brand",
+      "slug": "7ps-marketing-mix",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "7ps",
+        "marketing",
+        "mix"
+      ],
+      "leaf_affinity": null
+    },
+    "Customer Journey Mapping": {
+      "name": "Customer Journey Mapping",
+      "category": "Customer, Marketing & Brand",
+      "slug": "customer-journey-mapping",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "journey",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "Customer Lifecycle Framework": {
+      "name": "Customer Lifecycle Framework",
+      "category": "Customer, Marketing & Brand",
+      "slug": "customer-lifecycle-framework",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "lifecycle",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Customer Lifetime Value Model": {
+      "name": "Customer Lifetime Value Model",
+      "category": "Customer, Marketing & Brand",
+      "slug": "customer-lifetime-value-model",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "lifetime",
+        "value",
+        "model"
+      ],
+      "leaf_affinity": "customer-economics"
+    },
+    "Share of Wallet Framework": {
+      "name": "Share of Wallet Framework",
+      "category": "Customer, Marketing & Brand",
+      "slug": "share-of-wallet-framework",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "share",
+        "wallet",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Net Promoter System": {
+      "name": "Net Promoter System",
+      "category": "Customer, Marketing & Brand",
+      "slug": "net-promoter-system",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "net",
+        "promoter",
+        "system"
+      ],
+      "leaf_affinity": "customer-loyalty"
+    },
+    "RFM Segmentation": {
+      "name": "RFM Segmentation",
+      "category": "Customer, Marketing & Brand",
+      "slug": "rfm-segmentation",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "rfm"
+      ],
+      "leaf_affinity": null
+    },
+    "Kano Model": {
+      "name": "Kano Model",
+      "category": "Customer, Marketing & Brand",
+      "slug": "kano-model",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "kano",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Moments of Truth Framework": {
+      "name": "Moments of Truth Framework",
+      "category": "Customer, Marketing & Brand",
+      "slug": "moments-of-truth-framework",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "moments",
+        "truth",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Brand Equity Pyramid": {
+      "name": "Brand Equity Pyramid",
+      "category": "Customer, Marketing & Brand",
+      "slug": "brand-equity-pyramid",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "equity",
+        "pyramid"
+      ],
+      "leaf_affinity": "brand-strength"
+    },
+    "Brand Positioning Map": {
+      "name": "Brand Positioning Map",
+      "category": "Customer, Marketing & Brand",
+      "slug": "brand-positioning-map",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "Brand Archetypes Framework": {
+      "name": "Brand Archetypes Framework",
+      "category": "Customer, Marketing & Brand",
+      "slug": "brand-archetypes-framework",
+      "file": "references/07-customer-marketing.md",
+      "tags": [
+        "customer",
+        "brand",
+        "ltv",
+        "nps",
+        "segmentation",
+        "positioning",
+        "archetypes",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "McKinsey 7S Framework": {
+      "name": "McKinsey 7S Framework",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "mckinsey-7s-framework",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "mckinsey",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Galbraith Star Model": {
+      "name": "Galbraith Star Model",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "galbraith-star-model",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "galbraith",
+        "star",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Operating Model 4D": {
+      "name": "Operating Model 4D",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "operating-model-4d",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "operating",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Capability Map": {
+      "name": "Capability Map",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "capability-map",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "Capability Maturity Model": {
+      "name": "Capability Maturity Model",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "capability-maturity-model",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "maturity",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Span of Control & Layering Analysis": {
+      "name": "Span of Control & Layering Analysis",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "span-of-control-layering-analysis",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "span",
+        "control",
+        "layering",
+        "analysis"
+      ],
+      "leaf_affinity": null
+    },
+    "RACI Matrix": {
+      "name": "RACI Matrix",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "raci-matrix",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "raci",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Organizational Health Index": {
+      "name": "Organizational Health Index",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "organizational-health-index",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "organizational",
+        "health",
+        "index"
+      ],
+      "leaf_affinity": null
+    },
+    "Agile Operating Model": {
+      "name": "Agile Operating Model",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "agile-operating-model",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "agile",
+        "operating",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Shared Services vs Business Partnering": {
+      "name": "Shared Services vs Business Partnering",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "shared-services-vs-business-partnering",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "shared",
+        "services",
+        "business",
+        "partnering"
+      ],
+      "leaf_affinity": null
+    },
+    "Centers of Excellence Design Framework": {
+      "name": "Centers of Excellence Design Framework",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "centers-of-excellence-design-framework",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "centers",
+        "excellence",
+        "design",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Strategic Alignment Model": {
+      "name": "Strategic Alignment Model",
+      "category": "Capabilities, Organization & Operating Model",
+      "slug": "strategic-alignment-model",
+      "file": "references/08-capabilities-org.md",
+      "tags": [
+        "operating-model",
+        "org-design",
+        "capability",
+        "execution",
+        "strategic",
+        "alignment",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Digital Maturity Model": {
+      "name": "Digital Maturity Model",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "digital-maturity-model",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "maturity",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Digital Transformation Roadmap": {
+      "name": "Digital Transformation Roadmap",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "digital-transformation-roadmap",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "transformation",
+        "roadmap"
+      ],
+      "leaf_affinity": null
+    },
+    "Platform Strategy Framework": {
+      "name": "Platform Strategy Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "platform-strategy-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "strategy",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Ecosystem Roles Map": {
+      "name": "Ecosystem Roles Map",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "ecosystem-roles-map",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "ecosystem",
+        "roles",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "API Economy Framework": {
+      "name": "API Economy Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "api-economy-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "economy",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "North Star Metric Framework": {
+      "name": "North Star Metric Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "north-star-metric-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "north",
+        "star",
+        "metric",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Data Monetization Framework": {
+      "name": "Data Monetization Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "data-monetization-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "monetization",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "AI Value Creation Framework": {
+      "name": "AI Value Creation Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "ai-value-creation-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "value",
+        "creation",
+        "framework"
+      ],
+      "leaf_affinity": "ai-monetisation"
+    },
+    "Digital Twin Framework": {
+      "name": "Digital Twin Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "digital-twin-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "twin",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Omnichannel Strategy Framework": {
+      "name": "Omnichannel Strategy Framework",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "omnichannel-strategy-framework",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "omnichannel",
+        "strategy",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Product-Led Growth Framework": {
+      "name": "Product-Led Growth Framework",
+      "category": "Digital, Data, Platforms & Ecosystems",
+      "slug": "product-led-growth-framework",
+      "file": "references/09-digital-platforms.md",
+      "tags": [
+        "digital",
+        "platform",
+        "api",
+        "data",
+        "ai",
+        "north-star",
+        "plg",
+        "product",
+        "led",
+        "growth",
+        "framework"
+      ],
+      "leaf_affinity": "growth-engine"
+    },
+    "CAGE Distance Framework": {
+      "name": "CAGE Distance Framework",
+      "category": "International & Global Strategy",
+      "slug": "cage-distance-framework",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "cage",
+        "distance",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "AAA Global Strategy Framework": {
+      "name": "AAA Global Strategy Framework",
+      "category": "International & Global Strategy",
+      "slug": "aaa-global-strategy-framework",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "aaa",
+        "strategy",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "OLI / Eclectic Paradigm": {
+      "name": "OLI / Eclectic Paradigm",
+      "category": "International & Global Strategy",
+      "slug": "oli-eclectic-paradigm",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "oli",
+        "eclectic",
+        "paradigm"
+      ],
+      "leaf_affinity": null
+    },
+    "Uppsala Internationalization Model": {
+      "name": "Uppsala Internationalization Model",
+      "category": "International & Global Strategy",
+      "slug": "uppsala-internationalization-model",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "uppsala",
+        "internationalization",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Market Entry Mode Choice Framework": {
+      "name": "Market Entry Mode Choice Framework",
+      "category": "International & Global Strategy",
+      "slug": "market-entry-mode-choice-framework",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "market",
+        "entry",
+        "mode",
+        "choice",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Global Integration-Local Responsiveness": {
+      "name": "Global Integration-Local Responsiveness",
+      "category": "International & Global Strategy",
+      "slug": "global-integration-local-responsiveness",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "integration",
+        "local",
+        "responsiveness"
+      ],
+      "leaf_affinity": null
+    },
+    "Global Value Chain Configuration": {
+      "name": "Global Value Chain Configuration",
+      "category": "International & Global Strategy",
+      "slug": "global-value-chain-configuration",
+      "file": "references/10-international-strategy.md",
+      "tags": [
+        "international",
+        "global",
+        "market-entry",
+        "fx",
+        "value",
+        "chain",
+        "configuration"
+      ],
+      "leaf_affinity": null
+    },
+    "Service Blueprinting": {
+      "name": "Service Blueprinting",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "service-blueprinting",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "service",
+        "blueprinting"
+      ],
+      "leaf_affinity": null
+    },
+    "Lean Value Stream Mapping": {
+      "name": "Lean Value Stream Mapping",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "lean-value-stream-mapping",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "value",
+        "stream",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "Six Sigma DMAIC": {
+      "name": "Six Sigma DMAIC",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "six-sigma-dmaic",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "six",
+        "sigma",
+        "dmaic"
+      ],
+      "leaf_affinity": null
+    },
+    "Lean Six Sigma House of Quality": {
+      "name": "Lean Six Sigma House of Quality",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "lean-six-sigma-house-of-quality",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "six",
+        "sigma",
+        "house",
+        "quality"
+      ],
+      "leaf_affinity": null
+    },
+    "SCOR Model": {
+      "name": "SCOR Model",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "scor-model",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "scor",
+        "model"
+      ],
+      "leaf_affinity": null
+    },
+    "Capacity Planning Framework": {
+      "name": "Capacity Planning Framework",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "capacity-planning-framework",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "capacity",
+        "planning",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Just-in-Time System": {
+      "name": "Just-in-Time System",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "just-in-time-system",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "just",
+        "time",
+        "system"
+      ],
+      "leaf_affinity": null
+    },
+    "Total Productive Maintenance": {
+      "name": "Total Productive Maintenance",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "total-productive-maintenance",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "total",
+        "productive",
+        "maintenance"
+      ],
+      "leaf_affinity": null
+    },
+    "Make-Buy Decision Framework": {
+      "name": "Make-Buy Decision Framework",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "make-buy-decision-framework",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "make",
+        "buy",
+        "decision",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Operations Footprint Optimization": {
+      "name": "Operations Footprint Optimization",
+      "category": "Operations, Supply Chain & Efficiency",
+      "slug": "operations-footprint-optimization",
+      "file": "references/11-operations-supply.md",
+      "tags": [
+        "operations",
+        "supply-chain",
+        "lean",
+        "efficiency",
+        "footprint",
+        "optimization"
+      ],
+      "leaf_affinity": null
+    },
+    "OODA Loop": {
+      "name": "OODA Loop",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "ooda-loop",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "ooda",
+        "loop"
+      ],
+      "leaf_affinity": null
+    },
+    "War-gaming Framework": {
+      "name": "War-gaming Framework",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "war-gaming-framework",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "war",
+        "gaming",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Scenario Planning": {
+      "name": "Scenario Planning",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "scenario-planning",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "planning"
+      ],
+      "leaf_affinity": "tail-risk"
+    },
+    "Risk Heat Map": {
+      "name": "Risk Heat Map",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "risk-heat-map",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "heat",
+        "map"
+      ],
+      "leaf_affinity": null
+    },
+    "Risk-Adjusted Return on Capital": {
+      "name": "Risk-Adjusted Return on Capital",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "risk-adjusted-return-on-capital",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "adjusted",
+        "return",
+        "capital"
+      ],
+      "leaf_affinity": null
+    },
+    "Strategic Flexibility Matrix": {
+      "name": "Strategic Flexibility Matrix",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "strategic-flexibility-matrix",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "strategic",
+        "flexibility",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Real Options Valuation": {
+      "name": "Real Options Valuation",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "real-options-valuation",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "real",
+        "options",
+        "valuation"
+      ],
+      "leaf_affinity": "optionality"
+    },
+    "Decision Tree Analysis": {
+      "name": "Decision Tree Analysis",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "decision-tree-analysis",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "decision",
+        "tree",
+        "analysis"
+      ],
+      "leaf_affinity": "branching-uncertainty"
+    },
+    "Black Swan / Barbell Strategy": {
+      "name": "Black Swan / Barbell Strategy",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "black-swan-barbell-strategy",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "black",
+        "swan",
+        "barbell",
+        "strategy"
+      ],
+      "leaf_affinity": "tail-risk"
+    },
+    "Stress Testing Framework": {
+      "name": "Stress Testing Framework",
+      "category": "Risk, Uncertainty & Scenarios",
+      "slug": "stress-testing-framework",
+      "file": "references/12-risk-scenarios.md",
+      "tags": [
+        "risk",
+        "scenario",
+        "tail-risk",
+        "stress-test",
+        "real-options",
+        "stress",
+        "testing",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Triple Bottom Line": {
+      "name": "Triple Bottom Line",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "triple-bottom-line",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "triple",
+        "bottom",
+        "line"
+      ],
+      "leaf_affinity": null
+    },
+    "Shared Value Framework": {
+      "name": "Shared Value Framework",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "shared-value-framework",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "shared",
+        "value",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "ESG Materiality Matrix": {
+      "name": "ESG Materiality Matrix",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "esg-materiality-matrix",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "materiality",
+        "matrix"
+      ],
+      "leaf_affinity": null
+    },
+    "Theory of Change": {
+      "name": "Theory of Change",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "theory-of-change",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "theory",
+        "change"
+      ],
+      "leaf_affinity": null
+    },
+    "Logical Framework Approach": {
+      "name": "Logical Framework Approach",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "logical-framework-approach",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "logical",
+        "framework",
+        "approach"
+      ],
+      "leaf_affinity": null
+    },
+    "Social Return on Investment": {
+      "name": "Social Return on Investment",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "social-return-on-investment",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "social",
+        "return",
+        "investment"
+      ],
+      "leaf_affinity": null
+    },
+    "Collective Impact Framework": {
+      "name": "Collective Impact Framework",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "collective-impact-framework",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "collective",
+        "impact",
+        "framework"
+      ],
+      "leaf_affinity": null
+    },
+    "Sustainable Development Goals Mapping": {
+      "name": "Sustainable Development Goals Mapping",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "sustainable-development-goals-mapping",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "sustainable",
+        "development",
+        "goals",
+        "mapping"
+      ],
+      "leaf_affinity": null
+    },
+    "Impact Management Project Dimensions": {
+      "name": "Impact Management Project Dimensions",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "impact-management-project-dimensions",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "impact",
+        "management",
+        "project",
+        "dimensions"
+      ],
+      "leaf_affinity": null
+    },
+    "Stakeholder Capitalism Framework": {
+      "name": "Stakeholder Capitalism Framework",
+      "category": "Social Impact, ESG & Public Value",
+      "slug": "stakeholder-capitalism-framework",
+      "file": "references/13-social-esg.md",
+      "tags": [
+        "esg",
+        "stakeholder",
+        "social-impact",
+        "sustainability",
+        "capitalism",
+        "framework"
+      ],
+      "leaf_affinity": null
+    }
+  }
+}

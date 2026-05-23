@@ -1,0 +1,24 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "drawtree-mcp"
+version = "0.2.0"
+description = "MCP server for Draw Tree — turn investment theses into structured falsifiable graphs"
+authors = [{name = "pakhei ho"}]
+license = {text = "MIT"}
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "mcp>=1.0.0",
+]
+
+[project.scripts]
+drawtree-mcp = "drawtree_mcp.server:cli"
+
+[tool.setuptools]
+packages = ["drawtree_mcp", "drawtree_mcp._kernel"]
+
+[tool.setuptools.package-data]
+drawtree_mcp = ["../kb/frameworks.json"]
