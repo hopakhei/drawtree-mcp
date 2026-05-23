@@ -75,3 +75,28 @@ def diff_versions(ticker: str, from_hash: str, to_hash: str | None = None,
 
 def open_dispute(ticker: str, body: dict) -> dict:
     return _http("POST", f"/v1/trees/{ticker}/disputes", body=body, auth=True)
+
+
+# ----- Paid endpoints (Phase 2)
+
+def paid_call(endpoint: str, payload: dict) -> dict:
+    """Call a paid endpoint on drawtree-api. Server holds the charge until
+    confirm or 24h auto-confirm."""
+    return _http("POST", f"/v1/paid/{endpoint}", body=payload, auth=True)
+
+
+def get_balance() -> dict:
+    return _http("GET", "/v1/billing/balance", auth=True)
+
+
+def confirm_charge(charge_id: str) -> dict:
+    return _http("POST", f"/v1/billing/charges/{charge_id}/confirm", auth=True)
+
+
+def refund_charge(charge_id: str, reason: str = "") -> dict:
+    return _http(
+        "POST",
+        f"/v1/billing/charges/{charge_id}/refund",
+        body={"reason": reason},
+        auth=True,
+    )

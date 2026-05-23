@@ -31,8 +31,7 @@
         "rapid",
         "rights",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Influence Map": {
       "name": "Influence Map",
@@ -47,8 +46,7 @@
         "change",
         "influence",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Kotter's Eight Steps for Change": {
       "name": "Kotter's Eight Steps for Change",
@@ -65,8 +63,7 @@
         "eight",
         "steps",
         "for"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Rogers Diffusion of Innovations Curve": {
       "name": "Rogers Diffusion of Innovations Curve",
@@ -83,8 +80,7 @@
         "diffusion",
         "innovations",
         "curve"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Issue Tree": {
       "name": "Issue Tree",
@@ -99,8 +95,7 @@
         "change",
         "issue",
         "tree"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Hypothesis-driven Problem Solving": {
       "name": "Hypothesis-driven Problem Solving",
@@ -117,8 +112,7 @@
         "driven",
         "problem",
         "solving"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "MECE Principle": {
       "name": "MECE Principle",
@@ -133,8 +127,7 @@
         "change",
         "mece",
         "principle"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Stakeholder Mapping": {
       "name": "Stakeholder Mapping",
@@ -149,8 +142,7 @@
         "change",
         "stakeholder",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "RASCI Framework": {
       "name": "RASCI Framework",
@@ -165,8 +157,7 @@
         "change",
         "rasci",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Decision Quality Chain": {
       "name": "Decision Quality Chain",
@@ -181,8 +172,7 @@
         "change",
         "quality",
         "chain"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "ADKAR Change Management Model": {
       "name": "ADKAR Change Management Model",
@@ -198,8 +188,7 @@
         "adkar",
         "management",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Strategic Planning Rhythm": {
       "name": "Strategic Planning Rhythm",
@@ -215,8 +204,7 @@
         "strategic",
         "planning",
         "rhythm"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Hoshin Kanri": {
       "name": "Hoshin Kanri",
@@ -231,8 +219,7 @@
         "change",
         "hoshin",
         "kanri"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Management Flight Simulators": {
       "name": "Management Flight Simulators",
@@ -248,8 +235,7 @@
         "management",
         "flight",
         "simulators"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Lewin's Force Field Analysis": {
       "name": "Lewin's Force Field Analysis",
@@ -266,8 +252,7 @@
         "force",
         "field",
         "analysis"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Ansoff Product–Market Growth Matrix": {
       "name": "Ansoff Product–Market Growth Matrix",
@@ -285,8 +270,7 @@
         "product",
         "market",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Innovation Ambition Matrix": {
       "name": "Innovation Ambition Matrix",
@@ -302,8 +286,7 @@
         "platform-launch",
         "ambition",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "McKinsey Seven Degrees of Freedom for Growth": {
       "name": "McKinsey Seven Degrees of Freedom for Growth",
@@ -322,8 +305,7 @@
         "degrees",
         "freedom",
         "for"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Jobs to Be Done Framework": {
       "name": "Jobs to Be Done Framework",
@@ -340,8 +322,7 @@
         "jobs",
         "done",
         "framework"
-      ],
-      "leaf_affinity": "demand-validation"
+      ]
     },
     "Disruptive Innovation Theory": {
       "name": "Disruptive Innovation Theory",
@@ -357,8 +338,7 @@
         "platform-launch",
         "disruptive",
         "theory"
-      ],
-      "leaf_affinity": "disruption-risk"
+      ]
     },
     "Blue Ocean Strategy Canvas": {
       "name": "Blue Ocean Strategy Canvas",
@@ -376,8 +356,7 @@
         "ocean",
         "strategy",
         "canvas"
-      ],
-      "leaf_affinity": "differentiation-test"
+      ]
     },
     "Blue Ocean Four Actions Framework": {
       "name": "Blue Ocean Four Actions Framework",
@@ -396,8 +375,7 @@
         "four",
         "actions",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "10 Types of Innovation": {
       "name": "10 Types of Innovation",
@@ -412,8 +390,7 @@
         "scaling",
         "platform-launch",
         "types"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Stage-Gate Innovation Process": {
       "name": "Stage-Gate Innovation Process",
@@ -430,8 +407,7 @@
         "stage",
         "gate",
         "process"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Ambidextrous Organization Framework": {
       "name": "Ambidextrous Organization Framework",
@@ -448,8 +424,7 @@
         "ambidextrous",
         "organization",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Real Options Logic": {
       "name": "Real Options Logic",
@@ -466,8 +441,7 @@
         "real",
         "options",
         "logic"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Platform Launch & Scaling Lifecycle": {
       "name": "Platform Launch & Scaling Lifecycle",
@@ -484,8 +458,7 @@
         "platform",
         "launch",
         "lifecycle"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "AARRR Pirate Metrics Funnel": {
       "name": "AARRR Pirate Metrics Funnel",
@@ -503,8 +476,7 @@
         "pirate",
         "metrics",
         "funnel"
-      ],
-      "leaf_affinity": "growth-engine"
+      ]
     },
     "Growth Flywheel Framework": {
       "name": "Growth Flywheel Framework",
@@ -520,8 +492,7 @@
         "platform-launch",
         "flywheel",
         "framework"
-      ],
-      "leaf_affinity": "growth-engine"
+      ]
     },
     "Network Effects Map": {
       "name": "Network Effects Map",
@@ -538,8 +509,7 @@
         "network",
         "effects",
         "map"
-      ],
-      "leaf_affinity": "platform-leverage"
+      ]
     },
     "MVP Learning Loop": {
       "name": "MVP Learning Loop",
@@ -556,8 +526,7 @@
         "mvp",
         "learning",
         "loop"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Design Thinking Double Diamond": {
       "name": "Design Thinking Double Diamond",
@@ -575,8 +544,7 @@
         "thinking",
         "double",
         "diamond"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Porter's Five Forces": {
       "name": "Porter's Five Forces",
@@ -593,8 +561,7 @@
         "porter",
         "five",
         "forces"
-      ],
-      "leaf_affinity": "industry-attractiveness"
+      ]
     },
     "Extended Five Forces": {
       "name": "Extended Five Forces",
@@ -611,8 +578,7 @@
         "extended",
         "five",
         "forces"
-      ],
-      "leaf_affinity": "industry-attractiveness"
+      ]
     },
     "PEST Analysis": {
       "name": "PEST Analysis",
@@ -628,8 +594,7 @@
         "ecosystem",
         "pest",
         "analysis"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "PESTEL / STEEP / STEEPLE Framework": {
       "name": "PESTEL / STEEP / STEEPLE Framework",
@@ -647,8 +612,7 @@
         "steep",
         "steeple",
         "framework"
-      ],
-      "leaf_affinity": "macro-tailwind"
+      ]
     },
     "Industry Life Cycle Model": {
       "name": "Industry Life Cycle Model",
@@ -665,8 +629,7 @@
         "life",
         "cycle",
         "model"
-      ],
-      "leaf_affinity": "lifecycle-stage"
+      ]
     },
     "Technology Adoption Life Cycle": {
       "name": "Technology Adoption Life Cycle",
@@ -684,8 +647,7 @@
         "adoption",
         "life",
         "cycle"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "S-Curve of Industry / Technology Evolution": {
       "name": "S-Curve of Industry / Technology Evolution",
@@ -702,8 +664,7 @@
         "curve",
         "technology",
         "evolution"
-      ],
-      "leaf_affinity": "lifecycle-stage"
+      ]
     },
     "Strategic Inflection Point Framework": {
       "name": "Strategic Inflection Point Framework",
@@ -721,8 +682,7 @@
         "inflection",
         "point",
         "framework"
-      ],
-      "leaf_affinity": "narrative-shift"
+      ]
     },
     "Market Attractiveness–Competitive Position": {
       "name": "Market Attractiveness–Competitive Position",
@@ -740,8 +700,7 @@
         "attractiveness",
         "competitive",
         "position"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Competitor Response Profile": {
       "name": "Competitor Response Profile",
@@ -758,8 +717,7 @@
         "competitor",
         "response",
         "profile"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Market Mapping / Landscape Mapping": {
       "name": "Market Mapping / Landscape Mapping",
@@ -776,8 +734,7 @@
         "market",
         "mapping",
         "landscape"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Ecosystem Mapping": {
       "name": "Ecosystem Mapping",
@@ -792,8 +749,7 @@
         "macro",
         "ecosystem",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Porter's Generic Strategies": {
       "name": "Porter's Generic Strategies",
@@ -811,8 +767,7 @@
         "porter",
         "generic",
         "strategies"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Treacy & Wiersema Value Disciplines": {
       "name": "Treacy & Wiersema Value Disciplines",
@@ -831,8 +786,7 @@
         "wiersema",
         "value",
         "disciplines"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Bowman's Strategy Clock": {
       "name": "Bowman's Strategy Clock",
@@ -850,8 +804,7 @@
         "bowman",
         "strategy",
         "clock"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Porter's Value Chain": {
       "name": "Porter's Value Chain",
@@ -869,8 +822,7 @@
         "porter",
         "value",
         "chain"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Experience Curve": {
       "name": "Experience Curve",
@@ -887,8 +839,7 @@
         "strategic-group",
         "experience",
         "curve"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Relative Cost Positioning Framework": {
       "name": "Relative Cost Positioning Framework",
@@ -907,8 +858,7 @@
         "cost",
         "positioning",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Key Success Factors Analysis": {
       "name": "Key Success Factors Analysis",
@@ -927,8 +877,7 @@
         "success",
         "factors",
         "analysis"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Strategic Group Mapping": {
       "name": "Strategic Group Mapping",
@@ -946,8 +895,7 @@
         "strategic",
         "group",
         "mapping"
-      ],
-      "leaf_affinity": "identity-test"
+      ]
     },
     "Game Theory / Co-opetition Framework": {
       "name": "Game Theory / Co-opetition Framework",
@@ -966,8 +914,7 @@
         "theory",
         "opetition",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Value Net": {
       "name": "Value Net",
@@ -984,8 +931,7 @@
         "strategic-group",
         "value",
         "net"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Delta Model": {
       "name": "Delta Model",
@@ -1002,8 +948,7 @@
         "strategic-group",
         "delta",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Resource-Based View": {
       "name": "Resource-Based View",
@@ -1021,8 +966,7 @@
         "resource",
         "based",
         "view"
-      ],
-      "leaf_affinity": "moat-test"
+      ]
     },
     "VRIO / VRIN Analysis": {
       "name": "VRIO / VRIN Analysis",
@@ -1039,8 +983,7 @@
         "strategic-group",
         "vrin",
         "analysis"
-      ],
-      "leaf_affinity": "moat-test"
+      ]
     },
     "Core Competence Framework": {
       "name": "Core Competence Framework",
@@ -1058,8 +1001,7 @@
         "core",
         "competence",
         "framework"
-      ],
-      "leaf_affinity": "moat-test"
+      ]
     },
     "PIMS Model": {
       "name": "PIMS Model",
@@ -1076,8 +1018,7 @@
         "strategic-group",
         "pims",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "ADL Life Cycle-Competitive Position Matrix": {
       "name": "ADL Life Cycle-Competitive Position Matrix",
@@ -1098,8 +1039,7 @@
         "competitive",
         "position",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Shell Directional Policy Matrix": {
       "name": "Shell Directional Policy Matrix",
@@ -1118,8 +1058,7 @@
         "directional",
         "policy",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "BCG Time-based Competition Framework": {
       "name": "BCG Time-based Competition Framework",
@@ -1139,8 +1078,7 @@
         "based",
         "competition",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Profit Pool Mapping": {
       "name": "Profit Pool Mapping",
@@ -1158,8 +1096,7 @@
         "profit",
         "pool",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "BCG Growth-Share Matrix": {
       "name": "BCG Growth-Share Matrix",
@@ -1177,8 +1114,7 @@
         "growth",
         "share",
         "matrix"
-      ],
-      "leaf_affinity": "portfolio-balance"
+      ]
     },
     "GE-McKinsey Nine-Box Matrix": {
       "name": "GE-McKinsey Nine-Box Matrix",
@@ -1196,8 +1132,7 @@
         "nine",
         "box",
         "matrix"
-      ],
-      "leaf_affinity": "portfolio-balance"
+      ]
     },
     "BCG Advantage Matrix": {
       "name": "BCG Advantage Matrix",
@@ -1214,8 +1149,7 @@
         "bcg",
         "advantage",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Ashridge Portfolio Display": {
       "name": "Ashridge Portfolio Display",
@@ -1231,8 +1165,7 @@
         "spinoff",
         "ashridge",
         "display"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Parenting Advantage Framework": {
       "name": "Parenting Advantage Framework",
@@ -1249,8 +1182,7 @@
         "parenting",
         "advantage",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Corporate Scope Matrix": {
       "name": "Corporate Scope Matrix",
@@ -1267,8 +1199,7 @@
         "corporate",
         "scope",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Role of the Center / Corporate Parenting": {
       "name": "Role of the Center / Corporate Parenting",
@@ -1287,8 +1218,7 @@
         "center",
         "corporate",
         "parenting"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Make-Buy-Ally / Vertical Integration": {
       "name": "Make-Buy-Ally / Vertical Integration",
@@ -1307,8 +1237,7 @@
         "ally",
         "vertical",
         "integration"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Adjacency Expansion Matrix": {
       "name": "Adjacency Expansion Matrix",
@@ -1325,8 +1254,7 @@
         "adjacency",
         "expansion",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "McKinsey Three Horizons of Growth": {
       "name": "McKinsey Three Horizons of Growth",
@@ -1344,8 +1272,7 @@
         "three",
         "horizons",
         "growth"
-      ],
-      "leaf_affinity": "growth-pipeline"
+      ]
     },
     "Corporate Value Creation Logic": {
       "name": "Corporate Value Creation Logic",
@@ -1363,8 +1290,7 @@
         "value",
         "creation",
         "logic"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "SBU Segmentation Framework": {
       "name": "SBU Segmentation Framework",
@@ -1381,8 +1307,7 @@
         "sbu",
         "segmentation",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Strategic Control Map": {
       "name": "Strategic Control Map",
@@ -1399,8 +1324,7 @@
         "strategic",
         "control",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Portfolio Value Gap Analysis": {
       "name": "Portfolio Value Gap Analysis",
@@ -1417,8 +1341,7 @@
         "value",
         "gap",
         "analysis"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Capital Allocation Framework": {
       "name": "Capital Allocation Framework",
@@ -1435,8 +1358,7 @@
         "capital",
         "allocation",
         "framework"
-      ],
-      "leaf_affinity": "capital-discipline"
+      ]
     },
     "Core vs Non-core Portfolio Framework": {
       "name": "Core vs Non-core Portfolio Framework",
@@ -1453,8 +1375,7 @@
         "core",
         "non",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Restructuring / Portfolio Pruning": {
       "name": "Restructuring / Portfolio Pruning",
@@ -1470,8 +1391,7 @@
         "spinoff",
         "restructuring",
         "pruning"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Business Model Canvas": {
       "name": "Business Model Canvas",
@@ -1487,8 +1407,7 @@
         "business",
         "model",
         "canvas"
-      ],
-      "leaf_affinity": "business-model-coherence"
+      ]
     },
     "Lean Canvas": {
       "name": "Lean Canvas",
@@ -1503,8 +1422,7 @@
         "value-proposition",
         "lean",
         "canvas"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Value Proposition Canvas": {
       "name": "Value Proposition Canvas",
@@ -1520,8 +1438,7 @@
         "value",
         "proposition",
         "canvas"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Operating Model Canvas": {
       "name": "Operating Model Canvas",
@@ -1537,8 +1454,7 @@
         "operating",
         "model",
         "canvas"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Profit Formula Framework": {
       "name": "Profit Formula Framework",
@@ -1554,8 +1470,7 @@
         "profit",
         "formula",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Business Model Patterns Library": {
       "name": "Business Model Patterns Library",
@@ -1572,8 +1487,7 @@
         "model",
         "patterns",
         "library"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Two-sided Platform Business Model": {
       "name": "Two-sided Platform Business Model",
@@ -1590,8 +1504,7 @@
         "sided",
         "business",
         "model"
-      ],
-      "leaf_affinity": "platform-leverage"
+      ]
     },
     "B2B2C Value Chain Mapping": {
       "name": "B2B2C Value Chain Mapping",
@@ -1608,8 +1521,7 @@
         "value",
         "chain",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Service-Dominant Logic": {
       "name": "Service-Dominant Logic",
@@ -1625,8 +1537,7 @@
         "service",
         "dominant",
         "logic"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Razor-and-Blades Business Model Pattern": {
       "name": "Razor-and-Blades Business Model Pattern",
@@ -1645,8 +1556,7 @@
         "business",
         "model",
         "pattern"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "STP Framework": {
       "name": "STP Framework",
@@ -1662,8 +1572,7 @@
         "positioning",
         "stp",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "4Ps Marketing Mix": {
       "name": "4Ps Marketing Mix",
@@ -1680,8 +1589,7 @@
         "4ps",
         "marketing",
         "mix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "7Ps Marketing Mix": {
       "name": "7Ps Marketing Mix",
@@ -1698,8 +1606,7 @@
         "7ps",
         "marketing",
         "mix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Customer Journey Mapping": {
       "name": "Customer Journey Mapping",
@@ -1715,8 +1622,7 @@
         "positioning",
         "journey",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Customer Lifecycle Framework": {
       "name": "Customer Lifecycle Framework",
@@ -1732,8 +1638,7 @@
         "positioning",
         "lifecycle",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Customer Lifetime Value Model": {
       "name": "Customer Lifetime Value Model",
@@ -1750,8 +1655,7 @@
         "lifetime",
         "value",
         "model"
-      ],
-      "leaf_affinity": "customer-economics"
+      ]
     },
     "Share of Wallet Framework": {
       "name": "Share of Wallet Framework",
@@ -1768,8 +1672,7 @@
         "share",
         "wallet",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Net Promoter System": {
       "name": "Net Promoter System",
@@ -1786,8 +1689,7 @@
         "net",
         "promoter",
         "system"
-      ],
-      "leaf_affinity": "customer-loyalty"
+      ]
     },
     "RFM Segmentation": {
       "name": "RFM Segmentation",
@@ -1802,8 +1704,7 @@
         "segmentation",
         "positioning",
         "rfm"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Kano Model": {
       "name": "Kano Model",
@@ -1819,8 +1720,7 @@
         "positioning",
         "kano",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Moments of Truth Framework": {
       "name": "Moments of Truth Framework",
@@ -1837,8 +1737,7 @@
         "moments",
         "truth",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Brand Equity Pyramid": {
       "name": "Brand Equity Pyramid",
@@ -1854,8 +1753,7 @@
         "positioning",
         "equity",
         "pyramid"
-      ],
-      "leaf_affinity": "brand-strength"
+      ]
     },
     "Brand Positioning Map": {
       "name": "Brand Positioning Map",
@@ -1870,8 +1768,7 @@
         "segmentation",
         "positioning",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Brand Archetypes Framework": {
       "name": "Brand Archetypes Framework",
@@ -1887,8 +1784,7 @@
         "positioning",
         "archetypes",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "McKinsey 7S Framework": {
       "name": "McKinsey 7S Framework",
@@ -1902,8 +1798,7 @@
         "execution",
         "mckinsey",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Galbraith Star Model": {
       "name": "Galbraith Star Model",
@@ -1918,8 +1813,7 @@
         "galbraith",
         "star",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Operating Model 4D": {
       "name": "Operating Model 4D",
@@ -1933,8 +1827,7 @@
         "execution",
         "operating",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Capability Map": {
       "name": "Capability Map",
@@ -1947,8 +1840,7 @@
         "capability",
         "execution",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Capability Maturity Model": {
       "name": "Capability Maturity Model",
@@ -1962,8 +1854,7 @@
         "execution",
         "maturity",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Span of Control & Layering Analysis": {
       "name": "Span of Control & Layering Analysis",
@@ -1979,8 +1870,7 @@
         "control",
         "layering",
         "analysis"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "RACI Matrix": {
       "name": "RACI Matrix",
@@ -1994,8 +1884,7 @@
         "execution",
         "raci",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Organizational Health Index": {
       "name": "Organizational Health Index",
@@ -2010,8 +1899,7 @@
         "organizational",
         "health",
         "index"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Agile Operating Model": {
       "name": "Agile Operating Model",
@@ -2026,8 +1914,7 @@
         "agile",
         "operating",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Shared Services vs Business Partnering": {
       "name": "Shared Services vs Business Partnering",
@@ -2043,8 +1930,7 @@
         "services",
         "business",
         "partnering"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Centers of Excellence Design Framework": {
       "name": "Centers of Excellence Design Framework",
@@ -2060,8 +1946,7 @@
         "excellence",
         "design",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Strategic Alignment Model": {
       "name": "Strategic Alignment Model",
@@ -2076,8 +1961,7 @@
         "strategic",
         "alignment",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Digital Maturity Model": {
       "name": "Digital Maturity Model",
@@ -2094,8 +1978,7 @@
         "plg",
         "maturity",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Digital Transformation Roadmap": {
       "name": "Digital Transformation Roadmap",
@@ -2112,8 +1995,7 @@
         "plg",
         "transformation",
         "roadmap"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Platform Strategy Framework": {
       "name": "Platform Strategy Framework",
@@ -2130,8 +2012,7 @@
         "plg",
         "strategy",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Ecosystem Roles Map": {
       "name": "Ecosystem Roles Map",
@@ -2149,8 +2030,7 @@
         "ecosystem",
         "roles",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "API Economy Framework": {
       "name": "API Economy Framework",
@@ -2167,8 +2047,7 @@
         "plg",
         "economy",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "North Star Metric Framework": {
       "name": "North Star Metric Framework",
@@ -2187,8 +2066,7 @@
         "star",
         "metric",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Data Monetization Framework": {
       "name": "Data Monetization Framework",
@@ -2205,8 +2083,7 @@
         "plg",
         "monetization",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "AI Value Creation Framework": {
       "name": "AI Value Creation Framework",
@@ -2224,8 +2101,7 @@
         "value",
         "creation",
         "framework"
-      ],
-      "leaf_affinity": "ai-monetisation"
+      ]
     },
     "Digital Twin Framework": {
       "name": "Digital Twin Framework",
@@ -2242,8 +2118,7 @@
         "plg",
         "twin",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Omnichannel Strategy Framework": {
       "name": "Omnichannel Strategy Framework",
@@ -2259,8 +2134,7 @@
         "omnichannel",
         "strategy",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Product-Led Growth Framework": {
       "name": "Product-Led Growth Framework",
@@ -2279,8 +2153,7 @@
         "led",
         "growth",
         "framework"
-      ],
-      "leaf_affinity": "growth-engine"
+      ]
     },
     "CAGE Distance Framework": {
       "name": "CAGE Distance Framework",
@@ -2295,8 +2168,7 @@
         "cage",
         "distance",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "AAA Global Strategy Framework": {
       "name": "AAA Global Strategy Framework",
@@ -2311,8 +2183,7 @@
         "aaa",
         "strategy",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "OLI / Eclectic Paradigm": {
       "name": "OLI / Eclectic Paradigm",
@@ -2327,8 +2198,7 @@
         "oli",
         "eclectic",
         "paradigm"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Uppsala Internationalization Model": {
       "name": "Uppsala Internationalization Model",
@@ -2343,8 +2213,7 @@
         "uppsala",
         "internationalization",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Market Entry Mode Choice Framework": {
       "name": "Market Entry Mode Choice Framework",
@@ -2361,8 +2230,7 @@
         "mode",
         "choice",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Global Integration-Local Responsiveness": {
       "name": "Global Integration-Local Responsiveness",
@@ -2377,8 +2245,7 @@
         "integration",
         "local",
         "responsiveness"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Global Value Chain Configuration": {
       "name": "Global Value Chain Configuration",
@@ -2393,8 +2260,7 @@
         "value",
         "chain",
         "configuration"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Service Blueprinting": {
       "name": "Service Blueprinting",
@@ -2409,8 +2275,7 @@
         "footprint",
         "service",
         "blueprinting"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Lean Value Stream Mapping": {
       "name": "Lean Value Stream Mapping",
@@ -2426,8 +2291,7 @@
         "value",
         "stream",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Six Sigma DMAIC": {
       "name": "Six Sigma DMAIC",
@@ -2443,8 +2307,7 @@
         "six",
         "sigma",
         "dmaic"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Lean Six Sigma House of Quality": {
       "name": "Lean Six Sigma House of Quality",
@@ -2461,8 +2324,7 @@
         "sigma",
         "house",
         "quality"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "SCOR Model": {
       "name": "SCOR Model",
@@ -2477,8 +2339,7 @@
         "footprint",
         "scor",
         "model"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Capacity Planning Framework": {
       "name": "Capacity Planning Framework",
@@ -2494,8 +2355,7 @@
         "capacity",
         "planning",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Just-in-Time System": {
       "name": "Just-in-Time System",
@@ -2511,8 +2371,7 @@
         "just",
         "time",
         "system"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Total Productive Maintenance": {
       "name": "Total Productive Maintenance",
@@ -2528,8 +2387,7 @@
         "total",
         "productive",
         "maintenance"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Make-Buy Decision Framework": {
       "name": "Make-Buy Decision Framework",
@@ -2546,8 +2404,7 @@
         "buy",
         "decision",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Operations Footprint Optimization": {
       "name": "Operations Footprint Optimization",
@@ -2561,8 +2418,7 @@
         "efficiency",
         "footprint",
         "optimization"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "OODA Loop": {
       "name": "OODA Loop",
@@ -2577,8 +2433,7 @@
         "real-options",
         "ooda",
         "loop"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "War-gaming Framework": {
       "name": "War-gaming Framework",
@@ -2594,8 +2449,7 @@
         "war",
         "gaming",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Scenario Planning": {
       "name": "Scenario Planning",
@@ -2609,8 +2463,7 @@
         "stress-test",
         "real-options",
         "planning"
-      ],
-      "leaf_affinity": "tail-risk"
+      ]
     },
     "Risk Heat Map": {
       "name": "Risk Heat Map",
@@ -2625,8 +2478,7 @@
         "real-options",
         "heat",
         "map"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Risk-Adjusted Return on Capital": {
       "name": "Risk-Adjusted Return on Capital",
@@ -2642,8 +2494,7 @@
         "adjusted",
         "return",
         "capital"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Strategic Flexibility Matrix": {
       "name": "Strategic Flexibility Matrix",
@@ -2659,8 +2510,7 @@
         "strategic",
         "flexibility",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Real Options Valuation": {
       "name": "Real Options Valuation",
@@ -2676,8 +2526,7 @@
         "real",
         "options",
         "valuation"
-      ],
-      "leaf_affinity": "optionality"
+      ]
     },
     "Decision Tree Analysis": {
       "name": "Decision Tree Analysis",
@@ -2693,8 +2542,7 @@
         "decision",
         "tree",
         "analysis"
-      ],
-      "leaf_affinity": "branching-uncertainty"
+      ]
     },
     "Black Swan / Barbell Strategy": {
       "name": "Black Swan / Barbell Strategy",
@@ -2711,8 +2559,7 @@
         "swan",
         "barbell",
         "strategy"
-      ],
-      "leaf_affinity": "tail-risk"
+      ]
     },
     "Stress Testing Framework": {
       "name": "Stress Testing Framework",
@@ -2728,8 +2575,7 @@
         "stress",
         "testing",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Triple Bottom Line": {
       "name": "Triple Bottom Line",
@@ -2744,8 +2590,7 @@
         "triple",
         "bottom",
         "line"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Shared Value Framework": {
       "name": "Shared Value Framework",
@@ -2760,8 +2605,7 @@
         "shared",
         "value",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "ESG Materiality Matrix": {
       "name": "ESG Materiality Matrix",
@@ -2775,8 +2619,7 @@
         "sustainability",
         "materiality",
         "matrix"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Theory of Change": {
       "name": "Theory of Change",
@@ -2790,8 +2633,7 @@
         "sustainability",
         "theory",
         "change"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Logical Framework Approach": {
       "name": "Logical Framework Approach",
@@ -2806,8 +2648,7 @@
         "logical",
         "framework",
         "approach"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Social Return on Investment": {
       "name": "Social Return on Investment",
@@ -2822,8 +2663,7 @@
         "social",
         "return",
         "investment"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Collective Impact Framework": {
       "name": "Collective Impact Framework",
@@ -2838,8 +2678,7 @@
         "collective",
         "impact",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Sustainable Development Goals Mapping": {
       "name": "Sustainable Development Goals Mapping",
@@ -2855,8 +2694,7 @@
         "development",
         "goals",
         "mapping"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Impact Management Project Dimensions": {
       "name": "Impact Management Project Dimensions",
@@ -2872,8 +2710,7 @@
         "management",
         "project",
         "dimensions"
-      ],
-      "leaf_affinity": null
+      ]
     },
     "Stakeholder Capitalism Framework": {
       "name": "Stakeholder Capitalism Framework",
@@ -2887,8 +2724,7 @@
         "sustainability",
         "capitalism",
         "framework"
-      ],
-      "leaf_affinity": null
+      ]
     }
   }
 }

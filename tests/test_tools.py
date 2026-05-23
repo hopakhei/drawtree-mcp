@@ -1,45 +1,14 @@
-"""Smoke tests for every tool, run without a network or MCP transport."""
-import asyncio
+"""Smoke tests for the slim Path C MCP server."""
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from drawtree_mcp import (  # noqa: E402
-    falsification, framework_retrieval, fleet_match, narrative,
-)
-from drawtree_mcp.scenario import (  # noqa: E402
-    ScenarioInputs, identify_tension_point, reverse_engineer, what_market_betting,
-)
+from drawtree_mcp import framework_retrieval  # noqa: E402
 from drawtree_mcp._kernel.aggregation import aggregate, fibonacci_weights  # noqa: E402
 from drawtree_mcp._kernel.validate import validate  # noqa: E402
-
-# Fully imports server so tool handlers are exercised
 from drawtree_mcp.server import TOOL_HANDLERS  # noqa: E402
-
-
-SAMPLE_HANDOFF = """
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-NARRATIVE HANDOFF — for Hypothesis Tree Construction
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Palantir Technologies | PLTR | 2026-05-22
-
-[Current Market Story]
-The market currently treats PLTR as an AI infrastructure pure-play, valuing it at
-EV/Sales 18x in line with Snowflake / Databricks. Sell-side reports anchor on
-"AIP commercial traction" and DCF over 10-year explicit forecasts.
-
-[Where the Market May Be Wrong]
-Error Type: Identity Mislabel
-Hypothesis: The market assumes PLTR is an AI infrastructure company, but in
-reality it remains a Defense IT services company with adjacent commercial
-traction. If this holds, the valuation framework should shift from EV/Sales 18x
-to EV/Sales 6-8x.
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-"""
 
 
 def _minimal_tree():
@@ -57,106 +26,75 @@ def _minimal_tree():
             },
         },
         "branches": [
-            {"id": "A", "label": "Product", "core_question": "?"},
-            {"id": "B", "label": "Lock-in", "core_question": "?"},
-            {"id": "C", "label": "Cadence", "core_question": "?"},
+            {"id": "A", "label": "A", "core_question": "?"},
+            {"id": "B", "label": "B", "core_question": "?"},
+            {"id": "C", "label": "C", "core_question": "?"},
         ],
         "hypotheses": [
-            {
-                "id": f"{x}1", "title": f"{x}1",
-                "hypothesis_full": "AIP software ARR will exceed $500M by FY27",
-                "baseline_data": [{"text": "x", "source_name": "S", "url": "https://x", "date": "2026-01-01"}],
-                "verdict": "Trending positive",
-                "falsification": [{"text": "FY27 H1 ARR not separately disclosed", "type": "observable"}],
-            }
+            {"id": f"{x}1", "title": f"{x}1", "hypothesis_full": "ARR exceeds $500M FY27",
+             "baseline_data": [{"text": "x", "source_name": "S", "url": "https://x", "date": "2026-01-01"}],
+             "verdict": "Trending positive",
+             "falsification": [{"text": "FY27 H1 ARR not separately disclosed", "type": "observable"}]}
             for x in ["A", "B", "C"]
         ],
     }
 
 
-def test_narrative_parse():
-    p = narrative.parse_handoff(SAMPLE_HANDOFF)
-    assert p["ticker"] == "PLTR"
-    assert p["error_type"] == "Identity Mislabel"
-    assert "Defense IT services" in p["hypothesis_parsed"]["in_reality"]
-    assert "EV/Sales 18x" in p["hypothesis_parsed"]["framework_from"]
-    print("✓ narrative.parse_handoff")
+def test_fibonacci_weights():
+    assert fibonacci_weights(4) == [5.0, 3.0, 2.0, 1.0]
+    print("✓ fibonacci_weights")
 
 
-def test_root_question_derivation():
-    p = narrative.parse_handoff(SAMPLE_HANDOFF)
-    q = narrative.derive_root_question(p)
-    assert "Will" in q and "PLTR" not in q  # generic phrasing, no ticker leakage
-    print("✓ narrative.derive_root_question:", q[:120])
-
-
-def test_framework_retrieval():
-    r = framework_retrieval.search("AI infrastructure customer lock-in network effects", top_k=3)
+def test_framework_retrieval_no_ip_fields():
+    """Ensure public retrieval returns only name + category + score."""
+    r = framework_retrieval.search("AI infrastructure customer lock-in", top_k=3)
     assert len(r) == 3
-    names = [x["name"] for x in r]
-    print("✓ framework_retrieval.search top 3:", names)
+    for item in r:
+        assert set(item.keys()) <= {"name", "category", "score"}
+        assert "leaf_affinity" not in item
+        assert "diagnostic_questions" not in item
+        assert "tags" not in item
+    print(f"✓ framework_retrieval IP-clean — top: {[x['name'] for x in r]}")
 
 
-def test_falsification_observable():
-    s = falsification.suggest("AIP software ARR will exceed $500M by FY27")
-    assert len(s) > 0
-    print("✓ falsification.suggest:", s[0]["text"][:80])
-
-
-def test_aggregate():
-    t = _minimal_tree()
-    r = aggregate(t)
+def test_aggregate_basic():
+    r = aggregate(_minimal_tree())
     assert r["h0_verdict"] in (
         "Validated", "Trending positive", "Inconclusive",
         "Trending negative", "Approaching falsification", "Falsified",
     )
-    print(f"✓ aggregate: h0={r['h0_verdict']} conviction={r['conviction']}")
+    print(f"✓ aggregate: h0={r['h0_verdict']} conv={r['conviction']}")
 
 
-def test_validate():
+def test_validate_basic():
     rep = validate(_minimal_tree())
-    assert not rep.errors, [(i.code, i.message) for i in rep.errors]
+    assert not rep.errors
     print("✓ validate: 0 errors")
 
 
-def test_scenario_reverse_engineer():
-    inputs = ScenarioInputs(bull_value=35, base_value=24, bear_value=14, current_price=22.5)
-    p = reverse_engineer(inputs)
-    total = round(p.bull + p.base + p.bear, 2)
-    assert abs(total - 1.0) < 0.02, f"probs sum = {total}"
-    print(f"✓ scenario: P(bull)={p.bull} P(base)={p.base} P(bear)={p.bear}")
-
-
-def test_tension_point():
-    t = _minimal_tree()
-    inputs = ScenarioInputs(bull_value=35, base_value=24, bear_value=14, current_price=22.5)
-    probs = reverse_engineer(inputs)
-    tp = identify_tension_point(t, probs)
-    assert tp is not None
-    assert tp["leaf_id"] in {"A1", "B1", "C1"}
-    print(f"✓ tension point: leaf {tp['leaf_id']} (eff_weight={tp['effective_weight']})")
-
-
-def test_tool_handlers_callable():
-    """Every advertised tool has a handler."""
+def test_tool_handlers_set():
+    """The 13 tools advertised match what's wired."""
     expected = {
+        # free
         "validate_tree", "aggregate_tree", "commit_tree", "read_tree",
-        "register_narrative", "suggest_framework", "enrich_branches",
-        "suggest_falsification", "derive_implied_probabilities", "subscribe_alerts",
+        "suggest_framework", "balance",
+        # paid
+        "register_narrative", "enrich_branches", "suggest_falsification",
+        "derive_scenario_values", "subscribe_alerts",
+        # lifecycle
+        "confirm_charge", "refund_charge",
     }
-    assert set(TOOL_HANDLERS.keys()) == expected
-    print(f"✓ all 10 tool handlers wired")
+    actual = set(TOOL_HANDLERS.keys())
+    assert actual == expected, f"missing: {expected - actual}; extra: {actual - expected}"
+    print(f"✓ all {len(expected)} tools wired")
 
 
-def test_register_narrative_e2e():
-    # Run the actual MCP tool handler (exercises parser + fleet_match's mocked path)
-    handler = TOOL_HANDLERS["register_narrative"]
-    out = asyncio.run(handler({"narrative_handoff_block": SAMPLE_HANDOFF}))
-    assert out["ok"] is True
-    assert out["narrative"]["ticker"] == "PLTR"
-    assert "Will" in out["suggested_h0_question"]
-    # fleet_pattern_match may be empty if API offline, that's OK
-    print(f"✓ register_narrative tool: H-0='{out['suggested_h0_question'][:80]}...'")
+def test_no_ip_in_kb_file():
+    import json
+    kb = json.load(open(ROOT / "kb" / "frameworks.json"))
+    for name, fw in kb["frameworks"].items():
+        assert "leaf_affinity" not in fw, f"leaf_affinity leaked in {name}"
+    print(f"✓ kb/frameworks.json clean of leaf_affinity ({len(kb['frameworks'])} frameworks)")
 
 
 if __name__ == "__main__":
