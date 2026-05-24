@@ -24,6 +24,7 @@ import os
 from typing import Any
 
 from mcp.server.fastmcp import FastMCP
+from mcp.server.transport_security import TransportSecuritySettings
 from starlette.applications import Starlette
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -64,6 +65,18 @@ _override_api_client_for_request()
 # ============================================================
 # FastMCP server setup
 # ============================================================
+# Allowed hosts/origins for DNS-rebinding protection. In production this
+# server is reachable as drawtree-mcp.onrender.com and (later)
+# mcp.drawtree.capital; we also accept the same via $ALLOWED_HOSTS env
+# (comma-separated) so we can rotate without a code change.
+_default_hosts = [
+    "drawtree-mcp.onrender.com",
+    "mcp.drawtree.capital",
+    "localhost", "127.0.0.1",
+]
+_env_hosts = [h.strip() for h in os.environ.get("ALLOWED_HOSTS", "").split(",") if h.strip()]
+_allowed_hosts = list(dict.fromkeys(_default_hosts + _env_hosts))
+
 mcp = FastMCP(
     "drawtree-mcp",
     instructions=(
@@ -74,6 +87,13 @@ mcp = FastMCP(
         "refund_charge). Paid calls hold against your HKD balance and auto-confirm "
         "in 24 hours unless you refund. Get started by registering at "
         "https://drawtree-api.onrender.com or by importing your API key."
+    ),
+    transport_security=TransportSecuritySettings(
+        enable_dns_rebinding_protection=True,
+        allowed_hosts=_allowed_hosts,
+        allowed_origins=[f"https://{h}" for h in _allowed_hosts]
+        + ["https://www.perplexity.ai", "https://perplexity.ai",
+           "https://claude.ai", "https://chat.openai.com"],
     ),
 )
 
@@ -315,17 +335,34 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
         if request.url.path in ("/", "/health", "/v1/health"):
             return await call_next(request)
 
-        # All other paths require auth
+        # Accept the key from any of these headers so we work with whatever
+        # Custom Connector UI is offered (Perplexity API-Key mode lets the
+        # user pick the header name; common conventions vary).
+        api_key = None
         authz = request.headers.get("authorization", "")
-        if not authz.startswith("Bearer "):
+        if authz.lower().startswith("bearer "):
+            api_key = authz[7:].strip()
+        if not api_key:
+            api_key = (request.headers.get("api-key")
+                       or request.headers.get("x-api-key")
+                       or request.headers.get("apikey")
+                       or "").strip() or None
+        # Some clients pass it as a query param during initial discovery
+        if not api_key:
+            api_key = request.query_params.get("api_key") or None
+
+        if not api_key:
             return JSONResponse(
-                {"error": "missing_bearer_token",
-                 "message": "Set 'Authorization: Bearer dt_...' with your "
-                            "drawtree-api key. Register at https://drawtree-api.onrender.com."},
+                {"error": "missing_api_key",
+                 "message": (
+                     "Provide your drawtree-api key in one of: "
+                     "'Authorization: Bearer dt_...', 'api-key: dt_...', or "
+                     "'x-api-key: dt_...'. Register at "
+                     "https://drawtree-api.onrender.com for an HKD $100 free credit."
+                 )},
                 status_code=401,
             )
-        api_key = authz[len("Bearer "):].strip()
-        if not api_key.startswith("dt_") and not api_key.startswith("rk_"):
+        if not (api_key.startswith("dt_") or api_key.startswith("rk_")):
             return JSONResponse(
                 {"error": "invalid_token_format",
                  "message": "Expected dt_xxx (drawtree-api key) prefix."},
@@ -385,17 +422,26 @@ a{color:#0a58ca}</style></head><body>
 
 # ============================================================
 # Build the Starlette app
+#
+# FastMCP's streamable_http_app() mounts the transport at "/mcp" internally,
+# so we mount it at "/" of our outer app — that way our public endpoint is
+# https://.../mcp without an intervening 307 redirect from /mcp -> /mcp/.
+# We add explicit /mcp and /mcp/ aliases to be robust against clients that
+# follow trailing-slash conventions either way.
 # ============================================================
 mcp_app = mcp.streamable_http_app()
 
+# Critical: propagate the FastMCP session-manager lifespan to the outer app,
+# otherwise we hit "Task group is not initialized" on every /mcp request.
 app = Starlette(
     routes=[
         Route("/", endpoint=landing),
         Route("/health", endpoint=health),
         Route("/v1/health", endpoint=health),
-        Mount("/mcp", app=mcp_app),
+        Mount("/", app=mcp_app),
     ],
     middleware=[],
+    lifespan=mcp_app.router.lifespan_context,
 )
 app.add_middleware(APIKeyAuthMiddleware)
 
