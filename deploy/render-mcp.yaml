@@ -1,0 +1,22 @@
+# Render Blueprint for drawtree-mcp HTTPS transport.
+# Create the service via Render dashboard → "New" → "Blueprint" and point at
+# this repo. The free instance type is fine for the public MCP surface — paid
+# work is proxied to drawtree-api which has its own balance & rate limits.
+#
+# After first deploy, point CNAME `mcp.drawtree.capital` at the Render URL.
+
+services:
+  - type: web
+    name: drawtree-mcp
+    runtime: docker
+    region: singapore
+    plan: starter
+    dockerfilePath: ./Dockerfile.http
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: DRAWTREE_API_URL
+        value: https://drawtree-api.onrender.com
+      # No DRAWTREE_API_KEY here — keys arrive per-request via Bearer auth.
+      - key: PYTHONUNBUFFERED
+        value: "1"

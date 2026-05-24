@@ -1,0 +1,24 @@
+# HTTPS MCP server for Perplexity / claude.ai web / ChatGPT
+# Runs the Streamable HTTP transport. Stdio transport stays available via the
+# regular drawtree-mcp entry point but is not exposed here.
+
+FROM python:3.11-slim
+
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1
+
+WORKDIR /app
+
+# Install the package with HTTP extras
+COPY pyproject.toml README.md LICENSE ./
+COPY drawtree_mcp ./drawtree_mcp
+COPY kb ./kb
+
+RUN pip install --upgrade pip && \
+    pip install ".[http]"
+
+EXPOSE 8000
+
+# Render sets $PORT; the CLI honors it.
+CMD ["sh", "-c", "drawtree-mcp-http --host 0.0.0.0 --port ${PORT:-8000}"]

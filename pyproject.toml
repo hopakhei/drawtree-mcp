@@ -14,8 +14,15 @@ dependencies = [
     "mcp>=1.0.0",
 ]
 
+[project.optional-dependencies]
+http = [
+    "starlette>=0.37",
+    "uvicorn[standard]>=0.30",
+]
+
 [project.scripts]
 drawtree-mcp = "drawtree_mcp.server:cli"
+drawtree-mcp-http = "drawtree_mcp.http_server:main"
 
 [tool.setuptools]
 packages = ["drawtree_mcp", "drawtree_mcp._kernel"]
