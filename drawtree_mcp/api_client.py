@@ -100,3 +100,18 @@ def refund_charge(charge_id: str, reason: str = "") -> dict:
         body={"reason": reason},
         auth=True,
     )
+
+
+# ----- Draft / Create-mode endpoints (Phase 3)
+
+def draft_call(path: str, body: dict | None = None, method: str = "POST") -> dict:
+    """Generic call into /v1/drafts/* — every draft endpoint requires auth."""
+    return _http(method, f"/v1/drafts{path}", body=body, auth=True)
+
+
+def draft_get(path: str) -> dict:
+    return _http("GET", f"/v1/drafts{path}", auth=True)
+
+
+def credit_balance() -> dict:
+    return _http("GET", "/v1/drafts/_credits/balance", auth=True)

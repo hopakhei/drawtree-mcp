@@ -324,6 +324,260 @@ def refund_charge(charge_id: str, reason: str = "") -> dict:
 
 
 # ============================================================
+# CREATE MODE — Framework design (all free) + paid data stages
+# ============================================================
+# These tools follow a strict 6-stage pipeline. Each stage's free design tool
+# returns the system prompts and schemas the user's LLM needs; the matching
+# save_* tool persists structured output. After save_scenarios + preview_tree,
+# the user calls confirm_framework (free) to lock in the design — which
+# unlocks the paid data tools. Server enforces stage ordering and rate limits
+# (5 calls per stage per draft).
+
+
+@mcp.tool()
+def start_draft(ticker: str) -> dict:
+    """Open a new draft for a ticker. Free. Returns draft_id used by all later stages."""
+    if not ticker:
+        return {"error": "ticker required"}
+    try:
+        return api_client.draft_call("/start", {"ticker": ticker.upper()})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def frame_narrative(draft_id: str) -> dict:
+    """Stage 1 / 6 — FREE. Returns the Agent 1 system prompt + output schema for
+    market-narrative reconstruction. Your LLM runs the prompt and produces
+    a structured narrative block (events, v1...v_current, v_next, contradictions).
+    Then call save_narrative."""
+    try:
+        return api_client.draft_call("/frame_narrative", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def save_narrative(draft_id: str, narrative: dict) -> dict:
+    """Stage 1 save — FREE. Persist the Agent 1 output. Unlocks Stage 2 (frame_h0)."""
+    try:
+        return api_client.draft_call("/save_narrative", {"draft_id": draft_id, "narrative": narrative})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def frame_h0(draft_id: str) -> dict:
+    """Stage 2 / 6 — FREE. Returns the Level 0 sentence rules (30-60 chars,
+    name framework_from -> framework_to, single question mark) plus the
+    saved narrative. Your LLM produces the H-0 sentence. Then call save_h0."""
+    try:
+        return api_client.draft_call("/frame_h0", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def save_h0(draft_id: str, h0_text: str, framework_from: str,
+            framework_to: str, time_window: str) -> dict:
+    """Stage 2 save — FREE. Persist the H-0 sentence + framework shift metadata."""
+    try:
+        return api_client.draft_call("/save_h0", {
+            "draft_id": draft_id, "h0_text": h0_text,
+            "framework_from": framework_from, "framework_to": framework_to,
+            "time_window": time_window,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def design_branches(draft_id: str, target_branch_count: int = 4) -> dict:
+    """Stage 3 / 6 — FREE. Returns 8 candidate frameworks (with kb_source +
+    fits_layer) plus MECE rules. Your LLM picks 3-4 branches A->D ordered by
+    importance. Then call save_branches."""
+    try:
+        return api_client.draft_call("/design_branches", {
+            "draft_id": draft_id, "target_branch_count": target_branch_count,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def save_branches(draft_id: str, branches: list, me_rationale: str, ce_rationale: str) -> dict:
+    """Stage 3 save — FREE. Persist 3-4 branches + ME / CE rationale."""
+    try:
+        return api_client.draft_call("/save_branches", {
+            "draft_id": draft_id, "branches": branches,
+            "me_rationale": me_rationale, "ce_rationale": ce_rationale,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def design_leaves(draft_id: str) -> dict:
+    """Stage 4 / 6 — FREE. Returns per-branch diagnostic question packs + leaf schema +
+    falsification rules (metric/operator/threshold/window must all be quantified).
+    Your LLM produces 2-4 leaves per branch. Then call save_leaves."""
+    try:
+        return api_client.draft_call("/design_leaves", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def save_leaves(draft_id: str, leaves_by_branch: dict) -> dict:
+    """Stage 4 save — FREE. Persist leaves keyed by branch id."""
+    try:
+        return api_client.draft_call("/save_leaves", {
+            "draft_id": draft_id, "leaves_by_branch": leaves_by_branch,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def design_scenarios(draft_id: str) -> dict:
+    """Stage 5 / 6 — FREE. Returns the 3-Tier peer-group structure + valuation method
+    choices (DCF / Reverse DCF / DDM are forbidden) + Bull/Base/Bear consistency
+    rule. Your LLM proposes peer candidates per tier and scenario narratives.
+    No real prices fetched yet — that's the paid compute_scenarios step.
+    Then call save_scenarios."""
+    try:
+        return api_client.draft_call("/design_scenarios", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def save_scenarios(draft_id: str, skeleton: dict) -> dict:
+    """Stage 5 save — FREE. Persist the scenario skeleton (peer tiers + narrative)."""
+    try:
+        return api_client.draft_call("/save_scenarios", {
+            "draft_id": draft_id, "skeleton": skeleton,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def preview_tree(draft_id: str) -> dict:
+    """FREE. Show the full saved framework so you and the user can review
+    before paying. Also surfaces the credit cost of each next paid stage."""
+    try:
+        return api_client.draft_get(f"/{draft_id}/preview")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def confirm_framework(draft_id: str) -> dict:
+    """Stage 6 / 6 — FREE boundary. Lock in framework, unlock paid data stages.
+    After this call, enrich_narrative_data / enrich_leaf_data / compute_scenarios /
+    commit_tree / setup_monitoring become callable."""
+    try:
+        return api_client.draft_call("/confirm_framework", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ----- PAID data stages (unlocked after confirm_framework)
+
+@mcp.tool()
+def enrich_narrative_data(draft_id: str) -> dict:
+    """PAID — 8 credits. Fetch 12-month OHLC, abnormal days, earnings call
+    excerpts, sell-side notes, ETF membership and media-label frequencies;
+    inject into the saved narrative block."""
+    try:
+        return api_client.draft_call("/enrich_narrative_data", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def enrich_leaf_data(draft_id: str, branch_ids: list) -> dict:
+    """PAID — 5 credits per branch. Fetch metric time series + threshold validation
+    for each leaf's falsification metric."""
+    try:
+        return api_client.draft_call("/enrich_leaf_data", {
+            "draft_id": draft_id, "branch_ids": branch_ids,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def compute_scenarios(draft_id: str) -> dict:
+    """PAID — 15 credits. Fetch live peer prices, compute Bull / Base / Bear
+    implied per-share values and distance from current price."""
+    try:
+        return api_client.draft_call("/compute_scenarios", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def commit_draft_tree(draft_id: str, visibility: str = "private") -> dict:
+    """PAID — 10 credits. Assemble draft into a v0.2 tree, validate, and
+    publish to the ticker store. Returns the new tree_id."""
+    if visibility not in ("private", "unlisted", "public"):
+        return {"error": "visibility must be private | unlisted | public"}
+    try:
+        return api_client.draft_call("/commit_tree", {
+            "draft_id": draft_id, "visibility": visibility,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def setup_monitoring(draft_id: str, weeks: int = 4,
+                    channels: list | None = None,
+                    alert_on: list | None = None) -> dict:
+    """PAID — 5 credits per week (held upfront). Register weekly Saturday HKT cron
+    monitoring for the committed tree."""
+    try:
+        return api_client.draft_call("/setup_monitoring", {
+            "draft_id": draft_id, "weeks": weeks,
+            "channels": channels or ["slack"],
+            "alert_on": alert_on or ["verdict_changes", "kill_fires", "narrative_shifts"],
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ----- VIEW MODE
+
+@mcp.tool()
+def list_my_drafts() -> dict:
+    """FREE. List your drafts and committed trees with their current stage."""
+    try:
+        return api_client.draft_get("")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def credit_balance() -> dict:
+    """FREE. Show credit balance / held / available (credit-only, no HKD)."""
+    try:
+        return api_client.credit_balance()
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def abandon_draft(draft_id: str) -> dict:
+    """FREE. Mark a draft as abandoned. Paid stages already shipped are not refunded."""
+    try:
+        return api_client.draft_call(f"/{draft_id}/abandon")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ============================================================
 # Auth middleware — extract Bearer token, set contextvar
 # ============================================================
 class APIKeyAuthMiddleware(BaseHTTPMiddleware):
