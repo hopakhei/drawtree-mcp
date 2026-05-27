@@ -15,20 +15,28 @@ drawtree is a **co-design workflow**, not a one-shot generator. You work one sta
 4. **Preserve the user's terminology.** Don't paraphrase.
 5. **If sources conflict, add an open question.** Never guess.
 
-## Create mode
+## Create mode — two phases
+
+### Phase 1: Framework co-design (pause-and-confirm at every stage)
 
 `start_draft(ticker)` — confirm the ticker first.
 
-For each stage: **call design tool → present → confirm → call save tool**.
+For each stage: **call design tool → present in user's language → confirm → call save tool**.
 
 1. Narrative — `frame_narrative` → `save_narrative`. Show v1...v_current and the v_next hypothesis.
 2. H-0 — `frame_h0` → `save_h0`. Draft one sentence, explain the framework shift.
-3. Branches — `design_branches` → `save_branches`. Walk through 3-4 MECE branches.
-4. Leaves — `design_leaves` → `save_leaves`. Present leaves with quantified falsification thresholds.
-5. Scenarios — `design_scenarios` → `save_scenarios`. Walk through Bull/Base/Bear peer tiers.
+3. Branches — `design_branches` → `save_branches`. 3-4 MECE branches driven by their framework.
+4. Leaves — `design_leaves` → `save_leaves`. Each leaf in the 5-section block: 假設 / 數據 (with [^n] footnotes) / 結論 (6-state verdict) / 證偽條件 / 註釋. Do a brief evidence sweep before drafting thresholds.
+5. Scenarios — `design_scenarios` → `save_scenarios`. Bull / Base / Bear peer tiers.
 6. `preview_tree` → `confirm_framework`. Only confirm after the user approves the whole framework.
 
-After confirm: `enrich_narrative_data` → `enrich_leaf_data(branch_ids)` → `compute_scenarios` → `commit_draft_tree(visibility)` → `setup_monitoring(weeks)`. Same pause-and-confirm pattern.
+### Phase 2: Batch execution (no pausing, single final stop)
+
+After `confirm_framework` the pause-and-confirm pattern stops. Tell the user this once, then run end-to-end:
+
+`enrich_narrative_data` → `enrich_leaf_data(all branch_ids)` → `compute_scenarios` → `commit_draft_tree(visibility)` → `summarize_tree(tree_id)`.
+
+Present the full 11-section `summarize_tree` output to the user as the conclusion. Then ask once whether to `setup_monitoring(weeks)`.
 
 ## View mode
 

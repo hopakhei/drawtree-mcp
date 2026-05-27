@@ -586,6 +586,19 @@ def read_branch(tree_id: str, branch_id: str) -> dict:
 
 
 @mcp.tool()
+def summarize_tree(tree_id: str) -> dict:
+    """Generate the final structured 11-section report for a committed tree
+    (company intro, revenue engines, catalysts, narrative versions, H-0,
+    hypothesis map, per-leaf deep analysis, tree summary, catalyst events,
+    three-scenario valuation, conclusion). Use this as the closing step of
+    the Create flow to present the full report back to the user."""
+    try:
+        return api_client.view_get(f"/trees/{tree_id}/summarize")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def read_history(tree_id: str, limit: int = 50) -> dict:
     """Return verdict-change history for a tree (most recent first, max 200)."""
     try:
