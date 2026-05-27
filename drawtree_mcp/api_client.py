@@ -115,3 +115,16 @@ def draft_get(path: str) -> dict:
 
 def credit_balance() -> dict:
     return _http("GET", "/v1/drafts/_credits/balance", auth=True)
+
+
+def view_call(path: str, body: dict | None = None, method: str = "POST") -> dict:
+    return _http(method, f"/v1/view{path}", body=body, auth=True)
+
+
+def view_get(path: str, params: dict | None = None) -> dict:
+    if params:
+        from urllib.parse import urlencode
+        clean = {k: v for k, v in params.items() if v is not None}
+        if clean:
+            path = f"{path}?{urlencode(clean)}"
+    return _http("GET", f"/v1/view{path}", body=None, auth=True)

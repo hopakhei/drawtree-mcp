@@ -154,8 +154,9 @@ def commit_tree(tree: dict, visibility: str = "private") -> dict:
 
 
 @mcp.tool()
-def read_tree(ticker: str, agent_handle: str | None = None) -> dict:
-    """Fetch the latest version of a tree by ticker. Free."""
+def read_tree_by_ticker(ticker: str, agent_handle: str | None = None) -> dict:
+    """Fetch the latest version of a tree by ticker (legacy). Free.
+    For View-mode access by tree_id, use read_tree."""
     if not ticker:
         return {"error": "ticker required"}
     try:
@@ -552,9 +553,93 @@ def setup_monitoring(draft_id: str, weeks: int = 4,
 
 @mcp.tool()
 def list_my_drafts() -> dict:
-    """FREE. List your drafts and committed trees with their current stage."""
+    """FREE. List your in-progress drafts (Create-mode work-in-progress)."""
     try:
         return api_client.draft_get("")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def list_my_trees(ticker: str | None = None, visibility: str | None = None) -> dict:
+    """FREE. List your COMMITTED trees with their latest H-0 verdict + conviction.
+    Optional filters: ticker, visibility ('private' | 'unlisted' | 'public')."""
+    try:
+        return api_client.view_get("/trees", params={"ticker": ticker, "visibility": visibility})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_tree(tree_id: str) -> dict:
+    """FREE. Read the full latest payload + verdict for a committed tree."""
+    try:
+        return api_client.view_get(f"/trees/{tree_id}")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_branch(tree_id: str, branch_id: str) -> dict:
+    """FREE. Read one branch + its leaves (branch_id is 'A' | 'B' | 'C' | 'D')."""
+    try:
+        return api_client.view_get(f"/trees/{tree_id}/branches/{branch_id}")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_history(tree_id: str, limit: int = 50) -> dict:
+    """FREE. Return verdict-change history for a tree (most recent first, max 200)."""
+    try:
+        return api_client.view_get(f"/trees/{tree_id}/history", params={"limit": limit})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def propose_edit(tree_id: str, diff: dict) -> dict:
+    """FREE sandbox. Validate a JSON-Patch-style diff against the tree and return
+    the per-leaf cost estimate. Diff format: {add:[...], remove:[...], replace:[...]}
+    where each op is {path: '/branches/A/leaves/0/falsification/threshold', value: ...}."""
+    try:
+        return api_client.view_call(f"/trees/{tree_id}/propose_edit", {"diff": diff})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def apply_edit(tree_id: str, diff: dict) -> dict:
+    """PAID — 2 credits per leaf changed. Apply a diff to the committed tree."""
+    try:
+        return api_client.view_call(f"/trees/{tree_id}/apply_edit", {"diff": diff})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def pause_monitoring(tree_id: str) -> dict:
+    """FREE. Pause weekly cron monitoring (weeks_prepaid preserved)."""
+    try:
+        return api_client.view_call(f"/trees/{tree_id}/pause_monitoring")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def resume_monitoring(tree_id: str) -> dict:
+    """FREE. Resume weekly cron monitoring if prepaid weeks remain."""
+    try:
+        return api_client.view_call(f"/trees/{tree_id}/resume_monitoring")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def cancel_monitoring(tree_id: str) -> dict:
+    """FREE. Cancel monitoring; server refunds unused-week credits."""
+    try:
+        return api_client.view_call(f"/trees/{tree_id}/cancel_monitoring")
     except Exception as e:
         return {"error": str(e)}
 
