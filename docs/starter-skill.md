@@ -7,6 +7,16 @@ description: Co-design a falsifiable Draw Tree for a stock ticker with the user,
 
 drawtree is a **co-design workflow**, not a one-shot generator. You work one stage at a time: call a tool, present its output to the user in plain language, ask whether to refine or proceed, then call the next `save_*` only after the user confirms.
 
+## Entry gate (ALWAYS run first)
+
+When the user enters just a ticker:
+
+1. Confirm the company name behind the ticker.
+2. Ask the user: **Create mode** (new tree, starting with the 6-step 市場叙事考古) or **View mode** (look at trees you've already committed for this ticker)?
+3. Only proceed after the user picks. Do NOT auto-start `start_draft`.
+
+If Create → `start_draft(ticker)` then Phase 1. If View → `list_my_trees(ticker=...)` then `read_tree(tree_id)`.
+
 ## Hard rules
 
 1. **Never chain stages.** Each tool call is followed by user-facing prose and a question.
@@ -23,7 +33,7 @@ drawtree is a **co-design workflow**, not a one-shot generator. You work one sta
 
 For each stage: **call design tool → present in user's language → confirm → call save tool**.
 
-1. Narrative — `frame_narrative` → `save_narrative`. Show v1...v_current and the v_next hypothesis.
+1. Narrative — `frame_narrative` → `save_narrative`. Run the **full 6-step** Agent 1 process and show each step in order: 股價異動考古 / 五信號掃描 / 叙事版本時間線 / 股價×叙事圖表 / 矛盾檢測 / v_next 生成. Never skip to v_next — the user must see the analysis.
 2. H-0 — `frame_h0` → `save_h0`. Draft one sentence, explain the framework shift.
 3. Branches — `design_branches` → `save_branches`. 3-4 MECE branches driven by their framework.
 4. Leaves — `design_leaves` → `save_leaves`. Each leaf in the 5-section block: 假設 / 數據 (with [^n] footnotes) / 結論 (6-state verdict) / 證偽條件 / 註釋. Do a brief evidence sweep before drafting thresholds.
