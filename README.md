@@ -4,7 +4,7 @@
 
 `drawtree-mcp` is a [Model Context Protocol](https://modelcontextprotocol.io) server that gives any MCP-aware AI client (Claude Desktop, Cursor, Continue, Goose, …) the tools to:
 
-1. **Parse a market-narrative scan** into a structured H-0 root question (the [narrative-detection](https://github.com/hopakhei/90s-pm-investing) skill output)
+1. **Parse a market-narrative scan** into a structured H-0 root question (the [narrative-detection](https://drawtree.capital/methodology) skill output)
 2. **Cross-reference your narrative against a public fleet** of seeded thesis trees — see how peers with the same narrative archetype have played out
 3. **Suggest from a 164-framework KB** which strategy framework best fits each branch (Porter's Five Forces, VRIO, Network Effects Map, Real Options Valuation, …)
 4. **Seed leaves** with curated framework-specific diagnostic questions
@@ -21,7 +21,7 @@ The server itself is **deterministic and contains zero LLM calls**. All thinking
 
 ## The Wow Moment
 
-Open Claude Desktop with `drawtree-mcp` connected and the [`90s-pm-investing` skills](https://github.com/hopakhei/90s-pm-investing) loaded:
+Open Claude Desktop with `drawtree-mcp` connected and the [`90s-pm-investing` skills](https://drawtree.capital/methodology) loaded:
 
 ```
 You: "I've been watching PLTR. The market is treating it like AI infrastructure
@@ -61,7 +61,7 @@ You: "Walk me through writing the leaves."
 Claude → suggest_falsification on each leaf → validate_tree → commit_tree
 
 Final output:
-  ✓ Tree committed at https://drawtree-dashboard.vercel.app/t/PLTR
+  ✓ Tree committed at https://drawtree.capital/t/PLTR
   H-0 verdict: Inconclusive (conviction 0.42)
   Expected return: +18% (probability-weighted vs current $22.5)
   Tension point: leaf A1 — its falsification trigger (Q3 FY27 win-rate
@@ -85,7 +85,7 @@ This conversation takes 8 minutes. The output is the same deliverable you'd writ
 ```bash
 pip install drawtree-mcp
 # or, from source:
-git clone https://github.com/hopakhei/drawtree-mcp
+git clone https://drawtree.capital
 cd drawtree-mcp && pip install -e .
 ```
 
@@ -123,10 +123,10 @@ Restart Claude Desktop. You'll see the `drawtree` tool group appear in the botto
 
 The MCP server is most powerful when paired with:
 
-- [`narrative-detection`](https://github.com/hopakhei/90s-pm-investing) — Step 1: scan the market story
-- [`90s-pm-tree`](https://github.com/hopakhei/90s-pm-investing) — Step 2: build the tree
-- [`scenario-valuation`](https://github.com/hopakhei/90s-pm-investing) — Step 3: implied probabilities
-- [`business-frameworks-kb`](https://github.com/hopakhei/90s-pm-investing) — 164 strategy frameworks
+- [`narrative-detection`](https://drawtree.capital/methodology) — Step 1: scan the market story
+- [`90s-pm-tree`](https://drawtree.capital/methodology) — Step 2: build the tree
+- [`scenario-valuation`](https://drawtree.capital/methodology) — Step 3: implied probabilities
+- [`business-frameworks-kb`](https://drawtree.capital/methodology) — 164 strategy frameworks
 
 Load them in your Claude Project / system prompt. The MCP tools are designed to dovetail with these skills' outputs.
 

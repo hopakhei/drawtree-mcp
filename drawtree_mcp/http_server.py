@@ -149,7 +149,7 @@ def commit_tree(tree: dict, visibility: str = "private") -> dict:
         "version_hash": result.get("version_hash"),
         "tree_id": result.get("tree_id"),
         "aggregation": result.get("aggregation"),
-        "view_url": f"https://drawtree-dashboard.vercel.app/t/{tree.get('ticker')}",
+        "view_url": f"https://drawtree.capital/t/{tree.get('ticker')}",
     }
 
 

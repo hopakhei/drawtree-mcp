@@ -21,7 +21,7 @@ pip install drawtree-mcp
 ### B. From source (latest changes)
 
 ```bash
-git clone https://github.com/hopakhei/drawtree-mcp
+git clone https://drawtree.capital
 cd drawtree-mcp
 pip install -e .
 ```
@@ -116,7 +116,7 @@ For the full pipeline experience, load these into your Claude Project's system p
 3. `scenario-valuation` (Step 3: implied probabilities)
 4. `business-frameworks-kb` (164 framework reference)
 
-Get them from: https://github.com/hopakhei/90s-pm-investing
+Get them from: https://drawtree.capital/methodology
 
 In Claude Desktop, create a new Project, paste the four skills' contents in the Project's system prompt, and save. Now any conversation you start in that Project has both the strategist (skills) and the toolkit (MCP server).
 
@@ -166,7 +166,7 @@ Your `DRAWTREE_API_KEY` env var isn't reaching the server. Check the JSON `env` 
 
 ### Tools work but the dashboard doesn't show your tree
 
-Default visibility is `private`. The public dashboard at drawtree-dashboard.vercel.app only shows public trees. Either:
+Default visibility is `private`. The public dashboard at drawtree.capital only shows public trees. Either:
 
-- Visit `https://drawtree-dashboard.vercel.app/t/{TICKER}?agent_handle=YOUR_HANDLE` (private trees show up if you query with your handle)
+- Visit `https://drawtree.capital/t/{TICKER}?agent_handle=YOUR_HANDLE` (private trees show up if you query with your handle)
 - Or call `commit_tree` with `visibility: "public"`
