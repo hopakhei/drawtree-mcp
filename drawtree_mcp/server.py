@@ -140,7 +140,7 @@ async def tool_balance(args: dict) -> dict:
 # ============================================================
 
 async def tool_register_narrative(args: dict) -> dict:
-    """PAID: parse handoff + fleet pattern match. ~HKD $2 hold."""
+    """PAID: parse handoff + fleet pattern match. credits."""
     text = args.get("narrative_handoff_block", "")
     if not text:
         return {"error": "narrative_handoff_block required"}
@@ -151,7 +151,7 @@ async def tool_register_narrative(args: dict) -> dict:
 
 
 async def tool_enrich_branches(args: dict) -> dict:
-    """PAID: framework deep retrieval per branch. ~HKD $3 per branch hold."""
+    """PAID: framework deep retrieval per branch. credits hold."""
     branches = args.get("branches") or []
     if not isinstance(branches, list) or not branches:
         return {"error": "branches must be a non-empty list of {id, label, core_question}"}
@@ -162,7 +162,7 @@ async def tool_enrich_branches(args: dict) -> dict:
 
 
 async def tool_suggest_falsification(args: dict) -> dict:
-    """PAID: observable kill condition with linked metric. ~HKD $2 per leaf."""
+    """PAID: observable kill condition with linked metric. credits."""
     hyp = args.get("hypothesis_full", "")
     leaf_id = args.get("leaf_id", "")
     if not hyp:
@@ -177,7 +177,7 @@ async def tool_suggest_falsification(args: dict) -> dict:
 
 
 async def tool_derive_scenario_values(args: dict) -> dict:
-    """PAID: Bull/Base/Bear values vs current price + peer hints. ~HKD $10."""
+    """PAID: Bull/Base/Bear values vs current price + peer hints. credits."""
     payload = {
         "tree": args.get("tree"),
         "current_price": args.get("current_price"),
@@ -342,7 +342,7 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="register_narrative",
             description=(
-                "PAID (~HKD $2 hold). Parse a narrative-detection 'Structured Handoff "
+                "PAID (credits). Parse a narrative-detection 'Structured Handoff "
                 "Block' and cross-reference the detected error type against the public "
                 "fleet's narrative archetypes. Returns parsed handoff + suggested H-0 + "
                 "matching fleet trees + their H-0 outcomes. Hold auto-confirms in 24h."
@@ -355,7 +355,7 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="enrich_branches",
             description=(
-                "PAID (~HKD $3 per branch). Deep framework retrieval for each branch: "
+                "PAID (credits). Deep framework retrieval for each branch: "
                 "top-3 frameworks from the 164-framework KB, plus diagnostic question "
                 "seeds, leaf affinity, and metric heuristics. Hold auto-confirms in 24h."
             ),
@@ -380,7 +380,7 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="suggest_falsification",
             description=(
-                "PAID (~HKD $2 per call). Returns observable kill conditions for a "
+                "PAID (credits). Returns observable kill conditions for a "
                 "hypothesis, linked to standard metrics (NRR, gross margin, share, etc.) "
                 "and disclosure triggers. Output is typed Falsification objects "
                 "compatible with v0.2 schema."
@@ -396,7 +396,7 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="derive_scenario_values",
             description=(
-                "PAID (~HKD $10). For each Bull/Base/Bear scenario the user defines, "
+                "PAID (credits). For each Bull/Base/Bear scenario the user defines, "
                 "compute the implied scenario value using Peer Group Valuation + "
                 "scenario-specific multiples, and report distance from current price as "
                 "a percentage. Server provides peer hints from the fleet and method "
@@ -436,8 +436,8 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="subscribe_alerts",
             description=(
-                "PAID. Persistent subscription. Charge per delivered alert: HKD $0.50 "
-                "for verdict change, $2 for kill switch fire, $1 for narrative shift."
+                "PAID. Persistent subscription. Charge per delivered alert: credits"
+                "for verdict change, credits credits."
             ),
             inputSchema={
                 "type": "object", "required": ["ticker"],
