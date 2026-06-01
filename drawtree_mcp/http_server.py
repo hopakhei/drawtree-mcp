@@ -536,6 +536,40 @@ def commit_draft_tree(draft_id: str, visibility: str = "private") -> dict:
 
 
 @mcp.tool()
+def phase2_run_all(
+    draft_id: str,
+    branch_ids: list,
+    visibility: str = "private",
+) -> dict:
+    """Run the full Phase 2 data pipeline in a single call so the
+    conversation only spends ONE tool slot for the entire batch.
+
+    Server runs, in order:
+        1. enrich_narrative_data(draft_id)
+        2. enrich_leaf_data(draft_id, branch_ids = ALL branches)
+        3. compute_scenarios(draft_id)
+        4. commit_tree(draft_id, visibility)
+
+    Pass every saved branch id (typically ['A','B','C','D']).
+    After this returns, call summarize_tree(tree_id) to render the
+    final report. If a step fails, partial progress is preserved and
+    the response says exactly where to resume.
+    """
+    if not isinstance(branch_ids, list) or not branch_ids:
+        return {"error": "branch_ids must be a non-empty list"}
+    if visibility not in ("private", "unlisted", "public"):
+        return {"error": "visibility must be private | unlisted | public"}
+    try:
+        return api_client.draft_call("/phase2_run_all", {
+            "draft_id": draft_id,
+            "branch_ids": branch_ids,
+            "visibility": visibility,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def setup_monitoring(draft_id: str, weeks: int = 4,
                     channels: list | None = None,
                     alert_on: list | None = None) -> dict:

@@ -40,13 +40,16 @@ For each stage: **call design tool → present in user's language → confirm �
 5. Scenarios — `design_scenarios` → `save_scenarios`. Bull / Base / Bear peer tiers.
 6. `preview_tree` → `confirm_framework`. Only confirm after the user approves the whole framework.
 
-### Phase 2: Batch execution (no pausing, single final stop)
+### Phase 2: Batch execution (one tool call + the summary)
 
-After `confirm_framework` the pause-and-confirm pattern stops. Tell the user this once, then run end-to-end:
+After `confirm_framework` the pause-and-confirm pattern stops. Tell the user this once, then:
 
-`enrich_narrative_data` → `enrich_leaf_data(all branch_ids)` → `compute_scenarios` → `commit_draft_tree(visibility)` → `summarize_tree(tree_id)`.
+1. **`phase2_run_all(draft_id, branch_ids=[all saved branches], visibility='private')`** — server runs `enrich_narrative_data` + `enrich_leaf_data` + `compute_scenarios` + `commit_tree` internally. Uses ONE tool slot, so a single conversation turn can complete the whole pipeline.
+2. **`summarize_tree(tree_id)`** — use the `tree_id` returned by `phase2_run_all`. Renders the final 10-section report.
 
-Present the full 11-section `summarize_tree` output to the user as the conclusion. Then ask once whether to `setup_monitoring(weeks)`.
+Present `summarize_tree` output to the user as the conclusion. Then ask once whether to `setup_monitoring(weeks)`.
+
+If `phase2_run_all` returns `ok=false`, surface `failed_step` + `error_detail` to the user and ask whether to retry that step alone (the individual tools are still available) or abandon. Earlier steps are saved — calling `phase2_run_all` again will skip them via the state machine.
 
 ## View mode
 
