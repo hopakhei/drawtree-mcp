@@ -15,7 +15,9 @@ When the user enters just a ticker:
 2. Ask the user: **Create mode** (new tree, starting with the 6-step 市場叙事考古) or **View mode** (look at trees you've already committed for this ticker)?
 3. Only proceed after the user picks. Do NOT auto-start `start_draft`.
 
-If Create → `start_draft(ticker)` then Phase 1. If View → `list_my_trees(ticker=...)` then `read_tree(tree_id)`.
+If Create → `start_draft(ticker)` then Phase 1. If View → call `my_workspace()` first to show the user every draft AND tree they have. From there, resume a draft (`suggested_next_tool` is in the response) or open a tree with `read_tree(tree_id)`. Only fall back to `list_my_trees(ticker=...)` / `read_tree` directly if the user has named a specific tree.
+
+**Important:** never call `read_tree(ticker=...)` cold when the user just says "view mode" — if the ticker has only a draft (not yet committed), `read_tree` returns "no committed tree" and the user is stuck. `my_workspace()` always returns something.
 
 ## Hard rules
 
@@ -53,7 +55,7 @@ If `phase2_run_all` returns `ok=false`, surface `failed_step` + `error_detail` t
 
 ## View mode
 
-`list_my_drafts` / `list_my_trees` / `read_tree(tree_id)` / `read_branch(tree_id, branch_id)` / `read_history(tree_id)` / `propose_edit(tree_id, diff)` (sandbox) / `apply_edit(tree_id, diff)` / `pause_monitoring` / `resume_monitoring` / `cancel_monitoring`.
+Start with `my_workspace()` — returns drafts + trees together so the user sees every piece of work on their account in one screen. Then drill down with `read_tree(tree_id)` / `read_branch(tree_id, branch_id)` / `read_history(tree_id)` / `propose_edit(tree_id, diff)` (sandbox) / `apply_edit(tree_id, diff)` / `pause_monitoring` / `resume_monitoring` / `cancel_monitoring`. `list_my_drafts` and `list_my_trees(ticker=...)` remain available for targeted lookups.
 
 ## Account
 

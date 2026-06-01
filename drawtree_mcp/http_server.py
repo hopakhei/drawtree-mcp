@@ -587,8 +587,30 @@ def setup_monitoring(draft_id: str, weeks: int = 4,
 # ----- VIEW MODE
 
 @mcp.tool()
+def my_workspace() -> dict:
+    """Show the user's full workspace: every draft (in-progress) AND every
+    committed tree on this account, in one call. Free.
+
+    This is the right starting point when the user asks 'what do I have',
+    'show me my trees', 'list my work', or enters View mode without naming
+    a specific ticker. Each draft includes its current pipeline stage plus
+    `suggested_next_tool` so you can offer to resume immediately. Each tree
+    includes its latest verdict.
+
+    Prefer this over read_tree(ticker) when the user has not specified a
+    ticker — read_tree fails with 'no committed tree' if there's only a
+    draft, leaving the user in a dead end.
+    """
+    try:
+        return api_client.account_get("/workspace")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def list_my_drafts() -> dict:
-    """List your in-progress drafts (Create-mode work-in-progress)."""
+    """List your in-progress drafts (Create-mode work-in-progress).
+    Consider `my_workspace` instead — it returns drafts AND trees in one call."""
     try:
         return api_client.draft_get("")
     except Exception as e:
