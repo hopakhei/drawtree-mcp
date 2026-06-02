@@ -421,19 +421,48 @@ def save_branches(draft_id: str, branches: list, me_rationale: str, ce_rationale
 
 
 @mcp.tool()
-def design_leaves(draft_id: str) -> dict:
-    """Stage 4 of 6. Returns per-branch diagnostic question packs + leaf schema +
-    falsification rules (metric/operator/threshold/window must all be quantified).
-    Your LLM produces 2-4 leaves per branch. Then call save_leaves."""
+def design_leaves(draft_id: str, branch_id: str | None = None) -> dict:
+    """Stage 4 of 6 — branch-by-branch leaf design (ONE branch per call).
+
+    First call (omit branch_id): returns Branch A's framework + diagnostic axes.
+    Subsequent calls: pass branch_id='B'/'C'/'D' to get the next branch's pack.
+
+    Each call returns:
+      - branch_pack: framework name, core_question, diagnostic_axes, KB excerpts
+      - next_branch_id, is_last_branch, pending_branches
+      - presentation_format.step_1_render_framework_first — the user must
+        first see and confirm the diagnostic axes BEFORE leaves are proposed.
+
+    Workflow per branch:
+      1) Render framework name + numbered diagnostic_axes. Ask the user
+         '這個框架的診斷軸 OK 嗎？' and STOP.
+      2) After confirmation, propose 2–4 leaves — 假設 + 證偽條件 only. STOP.
+      3) After threshold confirmation, call save_leaves with leaves_by_branch
+         containing ONLY this branch_id.
+      4) If is_last_branch is false, call design_leaves(draft_id, branch_id=<next_branch_id>).
+
+    NEVER dump multiple branches' leaves in one message.
+    """
     try:
-        return api_client.draft_call("/design_leaves", {"draft_id": draft_id})
+        payload: dict = {"draft_id": draft_id}
+        if branch_id:
+            payload["branch_id"] = branch_id
+        return api_client.draft_call("/design_leaves", payload)
     except Exception as e:
         return {"error": str(e)}
 
 
 @mcp.tool()
 def save_leaves(draft_id: str, leaves_by_branch: dict) -> dict:
-    """Stage 4 save. Persist leaves keyed by branch id."""
+    """Stage 4 save — persist leaves for ONE branch at a time (UPSERT).
+
+    leaves_by_branch should contain a SINGLE branch_id key per call, e.g.
+    {"A": [...]}. The endpoint accumulates branches across calls and only
+    advances the draft to LEAVES_SAVED once every branch has its leaves.
+
+    The response includes pending_branches and next_branch_id — keep calling
+    design_leaves(..., branch_id=next_branch_id) until pending_branches is empty.
+    """
     try:
         return api_client.draft_call("/save_leaves", {
             "draft_id": draft_id, "leaves_by_branch": leaves_by_branch,
