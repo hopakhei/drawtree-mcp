@@ -126,6 +126,11 @@ def account_get(path: str) -> dict:
     return _http("GET", f"/v1/account{path}", auth=True)
 
 
+def account_call(path: str, body: dict | None = None) -> dict:
+    """POST against /v1/account/* (append_evidence, etc)."""
+    return _http("POST", f"/v1/account{path}", body=body, auth=True)
+
+
 def view_get(path: str, params: dict | None = None) -> dict:
     if params:
         from urllib.parse import urlencode

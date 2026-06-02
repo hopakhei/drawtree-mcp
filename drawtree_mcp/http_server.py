@@ -608,6 +608,77 @@ def my_workspace() -> dict:
 
 
 @mcp.tool()
+def external_search(
+    query: str,
+    days: int = 400,
+    max_results: int = 6,
+    draft_id: str = "",
+    branch_id: str = "",
+    leaf_id: str = "",
+) -> dict:
+    """Run a focused web search to back-fill thin evidence on a leaf,
+    or to look up a one-off fact. Returns up to 6 sanitized hits with
+    title, snippet, url, source_domain, and published_date.
+
+    Paid (1 credit). If draft_id + branch_id + leaf_id are all provided,
+    the top hits are auto-appended to that leaf's evidence list in the
+    draft — no separate append call needed.
+
+    Use this when:
+      * a leaf's '數據' / data points look thin, vague, or LLM-generated
+      * the user wants a specific quote / disclosure backfilled
+      * Tavily's initial enrich pass returned 0–1 hits (visible in the
+        enrich response's `tavily_diagnostics.total_hits`).
+    """
+    if not query or len(query) < 3:
+        return {"error": "query must be at least 3 characters"}
+    payload = {
+        "query": query,
+        "days": days,
+        "max_results": max_results,
+    }
+    if draft_id and branch_id and leaf_id:
+        payload.update({
+            "draft_id": draft_id,
+            "branch_id": branch_id,
+            "leaf_id": leaf_id,
+        })
+    try:
+        return api_client.paid_call("external_search", payload)
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def append_evidence(
+    draft_id: str,
+    branch_id: str,
+    leaf_id: str,
+    evidence: list,
+) -> dict:
+    """Manually attach evidence rows to a draft leaf. Free.
+
+    Each evidence item is a dict with keys: url (required), title,
+    snippet, source_domain, published_date. URLs are deduplicated —
+    re-appending the same URL replaces the existing row in place.
+
+    Pair with external_search for the auto-append flow; use this when
+    the user is dictating a citation by hand.
+    """
+    if not isinstance(evidence, list) or not evidence:
+        return {"error": "evidence must be a non-empty list"}
+    try:
+        return api_client.account_call("/leaf/append_evidence", {
+            "draft_id": draft_id,
+            "branch_id": branch_id,
+            "leaf_id": leaf_id,
+            "evidence": evidence,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def list_my_drafts() -> dict:
     """List your in-progress drafts (Create-mode work-in-progress).
     Consider `my_workspace` instead — it returns drafts AND trees in one call."""
