@@ -608,6 +608,29 @@ def my_workspace() -> dict:
 
 
 @mcp.tool()
+def auto_evidence(draft_id: str, branch_id: str, leaf_id: str) -> dict:
+    """One-click evidence backfill for a single leaf. The server reads the
+    leaf's hypothesis + falsification metric + framework, constructs a
+    focused query bouquet, runs Tavily across all of them in parallel,
+    sanitizes hits, and appends them to the leaf's evidence.
+
+    Paid (2 credits). Use this when a leaf's '數據' / data points look
+    thin and the user wants automatic coverage — no manual query required.
+    Returns how many evidence rows were added/replaced plus the total.
+    """
+    if not draft_id or not branch_id or not leaf_id:
+        return {"error": "draft_id + branch_id + leaf_id all required"}
+    try:
+        return api_client.paid_call("auto_evidence", {
+            "draft_id": draft_id,
+            "branch_id": branch_id,
+            "leaf_id": leaf_id,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def external_search(
     query: str,
     days: int = 400,
