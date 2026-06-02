@@ -42,16 +42,54 @@ For each stage: **call design tool → present in user's language → confirm �
 5. Scenarios — `design_scenarios` → `save_scenarios`. Bull / Base / Bear peer tiers.
 6. `preview_tree` → `confirm_framework`. Only confirm after the user approves the whole framework.
 
-### Phase 2: Batch execution (one tool call + the summary)
+### Phase 2: Research and publish
 
-After `confirm_framework` the pause-and-confirm pattern stops. Tell the user this once, then:
+After `confirm_framework` the pause-and-confirm pattern stops. There are **two ways** to do Phase 2 — always prefer the Claude-driven path:
 
-1. **`phase2_run_all(draft_id, branch_ids=[all saved branches], visibility='private')`** — server runs `enrich_narrative_data` + `enrich_leaf_data` + `compute_scenarios` + `commit_tree` internally. Uses ONE tool slot, so a single conversation turn can complete the whole pipeline.
-2. **`summarize_tree(tree_id)`** — use the `tree_id` returned by `phase2_run_all`. Renders the final 10-section report.
+**Preferred — Claude-driven research (free, deeper):**
 
-Present `summarize_tree` output to the user as the conclusion. Then ask once whether to `setup_monitoring(weeks)`.
+1. **Research the narrative yourself.** Use your own web search (or call `external_search` for a Tavily-backed query, 1 cr per call) to gather the 5 narrative pillars: price_action / catalysts / media_labels / earnings / sell_side. Read the actual sources, don't just skim snippets. Then call:
+   ```
+   enrich_narrative_data(
+     draft_id,
+     submitted_data = {
+       price_action, catalysts, media_labels, earnings, sell_side,
+       sources: [{url, title, snippet, date}, ...]  // ≥ 1 required
+     }
+   )
+   ```
+   Server validates citations + persists. **No credits charged.**
 
-If `phase2_run_all` returns `ok=false`, surface `failed_step` + `error_detail` to the user and ask whether to retry that step alone (the individual tools are still available) or abandon. Earlier steps are saved — calling `phase2_run_all` again will skip them via the state machine.
+2. **Research each leaf's metric yourself.** For every branch_id, for every leaf, search for the observed value of its falsification metric within its window. Build per-leaf packs:
+   ```
+   enrich_leaf_data(
+     draft_id, branch_ids,
+     submitted_evidence_by_branch = {
+       "A": [{leaf_id, observed_value, observed_window, verdict_hint,
+              commentary, sources:[{url,title,snippet,date}]}, ...],
+       "B": [...], ...
+     }
+   )
+   ```
+   Server validates every leaf has ≥ 1 source URL + persists. **No credits charged.**
+
+3. **`compute_scenarios(draft_id)`** — server fetches live peer prices + computes Bull/Base/Bear (15 cr; this step uses Yahoo OHLC only, no Tavily).
+4. **`commit_draft_tree(draft_id, visibility='private')`** — publish the tree (10 cr).
+5. **`summarize_tree(tree_id)`** — render the final 10-section report.
+
+Research loop tips:
+  * 2–4 refining `external_search` queries per leaf is normal; stop early once you have one strong source.
+  * If a source URL is paywalled, still include it — the audit trail matters.
+  * `verdict_hint` is optional; leave "inconclusive" when sources don't clearly support a stronger state.
+
+**Fallback — server-side Tavily batch (1-button mode):**
+
+Use only if Claude cannot do its own research (rare). One call:
+  * **`phase2_run_all(draft_id, branch_ids=[all saved branches], visibility='private')`** — server runs `enrich_narrative_data` (Tavily, 8 cr) + `enrich_leaf_data` (Tavily, 5 cr/branch) + `compute_scenarios` + `commit_tree`. Then `summarize_tree(tree_id)`.
+
+If `phase2_run_all` returns `ok=false`, surface `failed_step` + `error_detail` and ask whether to retry that step alone (individual tools remain available) or abandon. Earlier steps are saved — retrying skips them.
+
+After `summarize_tree` ask once whether to `setup_monitoring(weeks)`.
 
 ## View mode
 

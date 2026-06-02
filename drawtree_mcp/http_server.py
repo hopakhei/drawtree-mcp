@@ -518,24 +518,93 @@ def confirm_framework(draft_id: str) -> dict:
 # ----- Data + publish stages (unlocked after confirm_framework)
 
 @mcp.tool()
-def enrich_narrative_data(draft_id: str) -> dict:
-    """Fetch 12-month OHLC, abnormal days, earnings call excerpts, sell-side
-    notes, ETF membership and media-label frequencies; inject into the saved
-    narrative block."""
+def enrich_narrative_data(
+    draft_id: str,
+    submitted_data: dict | None = None,
+) -> dict:
+    """Persist the 12-month narrative-context block onto the draft.
+
+    PREFERRED MODE — you (Claude) do the research yourself:
+      1. Use your own web search (or call external_search if you don't have one)
+         to gather the 5 narrative pillars for this ticker:
+           - price_action: 12-month OHLC summary, drawdowns, key swings
+           - catalysts: abnormal trading days w/ event context
+           - media_labels: how analysts/media currently frame the company
+           - earnings: most recent 2 earnings calls' management commentary
+           - sell_side: 2-4 most recent sell-side notes (banks + boutique)
+      2. Submit the consolidated block as `submitted_data` with this shape:
+           {
+             "price_action": "...",
+             "catalysts": [{"date":"YYYY-MM-DD","event":"...","move_pct":-3.2}],
+             "media_labels": ["AI-native", "deep-value", ...],
+             "earnings": [{"date":"...","key_quotes":[...]}],
+             "sell_side": [{"firm":"...","date":"...","summary":"..."}],
+             "sources": [{"url":"https://...","title":"...","snippet":"...",
+                          "date":"YYYY-MM-DD"}, ... ≥ 1 required]
+           }
+      3. Server validates citations + persists. NO credits charged.
+
+    FALLBACK MODE — omit `submitted_data` and the server runs its own Tavily
+    flow (8 credits). Use only if you genuinely cannot search the web.
+
+    Always strongly prefer the submitted-data mode — your reasoning + curation
+    of full source content beats the server's keyword-snippet flow.
+    """
+    payload: dict = {"draft_id": draft_id}
+    if submitted_data is not None:
+        payload["submitted_data"] = submitted_data
     try:
-        return api_client.draft_call("/enrich_narrative_data", {"draft_id": draft_id})
+        return api_client.draft_call("/enrich_narrative_data", payload)
     except Exception as e:
         return {"error": str(e)}
 
 
 @mcp.tool()
-def enrich_leaf_data(draft_id: str, branch_ids: list) -> dict:
-    """Fetch metric time series + threshold validation for each leaf's
-    falsification metric, for the given branch ids."""
+def enrich_leaf_data(
+    draft_id: str,
+    branch_ids: list,
+    submitted_evidence_by_branch: dict | None = None,
+) -> dict:
+    """Persist observed-metric + citation evidence for each leaf's falsification
+    rule. Use this AFTER you've researched every leaf's metric.
+
+    PREFERRED MODE — you (Claude) research each leaf:
+      For every leaf in every branch_id:
+        1. Read the leaf's hypothesis + falsification metric + threshold +
+           window (you can read them with read_draft or have them on hand).
+        2. Search the web for the most recent observation of THAT metric —
+           use your own search, or call external_search (1 cr / call) for a
+           server-backed Tavily search if you don't have web search.
+        3. Build a per-leaf evidence pack:
+             {
+               "leaf_id": "A1",
+               "observed_value": 0.62,        # the metric's current value
+               "observed_window": "FY2025 Q4",  # the period observed
+               "verdict_hint": "trending_positive",  # optional — leave
+                                                     # "inconclusive" if unsure
+               "commentary": "一句話解釋為何推出這個 verdict_hint",
+               "sources": [
+                 {"url":"https://...","title":"...","snippet":"《原文》採到關鍵 sentence",
+                  "date":"YYYY-MM-DD"},
+                 ... ≥ 1 required per leaf
+               ]
+             }
+        4. Submit a map: {"A": [pack1, pack2, pack3], "B": [...], ...}
+           covering EVERY branch_id you asked for.
+        5. Server validates every leaf has ≥1 source URL + persists. NO charge.
+
+    FALLBACK MODE — omit submitted_evidence_by_branch; server runs Tavily per
+    leaf (5 credits per branch).
+
+    The verdict computed at commit_tree time will respect your verdict_hint if
+    your sources support it. If you submit "trending_positive" but the metric
+    is far below threshold, the server will still mark inconclusive.
+    """
+    payload: dict = {"draft_id": draft_id, "branch_ids": branch_ids}
+    if submitted_evidence_by_branch is not None:
+        payload["submitted_evidence_by_branch"] = submitted_evidence_by_branch
     try:
-        return api_client.draft_call("/enrich_leaf_data", {
-            "draft_id": draft_id, "branch_ids": branch_ids,
-        })
+        return api_client.draft_call("/enrich_leaf_data", payload)
     except Exception as e:
         return {"error": str(e)}
 
@@ -668,19 +737,25 @@ def external_search(
     branch_id: str = "",
     leaf_id: str = "",
 ) -> dict:
-    """Run a focused web search to back-fill thin evidence on a leaf,
-    or to look up a one-off fact. Returns up to 6 sanitized hits with
-    title, snippet, url, source_domain, and published_date.
+    """Run a server-backed Tavily query and get up to 6 sanitized hits.
+    Each hit is {title, snippet, url, source_domain, published_date}.
 
-    Paid (1 credit). If draft_id + branch_id + leaf_id are all provided,
-    the top hits are auto-appended to that leaf's evidence list in the
-    draft — no separate append call needed.
+    Paid (1 credit per call). Use this iteratively as part of a research loop:
+      1. Read the leaf's hypothesis + falsification metric.
+      2. Call external_search with a precise query (ticker + metric + period).
+      3. If hits are too generic, refine the query (add date qualifiers,
+         add 'Q3 earnings call', add SEC form, add specific competitor name)
+         and call again. 2-4 refining searches per leaf is normal.
+      4. Pick the strongest 1-3 hits, then either:
+         (a) submit them yourself inside submitted_evidence_by_branch when
+             calling enrich_leaf_data — you keep full curation control, or
+         (b) pass draft_id + branch_id + leaf_id to this tool so the top
+             hits auto-append into the leaf's evidence list (faster, less
+             curated).
 
-    Use this when:
-      * a leaf's '數據' / data points look thin, vague, or LLM-generated
-      * the user wants a specific quote / disclosure backfilled
-      * Tavily's initial enrich pass returned 0–1 hits (visible in the
-        enrich response's `tavily_diagnostics.total_hits`).
+    Prefer (a) when you want to filter out noise and only attach the very
+    strongest source. Prefer (b) when you just want the freshest snippets
+    auto-attached without further reasoning.
     """
     if not query or len(query) < 3:
         return {"error": "query must be at least 3 characters"}
