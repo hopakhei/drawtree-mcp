@@ -754,7 +754,7 @@ def list_my_trees(ticker: str | None = None, visibility: str | None = None) -> d
 def read_tree(tree_id: str) -> dict:
     """Read the full latest payload + verdict for a committed tree."""
     try:
-        return api_client.view_get(f"/trees/{tree_id}")
+        return api_client.view_get(f"/trees/by-id/{tree_id}")
     except Exception as e:
         return {"error": str(e)}
 
@@ -763,7 +763,7 @@ def read_tree(tree_id: str) -> dict:
 def read_branch(tree_id: str, branch_id: str) -> dict:
     """Read one branch + its leaves (branch_id is 'A' | 'B' | 'C' | 'D')."""
     try:
-        return api_client.view_get(f"/trees/{tree_id}/branches/{branch_id}")
+        return api_client.view_get(f"/trees/by-id/{tree_id}/branches/{branch_id}")
     except Exception as e:
         return {"error": str(e)}
 
@@ -776,7 +776,7 @@ def summarize_tree(tree_id: str) -> dict:
     three-scenario valuation, conclusion). Use this as the closing step of
     the Create flow to present the full report back to the user."""
     try:
-        return api_client.view_get(f"/trees/{tree_id}/summarize")
+        return api_client.view_get(f"/trees/by-id/{tree_id}/summarize")
     except Exception as e:
         return {"error": str(e)}
 
@@ -785,7 +785,7 @@ def summarize_tree(tree_id: str) -> dict:
 def read_history(tree_id: str, limit: int = 50) -> dict:
     """Return verdict-change history for a tree (most recent first, max 200)."""
     try:
-        return api_client.view_get(f"/trees/{tree_id}/history", params={"limit": limit})
+        return api_client.view_get(f"/trees/by-id/{tree_id}/history", params={"limit": limit})
     except Exception as e:
         return {"error": str(e)}
 
@@ -797,7 +797,7 @@ def propose_edit(tree_id: str, diff: dict) -> dict:
     {path: '/branches/A/leaves/0/falsification/threshold', value: ...}.
     Does not apply changes; call apply_edit to commit."""
     try:
-        return api_client.view_call(f"/trees/{tree_id}/propose_edit", {"diff": diff})
+        return api_client.view_call(f"/trees/by-id/{tree_id}/propose_edit", {"diff": diff})
     except Exception as e:
         return {"error": str(e)}
 
@@ -806,7 +806,7 @@ def propose_edit(tree_id: str, diff: dict) -> dict:
 def apply_edit(tree_id: str, diff: dict) -> dict:
     """Apply a diff to the committed tree."""
     try:
-        return api_client.view_call(f"/trees/{tree_id}/apply_edit", {"diff": diff})
+        return api_client.view_call(f"/trees/by-id/{tree_id}/apply_edit", {"diff": diff})
     except Exception as e:
         return {"error": str(e)}
 
@@ -815,7 +815,7 @@ def apply_edit(tree_id: str, diff: dict) -> dict:
 def pause_monitoring(tree_id: str) -> dict:
     """Pause weekly cron monitoring (prepaid weeks preserved)."""
     try:
-        return api_client.view_call(f"/trees/{tree_id}/pause_monitoring")
+        return api_client.view_call(f"/trees/by-id/{tree_id}/pause_monitoring")
     except Exception as e:
         return {"error": str(e)}
 
@@ -824,7 +824,7 @@ def pause_monitoring(tree_id: str) -> dict:
 def resume_monitoring(tree_id: str) -> dict:
     """Resume weekly cron monitoring if prepaid weeks remain."""
     try:
-        return api_client.view_call(f"/trees/{tree_id}/resume_monitoring")
+        return api_client.view_call(f"/trees/by-id/{tree_id}/resume_monitoring")
     except Exception as e:
         return {"error": str(e)}
 
@@ -833,7 +833,7 @@ def resume_monitoring(tree_id: str) -> dict:
 def cancel_monitoring(tree_id: str) -> dict:
     """Cancel monitoring; server refunds for unused weeks."""
     try:
-        return api_client.view_call(f"/trees/{tree_id}/cancel_monitoring")
+        return api_client.view_call(f"/trees/by-id/{tree_id}/cancel_monitoring")
     except Exception as e:
         return {"error": str(e)}
 
