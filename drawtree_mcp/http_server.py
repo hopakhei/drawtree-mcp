@@ -694,19 +694,23 @@ def phase2_run_all(
     branch_ids: list,
     visibility: str = "private",
 ) -> dict:
-    """Run the full Phase 2 data pipeline in a single call so the
-    conversation only spends ONE tool slot for the entire batch.
+    """LEGACY — prefer research_phase2 instead.
 
-    Server runs, in order:
-        1. enrich_narrative_data(draft_id)
-        2. enrich_leaf_data(draft_id, branch_ids = ALL branches)
-        3. compute_scenarios(draft_id)
-        4. commit_tree(draft_id, visibility)
+    This tool runs the four sub-steps server-side (enrich_narrative_data,
+    enrich_leaf_data, compute_scenarios, commit_tree) in one HTTP request.
+    It works, but the request can take 60-120 seconds which often hits
+    client/proxy timeouts; the spinner you see in the chat may persist
+    long after the server actually finished.
 
-    Pass every saved branch id (typically ['A','B','C','D']).
-    After this returns, call summarize_tree(tree_id) to render the
-    final report. If a step fails, partial progress is preserved and
-    the response says exactly where to resume.
+    PREFERRED PATH after confirm_framework (Phase 2 bundle paid):
+      1. research_phase2(draft_id, model='pro')   # returns immediately
+      2. research_phase2_status(draft_id) every 30-60s until 'ingested'
+      3. compute_scenarios(draft_id)
+      4. commit_draft_tree(draft_id)
+      5. summarize_tree(tree_id)
+
+    Use phase2_run_all only as a last-resort fallback if research_phase2
+    is unavailable. Both paths are free once the Phase 2 bundle is paid.
     """
     if not isinstance(branch_ids, list) or not branch_ids:
         return {"error": "branch_ids must be a non-empty list"}
