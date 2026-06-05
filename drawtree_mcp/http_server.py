@@ -610,6 +610,61 @@ def enrich_leaf_data(
 
 
 @mcp.tool()
+def research_phase2(draft_id: str, model: str = "pro",
+                    output_length: str = "standard") -> dict:
+    """Trigger one-shot deep research for the entire draft via Tavily's
+    /research endpoint (server-side; user does not need to set up anything).
+
+    Requires confirm_framework to have been called (Phase 2 bundle paid).
+    Returns immediately with status='queued' + a tavily_request_id; the
+    Tavily job takes 30-120 seconds. Poll research_phase2_status every
+    30-60 seconds until status='ingested'.
+
+    Once ingested:
+      - draft_narratives.enriched has the 5 narrative pillars + sources.
+      - draft_leaves.enriched has per-leaf observed values + verdict_hints.
+      - draft stage advances to DATA_LEAVES_DONE — ready for compute_scenarios.
+
+    model: 'pro' (default, deep multi-angle), 'mini' (fast, focused), or 'auto'.
+    output_length: 'short' | 'standard' (default) | 'long'.
+
+    Workflow:
+      research_phase2(draft_id)
+        → wait 30s
+        → research_phase2_status(draft_id) ... repeat until 'ingested'
+        → compute_scenarios(draft_id)
+        → commit_draft_tree(draft_id)
+        → summarize_tree(tree_id)
+    """
+    try:
+        return api_client.draft_call("/research_phase2", {
+            "draft_id": draft_id,
+            "model": model,
+            "output_length": output_length,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def research_phase2_status(draft_id: str) -> dict:
+    """Poll the most recent research_phase2 task for a draft.
+
+    Returns one of:
+      status='still_running'  — keep waiting; poll again in 30-60s.
+      status='ingested'       — narrative + every leaf saved; call compute_scenarios.
+      status='failed'         — surfaces error_detail. Caller can retry research_phase2.
+
+    Polling is free (uses Tavily's GET endpoint which doesn't count against
+    rate limits) but please don't poll faster than once every 30 seconds.
+    """
+    try:
+        return api_client.draft_call("/research_phase2_status", {"draft_id": draft_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def compute_scenarios(draft_id: str) -> dict:
     """Fetch live peer prices, compute Bull / Base / Bear implied per-share
     values and distance from current price."""

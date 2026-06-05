@@ -44,7 +44,19 @@ For each stage: **call design tool → present in user's language → confirm �
 
 ### Phase 2: Research and publish
 
-After `confirm_framework` the pause-and-confirm pattern stops. There are **two ways** to do Phase 2 — always prefer the Claude-driven path:
+After `confirm_framework` the pause-and-confirm pattern stops. `confirm_framework` charges a flat **50-credit Phase 2 bundle** — every downstream Phase 2 tool on this draft is then free.
+
+**Preferred — server-side Tavily /research (one button, deep, free polling):**
+
+1. **`research_phase2(draft_id)`** — server calls Tavily /research with a strict output schema covering the 5 narrative pillars + a per-leaf evidence pack for every branch. Returns instantly with a Tavily request_id.
+2. **`research_phase2_status(draft_id)`** every 30-60s until `status='ingested'`. Typical total time: 30-120s.
+3. **`compute_scenarios(draft_id)`** — server fetches live peer prices + computes Bull/Base/Bear.
+4. **`commit_draft_tree(draft_id, visibility='private')`** — publish the tree.
+5. **`summarize_tree(tree_id)`** — render the final 10-section report.
+
+This is the default path. Tavily handles the iterative search + synthesis; no per-leaf prompting needed.
+
+**Alternative — manual Claude-driven submission (skip if research_phase2 works):**
 
 **Preferred — Claude-driven research (free, deeper):**
 
