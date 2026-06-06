@@ -397,12 +397,37 @@ def save_h0(draft_id: str, h0_text: str, framework_from: str,
 
 @mcp.tool()
 def design_branches(draft_id: str, target_branch_count: int = 4) -> dict:
-    """Stage 3 of 6. Returns 8 candidate frameworks (with kb_source +
-    fits_layer) plus MECE rules. Your LLM picks 3-4 branches A->D ordered by
-    importance. Then call save_branches."""
+    """Stage 3 of 6. Returns a LEAN 164-framework index (name + category +
+    tags + one_liner) plus a top-15 scored_shortlist with what_is /
+    when_to_use / common_pitfalls excerpts. Pick 3-4 branches A->D ordered
+    by importance, then call save_branches.
+
+    To get FULL verbose metadata (full what_is, full when_to_use,
+    how_to_apply, full common_pitfalls, diagnostic_axes) for any framework
+    you are seriously considering, call fetch_framework_details(draft_id,
+    names=[...]) BEFORE locking in your branches — framework caveats and
+    common_pitfalls are not visible from the one-liner index alone."""
     try:
         return api_client.draft_call("/design_branches", {
             "draft_id": draft_id, "target_branch_count": target_branch_count,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def fetch_framework_details(draft_id: str, names: list) -> dict:
+    """Free on-demand lookup. Returns verbose metadata (what_is /
+    when_to_use / how_to_apply / common_pitfalls / diagnostic_axes) for up
+    to 12 frameworks per call.
+
+    Use this after reading design_branches' lean framework_index, before
+    calling save_branches, to confirm each candidate framework actually
+    fits the branch you have in mind. No credit charge, no stage advance,
+    no rate limit. Batch all candidates into a single call."""
+    try:
+        return api_client.draft_call("/fetch_framework_details", {
+            "draft_id": draft_id, "names": names,
         })
     except Exception as e:
         return {"error": str(e)}
