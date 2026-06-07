@@ -678,6 +678,58 @@ def research_phase2(draft_id: str, model: str = "pro",
 
 
 @mcp.tool()
+def set_report_language(draft_id: str, language: str) -> dict:
+    """Persist the user's chosen language for the Phase 2 email report.
+
+    REQUIRED step BETWEEN confirm_framework and research_phase2. After
+    confirm_framework, the chat agent MUST ask the user (in their natural
+    language) whether they want the final report in:
+      - 'zh'  — 繁體中文書面語 (traditional Chinese)
+      - 'en'  — formal English
+
+    The whole report (Tavily output + canonical Markdown + email HTML) will
+    be rendered in this ONE language only. No mixing.
+
+    Free, no stage advance.
+    """
+    try:
+        return api_client.draft_call("/set_report_language", {
+            "draft_id": draft_id, "language": language,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_committed_report(tree_id: str) -> dict:
+    """Fetch the canonical Markdown report VERBATIM for a committed tree.
+
+    This is the SAME report that was emailed to the user after Phase 2
+    completed. Use this tool when:
+      - The user asks 'show me the report' on the current draft.
+      - The user re-opens an older tree and wants to read the report.
+      - You need to display the report INSIDE the chat (instead of pointing
+        the user at their email inbox).
+
+    CRITICAL INSTRUCTION for the chat client (you):
+      The response contains a `report_md` string. RENDER IT VERBATIM — do
+      NOT paraphrase, summarise, translate, or restructure it. The report
+      is in a fixed institutional-standard format that the user explicitly
+      wants to see as-is, with the per-leaf 5-section block
+      (【假設】 / 【數據】 / 【結論】 / 【證偽條件】 / 【註釋】 in zh,
+      or Hypothesis / Data / Conclusion / Falsification / Notes in en),
+      all [^N] citation markers, and the footnote block at the end
+      preserved exactly as returned.
+
+    Free, no stage advance.
+    """
+    try:
+        return api_client.draft_call("/read_committed_report", {"tree_id": tree_id})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def set_phase2_notification(draft_id: str, cc_emails: list | None = None,
                             monitoring_cadence: str = "none") -> dict:
     """Record CC email list + monitoring cadence for a draft's Phase 2 email.
