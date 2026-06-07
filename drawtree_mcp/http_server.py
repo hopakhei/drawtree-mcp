@@ -637,29 +637,35 @@ def enrich_leaf_data(
 @mcp.tool()
 def research_phase2(draft_id: str, model: str = "pro",
                     output_length: str = "standard") -> dict:
-    """Trigger one-shot deep research for the entire draft via Tavily's
-    /research endpoint (server-side; user does not need to set up anything).
+    """Trigger Phase 2 deep research — ASYNC, email-delivered.
+
+    This call FIRES the Tavily deep-research job and returns IMMEDIATELY
+    with status='queued'. The chat user does not have to wait or poll.
+    The server will:
+      1. Poll Tavily in the background until done (typically 2–5 min).
+      2. Ingest the structured output into draft_narratives + draft_leaves.
+      3. Auto-run compute_scenarios + commit_tree (both free under the
+         Phase 2 bundle).
+      4. Render the full 10-section report into an HTML email and send
+         it via Resend to the signed-in account + any CC addresses set
+         via set_phase2_notification.
+      5. Mark drafts.phase2_notify_status = 'sent'.
 
     Requires confirm_framework to have been called (Phase 2 bundle paid).
-    Returns immediately with status='queued' + a tavily_request_id; the
-    Tavily job takes 30-120 seconds. Poll research_phase2_status every
-    30-60 seconds until status='ingested'.
 
-    Once ingested:
-      - draft_narratives.enriched has the 5 narrative pillars + sources.
-      - draft_leaves.enriched has per-leaf observed values + verdict_hints.
-      - draft stage advances to DATA_LEAVES_DONE — ready for compute_scenarios.
+    AFTER calling this tool, you MUST tell the user (in their language):
+      - "The full report will be EMAILED to <recipient_email> when ready,
+         typically 2–5 minutes from now — you don't need to wait here."
+      - Ask whether they want to:
+          (a) add any CC addresses to share with co-investors / partners
+          (b) set up monitoring cadence (weekly / daily / none)
+        If they answer either, call set_phase2_notification(draft_id,
+        cc_emails=[...], monitoring_cadence="weekly|daily|none") to
+        record their preferences. set_phase2_notification can be called
+        before, during, or after the email is sent.
 
     model: 'pro' (default, deep multi-angle), 'mini' (fast, focused), or 'auto'.
     output_length: 'short' | 'standard' (default) | 'long'.
-
-    Workflow:
-      research_phase2(draft_id)
-        → wait 30s
-        → research_phase2_status(draft_id) ... repeat until 'ingested'
-        → compute_scenarios(draft_id)
-        → commit_draft_tree(draft_id)
-        → summarize_tree(tree_id)
     """
     try:
         return api_client.draft_call("/research_phase2", {
@@ -672,16 +678,46 @@ def research_phase2(draft_id: str, model: str = "pro",
 
 
 @mcp.tool()
+def set_phase2_notification(draft_id: str, cc_emails: list | None = None,
+                            monitoring_cadence: str = "none") -> dict:
+    """Record CC email list + monitoring cadence for a draft's Phase 2 email.
+
+    Call this AFTER research_phase2 to capture what the user told you about:
+      - cc_emails: optional list of additional recipient email addresses
+        (e.g. ['partner@firm.com', 'analyst@firm.com']). Pass [] or omit
+        if the user only wants the report delivered to their own account.
+      - monitoring_cadence: one of 'weekly', 'daily', or 'none' (default).
+        Controls the recurring refresh of the committed tree. 'none' means
+        the user only wants the one-shot Phase 2 report — no recurring runs.
+
+    Free. Can be called at any time — settings take effect immediately for
+    the in-flight Phase 2 email if it hasn't been sent yet, and for all
+    future scheduled refreshes.
+    """
+    try:
+        return api_client.draft_call("/set_phase2_notification", {
+            "draft_id": draft_id,
+            "cc_emails": cc_emails or [],
+            "monitoring_cadence": monitoring_cadence,
+        })
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
 def research_phase2_status(draft_id: str) -> dict:
-    """Poll the most recent research_phase2 task for a draft.
+    """Inspect the status of an in-flight Phase 2 deep-research job.
 
-    Returns one of:
-      status='still_running'  — keep waiting; poll again in 30-60s.
-      status='ingested'       — narrative + every leaf saved; call compute_scenarios.
-      status='failed'         — surfaces error_detail. Caller can retry research_phase2.
+    Call this if the user explicitly asks 'is my research done?' or 'when
+    will I get my email?'. Returns drafts.phase2_notify_status:
+      - 'pending'  — Tavily still researching; email not yet sent.
+      - 'sending'  — Tavily done; the report is being rendered + sent.
+      - 'sent'     — Resend confirmed delivery; check inbox.
+      - 'failed'   — see error_detail and ask user whether to retry
+                     research_phase2 (no extra charge — bundle still paid).
 
-    Polling is free (uses Tavily's GET endpoint which doesn't count against
-    rate limits) but please don't poll faster than once every 30 seconds.
+    DO NOT poll this in a loop. The user does not need a status here — the
+    email arrival IS the status. Use this only for explicit user requests.
     """
     try:
         return api_client.draft_call("/research_phase2_status", {"draft_id": draft_id})
