@@ -635,27 +635,34 @@ def enrich_leaf_data(
 
 
 @mcp.tool()
-def research_phase2(draft_id: str, model: str = "pro",
-                    output_length: str = "standard") -> dict:
+def research_phase2(draft_id: str) -> dict:
     """Trigger Phase 2 deep research — ASYNC, email-delivered.
 
-    This call FIRES the Tavily deep-research job and returns IMMEDIATELY
-    with status='queued'. The chat user does not have to wait or poll.
-    The server will:
-      1. Poll Tavily in the background until done (typically 2–5 min).
-      2. Ingest the structured output into draft_narratives + draft_leaves.
-      3. Auto-run compute_scenarios + commit_tree (both free under the
-         Phase 2 bundle).
-      4. Render the full 10-section report into an HTML email and send
-         it via Resend to the signed-in account + any CC addresses set
-         via set_phase2_notification.
-      5. Mark drafts.phase2_notify_status = 'sent'.
+    This call fires a Perplexity sonar-deep-research job and returns
+    IMMEDIATELY with status='queued'. The chat user does NOT have to
+    wait or poll. The server will, in a background task:
 
-    Requires confirm_framework to have been called (Phase 2 bundle paid).
+      1. Build the system + user prompts from the user-confirmed framework
+         (H-0 / Branches A-D / sub-hypothesis IDs / narrative versions).
+      2. Call Perplexity sonar-deep-research (synchronous on the server
+         side; takes 5-10 minutes).
+      3. Save the returned Markdown DIRECTLY into
+         drafts.committed_report_md (Perplexity owns the format — we do
+         not paraphrase, restructure, or re-render).
+      4. Auto-commit the draft to a Tree so the dashboard link works.
+      5. Convert the Markdown to inline-styled HTML and email it via
+         Resend to the signed-in account + any CC addresses set via
+         set_phase2_notification.
+      6. Mark drafts.phase2_notify_status = 'sent'.
+
+    Requires:
+      - confirm_framework already called (Phase 2 bundle paid; 120 credits).
+      - set_report_language already set (zh or en).
 
     AFTER calling this tool, you MUST tell the user (in their language):
-      - "The full report will be EMAILED to <recipient_email> when ready,
-         typically 2–5 minutes from now — you don't need to wait here."
+      - "The full Markdown report will be EMAILED to <recipient_email>
+         when ready (typically 5-10 minutes from now). You don't need
+         to wait — do other work or close the tab."
       - Ask whether they want to:
           (a) add any CC addresses to share with co-investors / partners
           (b) set up monitoring cadence (weekly / daily / none)
@@ -663,16 +670,9 @@ def research_phase2(draft_id: str, model: str = "pro",
         cc_emails=[...], monitoring_cadence="weekly|daily|none") to
         record their preferences. set_phase2_notification can be called
         before, during, or after the email is sent.
-
-    model: 'pro' (default, deep multi-angle), 'mini' (fast, focused), or 'auto'.
-    output_length: 'short' | 'standard' (default) | 'long'.
     """
     try:
-        return api_client.draft_call("/research_phase2", {
-            "draft_id": draft_id,
-            "model": model,
-            "output_length": output_length,
-        })
+        return api_client.draft_call("/research_phase2", {"draft_id": draft_id})
     except Exception as e:
         return {"error": str(e)}
 
