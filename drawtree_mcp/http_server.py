@@ -1566,12 +1566,17 @@ bearer_token_env_var = "DRAWTREE_API_KEY"</pre>
 <li>API key: paste your <code>dt_xxx</code></li>
 </ol>
 
-<h3>ChatGPT <span class="tag">OAuth · coming next week</span></h3>
-<p style="font-size:13px;color:#555">
-ChatGPT's custom connector requires OAuth 2.0, which we're rolling out
-soon. In the meantime, please use Claude Code, Codex, Claude Desktop, or
-Perplexity — they accept Bearer tokens directly.
-</p>
+<h3>ChatGPT <span class="tag">web · OAuth (1 click)</span></h3>
+<ol style="font-size:14px">
+<li>In ChatGPT: <strong>Settings → Connectors → Advanced</strong>, enable <strong>Developer Mode</strong></li>
+<li>Then <strong>Settings → Connectors → + Create connector</strong></li>
+<li>Name: <code>Drawtree</code></li>
+<li>MCP server URL: <code>%MCP_URL%/mcp</code></li>
+<li>Authentication: <strong>OAuth</strong> (ChatGPT auto-detects from our <code>.well-known</code> discovery)</li>
+<li>Tick <strong>I trust this application</strong> and click <strong>Create</strong></li>
+<li>ChatGPT opens a tab to <code>drawtree.capital</code> — sign in (magic link) and click <strong>Approve</strong></li>
+</ol>
+<p style="font-size:12px;color:#666">Requires ChatGPT Plus / Pro / Team / Enterprise / Edu (Developer Mode is the gate — free tier doesn't expose it).</p>
 
 <h2>Need help?</h2>
 <p style="font-size:13px">
