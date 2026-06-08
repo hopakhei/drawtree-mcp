@@ -1457,8 +1457,13 @@ async def oauth_protected_resource_metadata(request: Request) -> Response:
     """RFC 9728 — tells the client which authorization server protects this
     MCP server. ChatGPT fetches this first after hitting a 401.
     """
+    # `resource` per RFC 9728 should be the URL the CLIENT uses to talk
+    # to us. Clients paste the full /mcp URL into their connector UI,
+    # so we advertise that as the canonical resource. The authorize
+    # endpoint additionally accepts the bare-host form for ChatGPT-style
+    # clients that strip the path.
     return JSONResponse({
-        "resource":               MCP_PUBLIC_URL,
+        "resource":               f"{MCP_PUBLIC_URL}/mcp",
         "authorization_servers":  [AUTH_SERVER_URL],
         "scopes_supported":       OAUTH_SCOPES,
         "bearer_methods_supported": ["header"],
