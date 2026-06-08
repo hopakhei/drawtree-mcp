@@ -1111,8 +1111,17 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
     so api_client picks it up when proxying paid endpoints."""
 
     async def dispatch(self, request: Request, call_next):
-        # Health and discovery endpoints are public
-        if request.url.path in ("/", "/health", "/v1/health"):
+        # Health, landing, and OAuth discovery endpoints are public so
+        # ChatGPT (and any other MCP client) can fetch them before
+        # authenticating. The .well-known paths follow RFC 8414 + RFC 9728
+        # — the entire raison d'être is to be reachable without a token.
+        path = request.url.path
+        if path in (
+            "/", "/health", "/v1/health",
+            "/.well-known/oauth-authorization-server",
+            "/.well-known/oauth-protected-resource",
+            "/.well-known/mcp",   # alias some clients probe
+        ):
             return await call_next(request)
 
         # Accept the key from any of these headers so we work with whatever
@@ -1132,15 +1141,29 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
             api_key = request.query_params.get("api_key") or None
 
         if not api_key:
+            # RFC 9728 § 5.1: on 401, point the client at our protected-
+            # resource metadata so it can discover the OAuth authorization
+            # server URL automatically. ChatGPT's MCP client relies on
+            # this header for OAuth bootstrap.
+            resource_md_url = (
+                "https://drawtree-mcp.onrender.com"
+                "/.well-known/oauth-protected-resource"
+            )
             return JSONResponse(
                 {"error": "missing_api_key",
                  "message": (
                      "Provide your drawtree-api key in one of: "
                      "'Authorization: Bearer dt_...', 'api-key: dt_...', or "
-                     "'x-api-key: dt_...'. Register at "
-                     "https://drawtree-api.onrender.com to register an agent."
+                     "'x-api-key: dt_...'. Sign up free at "
+                     "https://drawtree.capital/signup to get a key."
                  )},
                 status_code=401,
+                headers={
+                    "WWW-Authenticate": (
+                        f'Bearer realm="drawtree-mcp", '
+                        f'resource_metadata="{resource_md_url}"'
+                    ),
+                },
             )
         if not (api_key.startswith("dt_") or api_key.startswith("rk_")):
             return JSONResponse(
@@ -1161,6 +1184,79 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
 async def health(request: Request) -> Response:
     return JSONResponse({"status": "ok", "service": "drawtree-mcp",
                          "version": "0.2.0", "transport": "streamable_http"})
+
+
+# ============================================================
+# OAuth 2.1 discovery endpoints
+# ============================================================
+# Per the MCP 2025-11-25 authorization spec, our MCP server is an OAuth
+# 2.1 Resource Server. It must publish two metadata documents at
+# .well-known so clients (ChatGPT, Claude.ai web, etc.) can discover:
+#
+#   1. WHERE the authorization server lives (resource metadata, RFC 9728)
+#   2. HOW to talk to it (auth server metadata, RFC 8414)
+#
+# The authorization server itself lives on drawtree-api.onrender.com
+# (Phase 2B — not yet built). This module just publishes the metadata
+# *pointing at it* so we can validate the discovery shape independently.
+
+MCP_PUBLIC_URL = os.environ.get(
+    "MCP_PUBLIC_URL", "https://drawtree-mcp.onrender.com",
+)
+AUTH_SERVER_URL = os.environ.get(
+    "AUTH_SERVER_URL", "https://drawtree-api.onrender.com",
+)
+
+# Three scopes user picked in the design call (read / write / monitor)
+# — read = browse trees, write = create + commit drafts, monitor =
+# change monitoring cadence (which costs ongoing credits).
+OAUTH_SCOPES = [
+    "drawtree:read",
+    "drawtree:write",
+    "drawtree:monitor",
+]
+
+
+async def oauth_protected_resource_metadata(request: Request) -> Response:
+    """RFC 9728 — tells the client which authorization server protects this
+    MCP server. ChatGPT fetches this first after hitting a 401.
+    """
+    return JSONResponse({
+        "resource":               MCP_PUBLIC_URL,
+        "authorization_servers":  [AUTH_SERVER_URL],
+        "scopes_supported":       OAUTH_SCOPES,
+        "bearer_methods_supported": ["header"],
+        "resource_documentation": f"{MCP_PUBLIC_URL}/",
+        # MCP-specific hints — not strictly required by RFC 9728 but the
+        # MCP spec recommends advertising the protocol version + type so
+        # tools can route correctly.
+        "mcp_protocol_version":   "2025-11-25",
+        "resource_type":          "mcp-server",
+    })
+
+
+async def oauth_authorization_server_metadata(request: Request) -> Response:
+    """RFC 8414 — advertises the authorization server's endpoints.
+
+    Note: although these URLs point at drawtree-api.onrender.com (where
+    Phase 2B will mount /oauth/*), we also publish this document on
+    drawtree-mcp because some clients (Claude.ai web) probe the resource
+    host directly for `/.well-known/oauth-authorization-server` instead
+    of following the `authorization_servers` indirection. Publishing it
+    here as a passthrough avoids that bug.
+    """
+    return JSONResponse({
+        "issuer":                 AUTH_SERVER_URL,
+        "authorization_endpoint": f"{AUTH_SERVER_URL}/oauth/authorize",
+        "token_endpoint":         f"{AUTH_SERVER_URL}/oauth/token",
+        "registration_endpoint":  f"{AUTH_SERVER_URL}/oauth/register",
+        "scopes_supported":               OAUTH_SCOPES,
+        "response_types_supported":       ["code"],
+        "grant_types_supported":          ["authorization_code", "refresh_token"],
+        "token_endpoint_auth_methods_supported": ["none"],  # public clients (PKCE)
+        "code_challenge_methods_supported":      ["S256"],   # OAuth 2.1 mandates S256
+        "resource_indicators_supported":         True,        # RFC 8707
+    })
 
 
 async def landing(request: Request) -> Response:
@@ -1269,6 +1365,17 @@ app = Starlette(
         Route("/", endpoint=landing),
         Route("/health", endpoint=health),
         Route("/v1/health", endpoint=health),
+        # OAuth 2.1 discovery — must be reachable WITHOUT auth (the auth
+        # middleware whitelists these paths). ChatGPT fetches both before
+        # initiating the OAuth flow.
+        Route(
+            "/.well-known/oauth-protected-resource",
+            endpoint=oauth_protected_resource_metadata,
+        ),
+        Route(
+            "/.well-known/oauth-authorization-server",
+            endpoint=oauth_authorization_server_metadata,
+        ),
         Mount("/", app=mcp_app),
     ],
     middleware=[],
