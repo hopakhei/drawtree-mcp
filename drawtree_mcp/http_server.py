@@ -1164,37 +1164,88 @@ async def health(request: Request) -> Response:
 
 
 async def landing(request: Request) -> Response:
+    """Minimal HTML landing page surfacing install instructions for every
+    supported MCP client. Mirrors the /account install card on the
+    dashboard — keeps the two in sync as we add ChatGPT (Phase 2 OAuth).
+    """
     body = """<!doctype html>
 <html><head><meta charset="utf-8"><title>drawtree-mcp</title>
-<style>body{font-family:system-ui,sans-serif;max-width:720px;margin:60px auto;padding:0 20px;line-height:1.6;color:#222}
-code{background:#f3f3f3;padding:2px 6px;border-radius:3px}
-h1{margin-bottom:0}h2{margin-top:32px;border-bottom:1px solid #eee;padding-bottom:6px}
-a{color:#0a58ca}</style></head><body>
+<style>
+body{font-family:system-ui,sans-serif;max-width:760px;margin:60px auto;padding:0 20px;line-height:1.6;color:#222}
+code{background:#f3f3f3;padding:2px 6px;border-radius:3px;font-size:0.9em}
+pre{background:#f7f7f7;border:1px solid #e5e5e5;border-radius:6px;padding:14px;overflow-x:auto;font-size:13px;line-height:1.5}
+h1{margin-bottom:0}
+h2{margin-top:36px;border-bottom:1px solid #eee;padding-bottom:6px}
+h3{margin-top:22px;font-size:1em;color:#444}
+a{color:#0a58ca}
+.tag{display:inline-block;font-size:11px;color:#666;background:#eef2ff;padding:2px 8px;border-radius:10px;margin-left:6px}
+.cta{display:inline-block;background:#1a1a1a;color:#fff;padding:10px 16px;border-radius:6px;text-decoration:none;font-size:14px;margin-top:8px}
+.cta:hover{opacity:.9}
+</style></head><body>
 <h1>drawtree-mcp</h1>
-<p><em>HTTPS MCP transport for the Draw Tree wire protocol.</em></p>
-<h2>Connect from Perplexity Pro</h2>
-<ol>
-<li>Settings → Connectors → <strong>+ Custom connector</strong> → <strong>Remote</strong></li>
-<li>Name: <code>Drawtree</code></li>
-<li>MCP server URL: <code>%MCP_URL%/mcp</code></li>
-<li>Transport: <code>Streamable HTTP</code></li>
-<li>Auth type: <code>API Key</code></li>
-<li>API key: paste your <code>dt_...</code> from drawtree-api</li>
-</ol>
-<h2>Connect from Claude Desktop</h2>
-<p>Add to <code>claude_desktop_config.json</code>:</p>
+<p><em>Plug Draw Tree's hypothesis-tree research into any MCP-aware AI client.</em></p>
+<p>
+  Don't have a key yet?
+  <a class="cta" href="https://drawtree.capital/signup">Get your API key →</a>
+  <span style="font-size:12px;color:#666;margin-left:8px">50 free credits, no card.</span>
+</p>
+
+<h2>Pick your client</h2>
+<p style="font-size:13px;color:#555">All snippets below use Bearer-token auth. Replace <code>dt_xxx</code> with your real key from <a href="https://drawtree.capital/account">/account</a>.</p>
+
+<h3>Claude Code <span class="tag">terminal · 1 command</span></h3>
+<pre>claude mcp add drawtree \\
+  --transport http \\
+  --header "Authorization: Bearer dt_xxx" \\
+  %MCP_URL%/mcp</pre>
+<p style="font-size:12px;color:#666">Restart Claude Code, then ask: “List my drawtree tools.”</p>
+
+<h3>Codex CLI <span class="tag">terminal · 1 command</span></h3>
+<pre># 1. Save your key as an env var
+export DRAWTREE_API_KEY="dt_xxx"
+
+# 2. Add to ~/.codex/config.toml
+[mcp_servers.drawtree]
+url = "%MCP_URL%/mcp"
+bearer_token_env_var = "DRAWTREE_API_KEY"</pre>
+<p style="font-size:12px;color:#666">Run <code>codex</code> in a fresh terminal — the drawtree tools appear automatically.</p>
+
+<h3>Claude Desktop <span class="tag">JSON config</span></h3>
+<p>Settings → Developer → Edit Config, paste:</p>
 <pre>{
   "mcpServers": {
     "drawtree": {
       "url": "%MCP_URL%/mcp",
       "headers": {
-        "Authorization": "Bearer dt_..."
+        "Authorization": "Bearer dt_xxx"
       }
     }
   }
 }</pre>
-<h2>Don't have a key yet?</h2>
-<p><code>POST https://drawtree-api.onrender.com/v1/agents</code> &mdash; register an agent to receive a key.</p>
+<p style="font-size:12px;color:#666">Save and restart Claude Desktop. The drawtree icon appears in the message bar.</p>
+
+<h3>Perplexity Pro <span class="tag">web · custom connector</span></h3>
+<ol style="font-size:14px">
+<li>Settings → Connectors → <strong>+ Custom connector</strong> → <strong>Remote</strong></li>
+<li>Name: <code>Drawtree</code></li>
+<li>MCP server URL: <code>%MCP_URL%/mcp</code></li>
+<li>Transport: <code>Streamable HTTP</code></li>
+<li>Auth type: <code>API Key</code></li>
+<li>API key: paste your <code>dt_xxx</code></li>
+</ol>
+
+<h3>ChatGPT <span class="tag">OAuth · coming next week</span></h3>
+<p style="font-size:13px;color:#555">
+ChatGPT's custom connector requires OAuth 2.0, which we're rolling out
+soon. In the meantime, please use Claude Code, Codex, Claude Desktop, or
+Perplexity — they accept Bearer tokens directly.
+</p>
+
+<h2>Need help?</h2>
+<p style="font-size:13px">
+  Email <a href="mailto:founder@peter-ai.app">founder@peter-ai.app</a>
+  with a screenshot of the error. We answer same day.
+</p>
 </body></html>"""
     body = body.replace("%MCP_URL%", "https://drawtree-mcp.onrender.com")
     return Response(body, media_type="text/html")
