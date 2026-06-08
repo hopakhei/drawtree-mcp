@@ -1160,34 +1160,61 @@ def search(query: str) -> dict:
     if not isinstance(trees, list):
         return {"results": []}
 
-    # Substring match across ticker + h0_text (case-insensitive). v4-lite
-    # users typically have <50 trees so an O(n) scan is fine; we can
-    # add server-side search later if the library grows.
+    # Substring match across ticker + company (case-insensitive). The
+    # /v1/view/trees list endpoint returns tree_id, ticker, company,
+    # h0_verdict, conviction, visibility, committed_at, updated_at —
+    # NOT the H-0 text (that lives on /trees/by-id/<id>.payload.h0.text).
+    # Searching by H-0 text would require fetching every tree which is
+    # O(N) round-trips; we skip it for now. ChatGPT users almost always
+    # query by ticker / company name anyway.
+    #
+    # Special case: query == "*" returns the entire library so a Deep
+    # Research session can enumerate everything the user owns.
     out: list[dict] = []
     for t in trees:
         if not isinstance(t, dict):
             continue
         ticker  = (t.get("ticker") or "").upper()
-        h0_text = (t.get("h0_text") or t.get("h0") or "").strip()
-        hay = f"{ticker} {h0_text}".lower()
-        if q_lower not in hay and q_lower != "*":
+        company = (t.get("company") or "").strip()
+        hay = f"{ticker} {company}".lower()
+        if q_lower != "*" and q_lower not in hay:
             continue
         tree_id = t.get("tree_id") or t.get("id")
         if not tree_id:
             continue
-        verdict = (t.get("latest_verdict") or t.get("verdict") or "").strip()
-        conviction = t.get("conviction_score") or t.get("conviction")
+        # Verdict can be either a plain label string or a dict carrying
+        # {label, score}. The /v1/view/trees response uses the bare key
+        # `h0_verdict` (often null when the conviction engine hasn't
+        # run yet).
+        v = t.get("h0_verdict") or t.get("latest_verdict") or t.get("verdict")
+        if isinstance(v, dict):
+            verdict_label = (v.get("label") or v.get("verdict") or "").strip()
+        else:
+            verdict_label = (v or "").strip() if isinstance(v, str) else ""
+        # Conviction can be a float OR a {score, label} pack written by
+        # the conviction engine.
+        c = t.get("conviction") or t.get("conviction_score")
+        if isinstance(c, dict):
+            conviction_score = c.get("score")
+        else:
+            conviction_score = c
         snippet_parts = []
-        if h0_text:
-            snippet_parts.append(h0_text[:140])
-        if verdict:
-            snippet_parts.append(f"Verdict: {verdict}")
-        if isinstance(conviction, (int, float)):
-            snippet_parts.append(f"Conviction: {round(conviction * 100)}%")
+        if company:
+            snippet_parts.append(company)
+        if verdict_label:
+            snippet_parts.append(f"Verdict: {verdict_label}")
+        if isinstance(conviction_score, (int, float)):
+            snippet_parts.append(f"Conviction: {round(conviction_score * 100)}%")
+        committed = t.get("committed_at")
+        if isinstance(committed, str) and committed:
+            snippet_parts.append(f"Committed {committed[:10]}")
+        # Title: prefer 'TICKER (Company name)' when company is present,
+        # else just the ticker. ChatGPT's UI renders this in bold.
+        title = f"{ticker} ({company})" if company else ticker
         out.append({
             "id":      str(tree_id),
-            "title":   f"{ticker} — {h0_text[:80]}" if h0_text else ticker,
-            "snippet": " · ".join(snippet_parts) if snippet_parts else None,
+            "title":   title,
+            "snippet": " · ".join(snippet_parts) if snippet_parts else f"{ticker} (Draw Tree)",
             "source":  f"https://drawtree.capital/account/tree/{tree_id}",
         })
         # Cap to 20 results — ChatGPT renders all of them inline.
