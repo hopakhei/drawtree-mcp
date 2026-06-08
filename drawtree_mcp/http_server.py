@@ -1165,10 +1165,21 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
                     ),
                 },
             )
-        if not (api_key.startswith("dt_") or api_key.startswith("rk_")):
+        # Accept three bearer shapes:
+        #   dt_ / rk_ prefix — long-lived static MCP API key (legacy + current)
+        #   JWT (three base64url segments)  — OAuth access token (Phase 2)
+        # Any other shape is rejected fast so we don't proxy garbage to the API.
+        looks_like_jwt = (api_key.count(".") == 2)
+        if not (api_key.startswith("dt_")
+                or api_key.startswith("rk_")
+                or looks_like_jwt):
             return JSONResponse(
                 {"error": "invalid_token_format",
-                 "message": "Expected dt_xxx (drawtree-api key) prefix."},
+                 "message": (
+                     "Expected an MCP API key (dt_xxx) or an OAuth access "
+                     "token. Get a key at https://drawtree.capital/account or "
+                     "connect via OAuth from ChatGPT / Claude.ai web."
+                 )},
                 status_code=401,
             )
         token = _request_api_key.set(api_key)
