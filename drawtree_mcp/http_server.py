@@ -25,6 +25,7 @@ from typing import Any
 
 from mcp.server.fastmcp import FastMCP
 from mcp.server.transport_security import TransportSecuritySettings
+from mcp.types import ToolAnnotations
 from starlette.applications import Starlette
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
@@ -1101,6 +1102,203 @@ def abandon_draft(draft_id: str) -> dict:
         return api_client.draft_call(f"/{draft_id}/abandon")
     except Exception as e:
         return {"error": str(e)}
+
+
+# ============================================================
+# ChatGPT-compatible search + fetch tools
+# ============================================================
+# ChatGPT's custom connector + Deep Research mode validate that the
+# server exposes two tools named EXACTLY 'search' and 'fetch' with
+# specific return shapes. Without them ChatGPT rejects the server
+# entirely. We surface the user's own committed tree library through
+# these tools — they're thin wrappers over /v1/view/trees + /trees/by-id.
+#
+# Contract (OpenAI-confirmed via dev community + FastMCP integration
+# docs):
+#
+#   search(query) — returns:
+#     { "results": [ {id, title, snippet?, source?}, ... ] }
+#     - id and title are REQUIRED on every result
+#     - top level must be `results`, not nested under another key
+#     - snippet + source are recommended but optional
+#
+#   fetch(id) — returns the full record. We return the same shape
+#     drawtree-api's /v1/view/trees/by-id/{id} returns, with `text`
+#     populated for ChatGPT's Deep Research extractor.
+#
+# Both are marked readOnlyHint=True so ChatGPT calls them without a
+# per-call confirmation prompt.
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+def search(query: str) -> dict:
+    """Search your committed Draw Tree library by ticker, company name,
+    or root-hypothesis keyword. Returns matching trees with their tree_id,
+    a one-line title, and a snippet of the current verdict + conviction.
+
+    Pass the tree_id from any result to the `fetch` tool to retrieve the
+    full tree payload (H-0, branches, leaves, scenarios, monitor results).
+    """
+    if not query or not query.strip():
+        return {"results": []}
+    q = query.strip()
+    q_lower = q.lower()
+    try:
+        # /v1/view/trees returns the signed-in agent's tree list with
+        # latest verdict + conviction already joined in.
+        resp = api_client.view_get("/trees")
+    except Exception as e:
+        # ChatGPT shows tool errors as plain text — keep it actionable.
+        return {
+            "results": [],
+            "error": (
+                f"Could not list trees ({e}). Make sure your OAuth scope "
+                f"includes drawtree:read and your token is fresh."
+            ),
+        }
+    trees = resp.get("trees") if isinstance(resp, dict) else None
+    if not isinstance(trees, list):
+        return {"results": []}
+
+    # Substring match across ticker + h0_text (case-insensitive). v4-lite
+    # users typically have <50 trees so an O(n) scan is fine; we can
+    # add server-side search later if the library grows.
+    out: list[dict] = []
+    for t in trees:
+        if not isinstance(t, dict):
+            continue
+        ticker  = (t.get("ticker") or "").upper()
+        h0_text = (t.get("h0_text") or t.get("h0") or "").strip()
+        hay = f"{ticker} {h0_text}".lower()
+        if q_lower not in hay and q_lower != "*":
+            continue
+        tree_id = t.get("tree_id") or t.get("id")
+        if not tree_id:
+            continue
+        verdict = (t.get("latest_verdict") or t.get("verdict") or "").strip()
+        conviction = t.get("conviction_score") or t.get("conviction")
+        snippet_parts = []
+        if h0_text:
+            snippet_parts.append(h0_text[:140])
+        if verdict:
+            snippet_parts.append(f"Verdict: {verdict}")
+        if isinstance(conviction, (int, float)):
+            snippet_parts.append(f"Conviction: {round(conviction * 100)}%")
+        out.append({
+            "id":      str(tree_id),
+            "title":   f"{ticker} — {h0_text[:80]}" if h0_text else ticker,
+            "snippet": " · ".join(snippet_parts) if snippet_parts else None,
+            "source":  f"https://drawtree.capital/account/tree/{tree_id}",
+        })
+        # Cap to 20 results — ChatGPT renders all of them inline.
+        if len(out) >= 20:
+            break
+    return {"results": out}
+
+
+@mcp.tool(annotations=ToolAnnotations(readOnlyHint=True))
+def fetch(id: str) -> dict:
+    """Retrieve a complete Draw Tree by tree_id.
+
+    `id` is a tree_id returned by `search`. The response carries the full
+    tree payload — H-0, branches, leaves with verdicts + evidence, scenario
+    valuation, monitor results — in both structured (under `metadata`)
+    and human-readable (`text`) forms so ChatGPT's Deep Research extractor
+    can quote from it.
+    """
+    if not id or not id.strip():
+        return {"id": id, "title": "", "text": "No id provided."}
+    tid = id.strip()
+    try:
+        tree = api_client.view_get(f"/trees/by-id/{tid}")
+    except Exception as e:
+        return {
+            "id":    tid,
+            "title": "Error",
+            "text":  f"Could not fetch tree {tid}: {e}",
+        }
+    payload = tree.get("payload") or {}
+    ticker  = (tree.get("ticker") or payload.get("ticker") or "").upper()
+    h0_text = ""
+    h0 = payload.get("h0")
+    if isinstance(h0, dict):
+        h0_text = h0.get("text") or ""
+    elif isinstance(h0, str):
+        h0_text = h0
+
+    # Build a compact human-readable plaintext block ChatGPT can quote.
+    lines: list[str] = []
+    lines.append(f"# {ticker}")
+    if h0_text:
+        lines.append(f"\n## H-0 (root hypothesis)\n{h0_text}")
+    verdict = tree.get("verdict") or payload.get("verdict") or {}
+    if isinstance(verdict, dict):
+        vlabel = verdict.get("label") or verdict.get("h0_verdict") or ""
+        if vlabel:
+            lines.append(f"\n## Current H-0 verdict\n{vlabel}")
+    elif isinstance(verdict, str) and verdict:
+        lines.append(f"\n## Current H-0 verdict\n{verdict}")
+    branches = payload.get("branches") or []
+    if isinstance(branches, list) and branches:
+        lines.append("\n## Branches")
+        for b in branches:
+            if not isinstance(b, dict):
+                continue
+            bid = b.get("id") or "?"
+            cap = b.get("caption") or b.get("label") or ""
+            lines.append(f"\n### Branch {bid}: {cap}")
+            cq = b.get("core_question")
+            if cq:
+                lines.append(f"Core question: {cq}")
+            for l in (b.get("leaves") or []):
+                if not isinstance(l, dict):
+                    continue
+                lid = l.get("id") or "?"
+                q   = l.get("question") or l.get("hypothesis") or ""
+                lv  = l.get("verdict_hint") or l.get("verdict_initial") or ""
+                lines.append(f"- {lid}: {q[:160]}  [{lv}]")
+    scenarios = payload.get("scenarios")
+    if isinstance(scenarios, dict):
+        cp = scenarios.get("current_price")
+        ex = scenarios.get("expected") or {}
+        bull = scenarios.get("bull") or {}
+        base = scenarios.get("base") or {}
+        bear = scenarios.get("bear") or {}
+        sc_lines = []
+        if cp is not None:
+            sc_lines.append(f"Current price: ${cp}")
+        if isinstance(ex, dict) and ex.get("value") is not None:
+            sc_lines.append(
+                f"Expected (conviction-weighted): ${ex['value']} "
+                f"({ex.get('gain_pct', 0):+.1f}%)"
+            )
+        for label, tier in (("Bull", bull), ("Base", base), ("Bear", bear)):
+            if isinstance(tier, dict) and tier.get("value") is not None:
+                sc_lines.append(
+                    f"{label}: ${tier['value']} ({tier.get('pct', 0):+.1f}%)"
+                )
+        if sc_lines:
+            lines.append("\n## Three-scenario valuation")
+            lines.extend(f"- {s}" for s in sc_lines)
+
+    return {
+        "id":       tid,
+        "title":    f"{ticker} — {h0_text[:80]}" if h0_text else ticker,
+        "text":     "\n".join(lines).strip(),
+        "url":      f"https://drawtree.capital/account/tree/{tid}",
+        "metadata": {
+            "ticker":          ticker,
+            "visibility":      tree.get("visibility"),
+            "committed_at":    tree.get("committed_at"),
+            "verdict":         verdict if isinstance(verdict, (str, dict)) else None,
+            "branch_count":    len(branches) if isinstance(branches, list) else 0,
+            "leaf_count": sum(
+                len(b.get("leaves") or [])
+                for b in (branches if isinstance(branches, list) else [])
+                if isinstance(b, dict)
+            ),
+        },
+    }
 
 
 # ============================================================
