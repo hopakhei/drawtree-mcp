@@ -1340,13 +1340,13 @@ class APIKeyAuthMiddleware(BaseHTTPMiddleware):
         # ChatGPT (and any other MCP client) can fetch them before
         # authenticating. The .well-known paths follow RFC 8414 + RFC 9728
         # — the entire raison d'être is to be reachable without a token.
+        # We accept .well-known at the root AND under /mcp (since the
+        # MCP URL the user pastes typically includes that path; some
+        # clients append .well-known onto it directly).
         path = request.url.path
-        if path in (
-            "/", "/health", "/v1/health",
-            "/.well-known/oauth-authorization-server",
-            "/.well-known/oauth-protected-resource",
-            "/.well-known/mcp",   # alias some clients probe
-        ):
+        if (path in ("/", "/health", "/v1/health")
+                or "/.well-known/" in path
+                or path.endswith("/.well-known")):
             return await call_next(request)
 
         # Accept the key from any of these headers so we work with whatever
@@ -1620,6 +1620,19 @@ app = Starlette(
         ),
         Route(
             "/.well-known/oauth-authorization-server",
+            endpoint=oauth_authorization_server_metadata,
+        ),
+        # Some clients (Claude.ai, observed 2026-06) append the
+        # .well-known suffix onto the FULL MCP URL the user pasted
+        # — e.g. drawtree-mcp.onrender.com/mcp/.well-known/...
+        # Mirror the two documents under /mcp/.well-known/* so the
+        # discovery chain doesn't break for those clients.
+        Route(
+            "/mcp/.well-known/oauth-protected-resource",
+            endpoint=oauth_protected_resource_metadata,
+        ),
+        Route(
+            "/mcp/.well-known/oauth-authorization-server",
             endpoint=oauth_authorization_server_metadata,
         ),
         Mount("/", app=mcp_app),
