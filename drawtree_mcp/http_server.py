@@ -1,4 +1,4 @@
-"""HTTPS MCP server for Perplexity / ChatGPT / claude.ai web.
+"""HTTPS MCP server for AI clients that speak the Model Context Protocol.
 
 Exposes the same 13 tools as the stdio server, but over Streamable HTTP
 transport so any remote-MCP-aware client can connect.
@@ -570,8 +570,8 @@ def enrich_narrative_data(
            }
       3. Server validates citations + persists. NO credits charged.
 
-    FALLBACK MODE — omit `submitted_data` and the server runs its own Tavily
-    flow (8 credits). Use only if you genuinely cannot search the web.
+    FALLBACK MODE — omit `submitted_data` and the server runs its own web
+    research flow (8 credits). Use only if you genuinely cannot search the web.
 
     Always strongly prefer the submitted-data mode — your reasoning + curation
     of full source content beats the server's keyword-snippet flow.
@@ -600,7 +600,7 @@ def enrich_leaf_data(
            window (you can read them with read_draft or have them on hand).
         2. Search the web for the most recent observation of THAT metric —
            use your own search, or call external_search (1 cr / call) for a
-           server-backed Tavily search if you don't have web search.
+           server-backed web search if you don't have web search.
         3. Build a per-leaf evidence pack:
              {
                "leaf_id": "A1",
@@ -619,8 +619,8 @@ def enrich_leaf_data(
            covering EVERY branch_id you asked for.
         5. Server validates every leaf has ≥1 source URL + persists. NO charge.
 
-    FALLBACK MODE — omit submitted_evidence_by_branch; server runs Tavily per
-    leaf (5 credits per branch).
+    FALLBACK MODE — omit submitted_evidence_by_branch; server runs web
+    research per leaf (5 credits per branch).
 
     The verdict computed at commit_tree time will respect your verdict_hint if
     your sources support it. If you submit "trending_positive" but the metric
@@ -639,16 +639,16 @@ def enrich_leaf_data(
 def research_phase2(draft_id: str) -> dict:
     """Trigger Phase 2 deep research — ASYNC, email-delivered.
 
-    This call fires a Perplexity sonar-deep-research job and returns
+    This call fires a deep-research job and returns
     IMMEDIATELY with status='queued'. The chat user does NOT have to
     wait or poll. The server will, in a background task:
 
       1. Build the system + user prompts from the user-confirmed framework
          (H-0 / Branches A-D / sub-hypothesis IDs / narrative versions).
-      2. Call Perplexity sonar-deep-research (synchronous on the server
+      2. Call the deep-research engine (synchronous on the server
          side; takes 5-10 minutes).
       3. Save the returned Markdown DIRECTLY into
-         drafts.committed_report_md (Perplexity owns the format — we do
+         drafts.committed_report_md (the engine owns the format — we do
          not paraphrase, restructure, or re-render).
       4. Auto-commit the draft to a Tree so the dashboard link works.
       5. Convert the Markdown to inline-styled HTML and email it via
@@ -688,8 +688,8 @@ def set_report_language(draft_id: str, language: str) -> dict:
       - 'zh'  — 繁體中文書面語 (traditional Chinese)
       - 'en'  — formal English
 
-    The whole report (Tavily output + canonical Markdown + email HTML) will
-    be rendered in this ONE language only. No mixing.
+    The whole report (research output + canonical Markdown + email HTML)
+    will be rendered in this ONE language only. No mixing.
 
     Free, no stage advance.
     """
@@ -763,8 +763,8 @@ def research_phase2_status(draft_id: str) -> dict:
 
     Call this if the user explicitly asks 'is my research done?' or 'when
     will I get my email?'. Returns drafts.phase2_notify_status:
-      - 'pending'  — Tavily still researching; email not yet sent.
-      - 'sending'  — Tavily done; the report is being rendered + sent.
+      - 'pending'  — still researching; email not yet sent.
+      - 'sending'  — research done; the report is being rendered + sent.
       - 'sent'     — Resend confirmed delivery; check inbox.
       - 'failed'   — see error_detail and ask user whether to retry
                      research_phase2 (no extra charge — bundle still paid).
@@ -882,7 +882,7 @@ def my_workspace() -> dict:
 def auto_evidence(draft_id: str, branch_id: str, leaf_id: str) -> dict:
     """One-click evidence backfill for a single leaf. The server reads the
     leaf's hypothesis + falsification metric + framework, constructs a
-    focused query bouquet, runs Tavily across all of them in parallel,
+    focused query bouquet, runs web search across all of them in parallel,
     sanitizes hits, and appends them to the leaf's evidence.
 
     Paid (2 credits). Use this when a leaf's '數據' / data points look
@@ -910,7 +910,7 @@ def external_search(
     branch_id: str = "",
     leaf_id: str = "",
 ) -> dict:
-    """Run a server-backed Tavily query and get up to 6 sanitized hits.
+    """Run a server-backed web search query and get up to 6 sanitized hits.
     Each hit is {title, snippet, url, source_domain, published_date}.
 
     Paid (1 credit per call). Use this iteratively as part of a research loop:
