@@ -32,7 +32,7 @@ from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
 from starlette.routing import Mount, Route
 
-from . import api_client, framework_retrieval
+from . import api_client, framework_retrieval, portfolio
 from ._kernel.aggregation import aggregate, annotate_doc
 from ._kernel.validate import validate as validate_v02
 
@@ -198,6 +198,69 @@ def balance() -> dict:
         return api_client.get_balance()
     except Exception as e:
         return {"error": str(e)}
+
+
+# ----- Portfolio tools (Phase 2) — thin wrappers over the dashboard compute
+# backbone. Agent-orchestrated, paper-first; this server never holds broker
+# credentials and never places trades.
+
+@mcp.tool()
+def get_portfolio_ideas(tickers: list[str] | None = None) -> dict:
+    """Pull the caller's committed Draw Tree theses → engine 'idea' objects.
+
+    Maps each tree to {ticker, bull, bear, current, conviction}. `tickers`
+    is an optional filter; omit for all of your trees. Output feeds
+    size_portfolio / build_rebalance.
+    """
+    if tickers is not None and not isinstance(tickers, list):
+        return {"error": "tickers must be an array of strings"}
+    return portfolio.get_portfolio_ideas(tickers)
+
+
+@mcp.tool()
+def size_portfolio(
+    ideas: list[dict] | None = None,
+    tickers: list[str] | None = None,
+    params: dict | None = None,
+    fetch_prices: bool = True,
+) -> dict:
+    """Size a portfolio from ideas (or tickers) — target weights + correlation.
+
+    Calls the stateless compute backbone (Kelly → correlation haircut →
+    position cap → cash fallback). No execution / orders. Pass `tickers` to
+    auto-pull ideas via get_portfolio_ideas first.
+    """
+    if ideas is not None and not isinstance(ideas, list):
+        return {"error": "ideas must be an array of idea objects"}
+    return portfolio.size_portfolio(
+        ideas=ideas, tickers=tickers, params=params, fetch_prices=fetch_prices,
+    )
+
+
+@mcp.tool()
+def build_rebalance(
+    ideas: list[dict],
+    nlv: float,
+    broker: str = "futu",
+    positions: list[dict] | None = None,
+    params: dict | None = None,
+    trd_env: str = "SIMULATE",
+) -> dict:
+    """Size + produce a broker-native order list (PREVIEW, paper-first).
+
+    Same compute backbone as size_portfolio but with an execution block
+    (broker, account NLV, current positions). Returns rebalance_command.orders
+    for the user's Futu / IBKR MCP. trd_env defaults to SIMULATE; this server
+    never places trades — preview, confirm, then hand off.
+    """
+    if not isinstance(ideas, list) or not ideas:
+        return {"error": "ideas must be a non-empty array"}
+    if nlv is None:
+        return {"error": "nlv required"}
+    return portfolio.build_rebalance(
+        ideas=ideas, broker=broker, nlv=nlv,
+        positions=positions or [], params=params, trd_env=trd_env,
+    )
 
 
 # ----- Legacy paid tools (proxied to drawtree-api with hold-confirm-refund lifecycle)
