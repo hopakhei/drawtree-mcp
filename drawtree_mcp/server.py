@@ -33,12 +33,41 @@ from mcp.server import Server
 from mcp.server.stdio import stdio_server
 from mcp.types import TextContent, Tool
 
-from . import api_client, framework_retrieval
+from . import api_client, framework_retrieval, portfolio
 from ._kernel.aggregation import aggregate, annotate_doc
 from ._kernel.validate import validate as validate_v02
 
 
 server = Server("drawtree-mcp")
+
+
+# Shared JSON-schema fragments for the Phase 2 portfolio tools.
+_IDEA_SCHEMA = {
+    "type": "object",
+    "required": ["ticker", "bull", "bear"],
+    "properties": {
+        "ticker": {"type": "string"},
+        "bull": {"type": "number", "description": "Bull-case target price."},
+        "bear": {"type": "number", "description": "Bear-case target price."},
+        "current": {"type": "number", "description": "Current price (else fetched)."},
+        "conviction": {"type": "number", "description": "0–1 conviction."},
+        "conviction_source": {"type": "string"},
+        "hypothesis": {"type": "string"},
+        "lot_size": {"type": "number"},
+        "sector": {"type": "string"},
+    },
+}
+
+_PARAMS_SCHEMA = {
+    "type": "object",
+    "description": "All optional; engine defaults shown.",
+    "properties": {
+        "kelly_fraction": {"type": "number", "default": 0.25},
+        "position_cap": {"type": "number", "default": 0.33},
+        "haircut_lambda": {"type": "number", "default": 0.9},
+        "no_trade_threshold": {"type": "number", "default": 0.01},
+    },
+}
 
 
 # ============================================================
@@ -132,6 +161,50 @@ async def tool_balance(args: dict) -> dict:
         return api_client.get_balance()
     except Exception as e:
         return {"error": str(e)}
+
+
+# ============================================================
+# PORTFOLIO TOOLS (Phase 2) — thin wrappers over the dashboard
+# compute backbone. Agent-orchestrated, paper-first; this server
+# never holds broker credentials and never places trades.
+# ============================================================
+
+async def tool_get_portfolio_ideas(args: dict) -> dict:
+    """Pull the caller's committed trees → engine ideas."""
+    tickers = args.get("tickers")
+    if tickers is not None and not isinstance(tickers, list):
+        return {"error": "tickers must be an array of strings"}
+    return portfolio.get_portfolio_ideas(tickers)
+
+
+async def tool_size_portfolio(args: dict) -> dict:
+    """Target weights + correlation table (no execution)."""
+    ideas = args.get("ideas")
+    if ideas is not None and not isinstance(ideas, list):
+        return {"error": "ideas must be an array of idea objects"}
+    return portfolio.size_portfolio(
+        ideas=ideas,
+        tickers=args.get("tickers"),
+        params=args.get("params"),
+        fetch_prices=args.get("fetch_prices", True),
+    )
+
+
+async def tool_build_rebalance(args: dict) -> dict:
+    """Broker-native order list (PREVIEW, paper-first)."""
+    ideas = args.get("ideas")
+    if not isinstance(ideas, list) or not ideas:
+        return {"error": "ideas must be a non-empty array"}
+    if args.get("nlv") is None:
+        return {"error": "nlv required"}
+    return portfolio.build_rebalance(
+        ideas=ideas,
+        broker=args.get("broker", "futu"),
+        nlv=args.get("nlv"),
+        positions=args.get("positions") or [],
+        params=args.get("params"),
+        trd_env=args.get("trd_env", "SIMULATE"),
+    )
 
 
 # ============================================================
@@ -250,6 +323,10 @@ TOOL_HANDLERS = {
     "read_tree": tool_read_tree,
     "suggest_framework": tool_suggest_framework,
     "balance": tool_balance,
+    # PORTFOLIO (Phase 2)
+    "get_portfolio_ideas": tool_get_portfolio_ideas,
+    "size_portfolio": tool_size_portfolio,
+    "build_rebalance": tool_build_rebalance,
     # PAID
     "register_narrative": tool_register_narrative,
     "enrich_branches": tool_enrich_branches,
@@ -336,6 +413,87 @@ async def list_tools() -> list[Tool]:
                 "FREE. Show current balance, pending holds, and last 20 charges."
             ),
             inputSchema={"type": "object", "properties": {}},
+        ),
+
+        # PORTFOLIO (Phase 2)
+        Tool(
+            name="get_portfolio_ideas",
+            description=(
+                "Pull the caller's committed Draw Tree theses and map them to engine "
+                "'idea' objects (ticker, bull/bear targets, current price, conviction). "
+                "Optional `tickers` filters to specific names; default returns all of "
+                "the caller's trees. Output feeds size_portfolio / build_rebalance."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "tickers": {
+                        "type": "array", "items": {"type": "string"},
+                        "description": "Optional filter. Omit for all of your trees.",
+                    },
+                },
+            },
+        ),
+        Tool(
+            name="size_portfolio",
+            description=(
+                "Size a portfolio from ideas (or tickers). Calls the stateless compute "
+                "backbone: Kelly → correlation haircut → position cap → cash fallback. "
+                "Returns target weights, portfolio conviction, and the correlation "
+                "table. No execution / orders. Pass `tickers` to auto-pull ideas first."
+            ),
+            inputSchema={
+                "type": "object",
+                "properties": {
+                    "ideas": {"type": "array", "items": _IDEA_SCHEMA},
+                    "tickers": {"type": "array", "items": {"type": "string"}},
+                    "params": _PARAMS_SCHEMA,
+                    "fetch_prices": {
+                        "type": "boolean", "default": True,
+                        "description": "Fill missing `current` from live quotes.",
+                    },
+                },
+            },
+        ),
+        Tool(
+            name="build_rebalance",
+            description=(
+                "Size + produce a broker-native order list. Same compute backbone as "
+                "size_portfolio but with an execution block (broker, account NLV, "
+                "current positions). Returns rebalance_command.orders for the user's "
+                "Futu / IBKR MCP. PAPER-FIRST: trd_env defaults to SIMULATE; this "
+                "server never places trades — preview, confirm, then hand off."
+            ),
+            inputSchema={
+                "type": "object",
+                "required": ["ideas", "nlv"],
+                "properties": {
+                    "ideas": {"type": "array", "items": _IDEA_SCHEMA},
+                    "broker": {
+                        "type": "string", "enum": ["futu", "ibkr"], "default": "futu",
+                    },
+                    "nlv": {
+                        "type": "number",
+                        "description": "Account net liquidation value.",
+                    },
+                    "positions": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "required": ["ticker", "shares"],
+                            "properties": {
+                                "ticker": {"type": "string"},
+                                "shares": {"type": "number"},
+                            },
+                        },
+                    },
+                    "params": _PARAMS_SCHEMA,
+                    "trd_env": {
+                        "type": "string", "enum": ["SIMULATE", "REAL"],
+                        "default": "SIMULATE",
+                    },
+                },
+            },
         ),
 
         # PAID

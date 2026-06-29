@@ -149,6 +149,27 @@ Load them in your Claude Project / system prompt. The MCP tools are designed to 
 
 Each tool's schema is auto-published to MCP clients via `list_tools()`.
 
+### Portfolio tools (Phase 2)
+
+Thin wrappers over the stateless compute backbone in the dashboard
+(`POST /api/portfolio/size-and-rebalance`). The math — Kelly → Fundamental-Law
+correlation haircut → position cap → cash fallback → board-lot rounding — runs
+on that endpoint; the MCP server only shapes requests and maps your committed
+trees into engine ideas. Execution is **agent-orchestrated and paper-first**:
+this server never holds broker credentials and never places trades.
+
+| Tool | What it does |
+|---|---|
+| `get_portfolio_ideas` | Pull your committed theses → engine ideas (ticker, bull/bear, current, conviction) |
+| `size_portfolio` | Ideas/tickers → target weights, portfolio conviction, correlation table |
+| `build_rebalance` | + execution block (broker, NLV, positions) → broker-native order list (`trd_env=SIMULATE` by default) |
+
+One-click rebalance loop: `get_portfolio_ideas` → confirm names →
+`size_portfolio` → read positions/NLV via your Futu / IBKR MCP →
+`build_rebalance` → preview, confirm, then place via the broker MCP.
+
+`DASHBOARD_BASE` (default `https://drawtree.capital`) selects the compute endpoint.
+
 ---
 
 ## What gets enforced

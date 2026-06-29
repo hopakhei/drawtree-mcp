@@ -23,8 +23,19 @@ def _api_key() -> str | None:
     return os.environ.get("DRAWTREE_API_KEY")
 
 
-def _http(method: str, path: str, body: dict | None = None, auth: bool = False) -> dict:
-    url = f"{_base_url()}{path}"
+def _dashboard_url() -> str:
+    """Base for the deployed portfolio compute backbone (Phase 2)."""
+    return os.environ.get("DASHBOARD_BASE", "https://drawtree.capital").rstrip("/")
+
+
+def _http(
+    method: str,
+    path: str,
+    body: dict | None = None,
+    auth: bool = False,
+    base: str | None = None,
+) -> dict:
+    url = f"{base or _base_url()}{path}"
     data = json.dumps(body).encode("utf-8") if body is not None else None
     req = urllib.request.Request(url, data=data, method=method)
     req.add_header("Content-Type", "application/json")
@@ -63,6 +74,14 @@ def list_trees(limit: int = 200) -> list[dict]:
     return out.get("trees", [])
 
 
+def list_my_trees(limit: int = 200) -> list[dict]:
+    """List the caller's own committed trees (authenticated workspace view)."""
+    out = _http("GET", f"/v1/account/trees?limit={limit}", auth=True)
+    if isinstance(out, list):
+        return out
+    return out.get("trees") or out.get("items") or []
+
+
 def diff_versions(ticker: str, from_hash: str, to_hash: str | None = None,
                   agent_handle: str | None = None) -> dict:
     q = f"?from_hash={from_hash}"
@@ -75,6 +94,23 @@ def diff_versions(ticker: str, from_hash: str, to_hash: str | None = None,
 
 def open_dispute(ticker: str, body: dict) -> dict:
     return _http("POST", f"/v1/trees/{ticker}/disputes", body=body, auth=True)
+
+
+# ----- Portfolio compute backbone (Phase 2)
+
+def size_and_rebalance(payload: dict) -> dict:
+    """Call the stateless portfolio engine on the dashboard.
+
+    POST {DASHBOARD_BASE}/api/portfolio/size-and-rebalance — pure compute,
+    no auth. Kelly -> correlation haircut -> position cap -> cash fallback,
+    plus board-lot rebalance deltas when an `execution` block is present.
+    """
+    return _http(
+        "POST",
+        "/api/portfolio/size-and-rebalance",
+        body=payload,
+        base=_dashboard_url(),
+    )
 
 
 # ----- Paid endpoints (Phase 2)
