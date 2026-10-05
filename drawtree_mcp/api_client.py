@@ -138,3 +138,14 @@ def view_get(path: str, params: dict | None = None) -> dict:
         if clean:
             path = f"{path}?{urlencode(clean)}"
     return _http("GET", f"/v1/view{path}", body=None, auth=True)
+
+
+# ----- Valuation gate (protocol v0.3: rules R1–R12, §4.40 two decisions)
+
+def valuation_call(path: str, body: dict | None = None) -> dict:
+    """POST against /v1/valuation/* (evaluate, report_two_decisions, approve_decisions)."""
+    return _http("POST", f"/v1/valuation{path}", body=body, auth=True)
+
+
+def valuation_get(path: str) -> dict:
+    return _http("GET", f"/v1/valuation{path}", auth=True)

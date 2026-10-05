@@ -1,0 +1,40 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install (stdio + HTTP extras)
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[http]" pytest
+      - name: Both transports import and advertise the same kernel tools
+        run: |
+          python - <<'PY'
+          import asyncio
+          from drawtree_mcp import server, http_server
+          names = {t.name for t in asyncio.run(server.list_tools())}
+          assert names == set(server.TOOL_HANDLERS), names ^ set(server.TOOL_HANDLERS)
+          http_names = {t.name for t in asyncio.run(http_server.mcp.list_tools())}
+          for n in ("validate_tree", "aggregate_tree", "migrate_tree", "sweep_conditions", "evaluate_valuation",
+                    "report_two_decisions", "approve_decisions", "read_tree_versions", "read_tree_state_at",
+                    "diff_tree_versions", "summarize_tree", "commit_draft_tree", "search", "fetch"):
+              assert n in http_names, n
+          print(f"stdio {len(names)} tools, http {len(http_names)} tools")
+          PY
+      - name: Unit tests (kernel golden test against the fleet engine, tool wiring)
+        run: python -m pytest -q tests

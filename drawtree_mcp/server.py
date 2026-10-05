@@ -259,6 +259,59 @@ async def tool_refund_charge(args: dict) -> dict:
         return {"error": str(e)}
 
 
+async def tool_evaluate_valuation(args: dict) -> dict:
+    decisions = args.get("decisions")
+    if not isinstance(decisions, dict):
+        return {"error": "decisions must be a JSON object"}
+    try:
+        return api_client.valuation_call("/evaluate", {"decisions": decisions, "branches": args.get("branches"),
+                                                      "language": args.get("language") or "zh"})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+async def tool_report_two_decisions(args: dict) -> dict:
+    decisions = args.get("decisions")
+    if not isinstance(decisions, dict) or not args.get("draft_id"):
+        return {"error": "draft_id and decisions required"}
+    try:
+        return api_client.valuation_call("/report_two_decisions", {
+            "draft_id": args["draft_id"], "decisions": decisions,
+            "branches": args.get("branches"), "language": args.get("language") or "zh"})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+async def tool_approve_decisions(args: dict) -> dict:
+    reply = str(args.get("reply") or "").strip()
+    if not args.get("draft_id") or len(reply) < 2:
+        return {"error": "draft_id and the human's reply (verbatim) required"}
+    try:
+        return api_client.valuation_call("/approve_decisions", {"draft_id": args["draft_id"], "reply": reply})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+async def tool_read_tree_state_at(args: dict) -> dict:
+    tree_id, at = args.get("tree_id"), args.get("at")
+    if not tree_id or not at:
+        return {"error": "tree_id and at (ISO-8601 cutoff) required"}
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/state_at", params={"at": at})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+async def tool_read_tree_versions(args: dict) -> dict:
+    tree_id = args.get("tree_id")
+    if not tree_id:
+        return {"error": "tree_id required"}
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/versions", params={"limit": args.get("limit") or 100})
+    except Exception as e:
+        return {"error": str(e)}
+
+
 # ============================================================
 # Server bootstrap
 # ============================================================
@@ -282,6 +335,13 @@ TOOL_HANDLERS = {
     # CHARGE LIFECYCLE
     "confirm_charge": tool_confirm_charge,
     "refund_charge": tool_refund_charge,
+    # VALUATION GATE (free; protocol v0.3 rules R1–R12, §4.40 two decisions)
+    "evaluate_valuation": tool_evaluate_valuation,
+    "report_two_decisions": tool_report_two_decisions,
+    "approve_decisions": tool_approve_decisions,
+    # POINT IN TIME (free)
+    "read_tree_versions": tool_read_tree_versions,
+    "read_tree_state_at": tool_read_tree_state_at,
 }
 
 
@@ -532,6 +592,73 @@ async def list_tools() -> list[Tool]:
                     "charge_id": {"type": "string"},
                     "reason": {"type": "string"},
                 },
+            },
+        ),
+        Tool(
+            name="evaluate_valuation",
+            description=(
+                "FREE, stateless. Deterministic valuation gate (protocol v0.3, rules R1–R12) on a "
+                "`decisions` object: tier statistics (n-rules), derived multiples, implied bear/base/bull "
+                "prices, R5 hard gate bear < price < bull, base-tier fit (R10/AX7), numerator gate, R12 "
+                "re-basing; with `branches` also price-derived impact grades and the coverage rule. "
+                "numerator = street consensus × ratio; multiple = tier median today; DCF/DDM refused. "
+                "Iterate until errors is empty, then report_two_decisions."
+            ),
+            inputSchema={
+                "type": "object", "required": ["decisions"],
+                "properties": {
+                    "decisions": {"type": "object", "description": "ticker, date, price, price_date, currency, ruler{}, basis, numerator{}, own_multiple{}, shape, tiers{bear|base|bull}, ratios{bear,bull}, …"},
+                    "branches": {"type": "array", "items": {"type": "object"}},
+                    "language": {"type": "string", "enum": ["zh", "en"]},
+                },
+            },
+        ),
+        Tool(
+            name="report_two_decisions",
+            description=(
+                "FREE. Evaluate and store the two decisions (ratios.bear / ratios.bull and the bear / bull "
+                "tier identities) for a draft; returns report_md for the human. STOP after this call: show "
+                "the report, wait for the reply, then approve_decisions with the reply verbatim."
+            ),
+            inputSchema={
+                "type": "object", "required": ["draft_id", "decisions"],
+                "properties": {
+                    "draft_id": {"type": "string"},
+                    "decisions": {"type": "object"},
+                    "branches": {"type": "array", "items": {"type": "object"}},
+                    "language": {"type": "string", "enum": ["zh", "en"]},
+                },
+            },
+        ),
+        Tool(
+            name="approve_decisions",
+            description=(
+                "FREE. Record the human's reply to the two-decision report and build the schema-2.1 "
+                "valuation document that commit attaches to the tree. Refused until the stored report "
+                "has no errors."
+            ),
+            inputSchema={
+                "type": "object", "required": ["draft_id", "reply"],
+                "properties": {"draft_id": {"type": "string"}, "reply": {"type": "string"}},
+            },
+        ),
+        Tool(
+            name="read_tree_versions",
+            description="FREE. Append-only version history of a tree (newest first): hash, signature, source, actor, time, key_kind.",
+            inputSchema={
+                "type": "object", "required": ["tree_id"],
+                "properties": {"tree_id": {"type": "string"}, "limit": {"type": "integer"}},
+            },
+        ),
+        Tool(
+            name="read_tree_state_at",
+            description=(
+                "FREE. The tree exactly as recorded at or before an ISO-8601 cutoff — the point-in-time "
+                "read a backtest or a dispute may use."
+            ),
+            inputSchema={
+                "type": "object", "required": ["tree_id", "at"],
+                "properties": {"tree_id": {"type": "string"}, "at": {"type": "string", "description": "e.g. 2026-10-03T13:30:00Z"}},
             },
         ),
     ]
