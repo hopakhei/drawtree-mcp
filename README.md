@@ -8,9 +8,9 @@
 2. **Cross-reference your narrative against a public fleet** of seeded thesis trees — see how peers with the same narrative archetype have played out
 3. **Suggest from a 164-framework KB** which strategy framework best fits each branch (Porter's Five Forces, VRIO, Network Effects Map, Real Options Valuation, …)
 4. **Seed leaves** with curated framework-specific diagnostic questions
-5. **Suggest typed falsification** kill conditions that pass the v0.2 observability regex
-6. **Validate** the tree against the 9 protocol invariants (acyclic, source refs, observable kill conditions, frozen baseline, narrative versions, …)
-7. **Aggregate** leaf → branch → H-0 verdict + conviction (0–1) + expected return (Σ P × distance)
+5. **Suggest typed falsification** kill conditions; v0.3 stores them as structured `conditions[]` (metric / operator / threshold / window)
+6. **Validate** the tree against protocol v0.3 (impact-grade branches, structured conditions with assessments, evidence-ledger vocabularies, reading guides) — v0.2 docs still get the 9 legacy invariants
+7. **Aggregate** leaf → branch → H-0 verdict, conviction (additive log-odds), verdict-based and price-implied scenario probabilities, expected return, derivation certificate
 8. **Reverse-engineer** the market's implied probability distribution and identify the highest-leverage tension-point leaf
 9. **Commit privately** to drawtree-api with Ed25519 attestation
 10. **Subscribe to alerts** when a kill switch fires or narrative shifts
@@ -132,15 +132,17 @@ Load them in your Claude Project / system prompt. The MCP tools are designed to 
 
 ---
 
-## The 10 tools
+## The tools
 
 | Tier | Tool | What it does |
 |---|---|---|
 | Pipeline | `register_narrative` | Parse the narrative-detection handoff; fleet-match the error type; derive H-0 |
 | Pipeline | `enrich_branches` | Suggest top-3 frameworks per branch + diagnostic question seeds |
 | Pipeline | `derive_implied_probabilities` | Bull/Base/Bear → P(scenario) + tension point |
-| Atomic | `validate_tree` | v0.2 schema + 9 invariants check |
-| Atomic | `aggregate_tree` | leaf → branch → H-0 verdict + conviction + ER |
+| Atomic | `validate_tree` | protocol v0.3 checks (v0.2 docs: 9 legacy invariants) |
+| Atomic | `aggregate_tree` | leaf → branch → H-0 verdict, conviction, probabilities (verdict / price-implied), ER, certificate |
+| Atomic | `migrate_tree` | v0.2 doc → v0.3 (mechanical) + todo list |
+| Atomic | `sweep_conditions` | deterministic deadline clock + breach latch (zero model calls) |
 | Atomic | `commit_tree` | Publish to drawtree-api (default visibility=private) |
 | Atomic | `read_tree` | Fetch latest version of any tree |
 | Atomic | `suggest_framework` | Free-text query → top-k frameworks from the 164 KB |
@@ -151,9 +153,23 @@ Each tool's schema is auto-published to MCP clients via `list_tools()`.
 
 ---
 
+## Protocol v0.3 (2026-10-05)
+
+The kernel (`drawtree_mcp/_kernel/`) now implements the methodology the maintainer's research fleet runs weekly (engine `tree_quant/4`, `h0-engine/1`). See [`docs/PROTOCOL_v0.3.md`](docs/PROTOCOL_v0.3.md) for the schema and formulas. In short:
+
+- **Branch weight is derived, not authored.** Each branch carries an `impact_grade` (致命 2.5 / 重創 1.6 / 明顯受損 0.9 / 輕微 0.4 / 邊緣 0.15) set by the price impact of its falsification consequence (≥25% / 10–25% / 4–10% / 1–4% / <1% of price). The reversed-Fibonacci default is retired.
+- **Kill thresholds are 2.0**, and `necessity_leaves` name the leaves whose falsification kills a branch outright.
+- **Conviction is additive log-odds**: `logit(H0) = logit(0.40) + Σ w·(score/3)`, positive terms halved, clamped to [0.005, 0.95]. Branch conviction is `σ(logit(0.40) + 1.5·score)`.
+- **Conditions are structured**: `conditions[] {cid, kind, metric, operator, threshold, unit, window, status}` plus `condition_assessments[]`; gates E1–E7 (anti-goalpost, unaddressed breaches, unassessed conditions, unsupported downgrades, unsourced dated evidence) are enforced by `validate_tree`.
+- **Evidence is an append-only ledger** with closed `tier` (filing > earnings > trade_press > news > synthetic) and `impact` (supports / challenges / neutral) vocabularies.
+- **Price-implied probabilities** (Max-Base convention, clamp flagged as `infeasible`) are reported next to verdict-based ones.
+- `migrate_tree` converts a v0.2 doc mechanically and lists what the author must still supply; v0.2 docs continue to validate and aggregate with their original semantics.
+
+The acceptance test for the sync is `tests/test_protocol_v03.py::test_golden_crwd_matches_fleet_engine`: a real fleet tree's structure and verdicts aggregate to exactly the fleet engine's `h0_score / h0_verdict / conviction / p_* / er_*`.
+
 ## What gets enforced
 
-When you call `commit_tree`, the server runs the **same validator that drawtree-api would run** before persistence. A tree fails to commit unless:
+When you call `commit_tree`, the server runs the **same validator that drawtree-api would run** before persistence. For a v0.2 doc a tree fails to commit unless:
 
 1. ✅ Acyclic graph (multi-parent leaves OK if explicit)
 2. ✅ Every leaf has ≥1 falsification entry

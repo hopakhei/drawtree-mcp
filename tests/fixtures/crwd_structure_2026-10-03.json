@@ -1,0 +1,625 @@
+{
+ "_note": "Ledger-safe golden fixture extracted from stock-trees CRWD on 2026-10-05 (structure, verdicts, condition shapes only; no prose). Expected values are the tree_quant/4 quant_history row of 2026-10-03.",
+ "drawtree_version": "0.3",
+ "ticker": "CRWD",
+ "snapshot_date": "2026-10-03",
+ "branches": [
+  {
+   "id": "A",
+   "weight": 2.5,
+   "impact_grade": "致命",
+   "aggregation": "portfolio",
+   "scenario_role": "倍數持久",
+   "falsification_consequence": [
+    "bear_multiple",
+    "bear_numerator",
+    "bull_numerator"
+   ],
+   "necessity_leaves": [
+    "A1",
+    "A2"
+   ]
+  },
+  {
+   "id": "B",
+   "weight": 2.5,
+   "impact_grade": "致命",
+   "aggregation": "portfolio",
+   "scenario_role": "倍數持久",
+   "falsification_consequence": [
+    "bear_multiple"
+   ],
+   "necessity_leaves": [
+    "B1",
+    "B2"
+   ]
+  },
+  {
+   "id": "C",
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "aggregation": "portfolio",
+   "scenario_role": "分子交付",
+   "falsification_consequence": [
+    "bear_numerator",
+    "bull_numerator"
+   ],
+   "necessity_leaves": [
+    "C1"
+   ]
+  },
+  {
+   "id": "D",
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "aggregation": "portfolio",
+   "scenario_role": "分子交付",
+   "falsification_consequence": [
+    "bear_numerator"
+   ],
+   "necessity_leaves": [
+    "D1"
+   ]
+  },
+  {
+   "id": "E",
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "aggregation": "portfolio",
+   "scenario_role": "分子交付",
+   "falsification_consequence": [
+    "bear_numerator"
+   ],
+   "necessity_leaves": [
+    "E1"
+   ]
+  }
+ ],
+ "hypotheses": [
+  {
+   "id": "A1",
+   "verdict": "Trending positive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "A1-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_nnarr_usd_m",
+     "operator": ">=",
+     "threshold": 347,
+     "unit": "usd_m",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "A1-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_nnarr_usd_m",
+     "operator": "<",
+     "threshold": 343,
+     "unit": "usd_m",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "A1-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "A1-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "A2",
+   "verdict": "Inconclusive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "A2-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Q4 FY27 業績與 FY28 指引（約 2027-03 上旬）",
+     "status": "open"
+    },
+    {
+     "cid": "A2-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_flex_arr_growth_pct",
+     "operator": "<",
+     "threshold": 40,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "A2-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "A2-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "A3",
+   "verdict": "Inconclusive",
+   "leaf_nature": "text",
+   "conditions": [
+    {
+     "cid": "A3-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "A3-F1",
+     "kind": "falsification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Q3 至 Q4 FY27 業績",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "A3-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "A3-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "A4",
+   "verdict": "Trending positive",
+   "leaf_nature": "text",
+   "conditions": [
+    {
+     "cid": "A4-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Q4 FY27 業績與 FY28 指引（約 2027-03 上旬）",
+     "status": "open"
+    },
+    {
+     "cid": "A4-F1",
+     "kind": "falsification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "至 FY28 首季",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "A4-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "A4-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "B1",
+   "verdict": "Inconclusive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "B1-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_ngsiem_arr_growth_pct",
+     "operator": ">=",
+     "threshold": 50,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "B1-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_ngsiem_arr_growth_pct",
+     "operator": "<",
+     "threshold": 40,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "B1-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "B1-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "B2",
+   "verdict": "Trending negative",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "B2-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_cloud_arr_growth_pct",
+     "operator": ">=",
+     "threshold": 25,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "B2-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_cloud_arr_growth_pct",
+     "operator": "<",
+     "threshold": 20,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "B2-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "B2-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "B3",
+   "verdict": "Inconclusive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "B3-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_identity_arr_growth_pct",
+     "operator": ">=",
+     "threshold": 30,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "B3-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_identity_arr_growth_pct",
+     "operator": "<",
+     "threshold": 25,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "B3-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "B3-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "C1",
+   "verdict": "Trending positive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "C1-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_revenue_usd_m",
+     "operator": ">=",
+     "threshold": 1529,
+     "unit": "usd_m",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "C1-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_revenue_usd_m",
+     "operator": "<",
+     "threshold": 1523,
+     "unit": "usd_m",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "C1-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "C1-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "C2",
+   "verdict": "Inconclusive",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "C2-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_nongaap_op_margin_pct",
+     "operator": ">=",
+     "threshold": 24.5,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "C2-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_sub_gm_pct",
+     "operator": "<",
+     "threshold": 80,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "C2-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "C2-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "D1",
+   "verdict": "Trending negative",
+   "leaf_nature": "machine",
+   "conditions": [
+    {
+     "cid": "D1-V1",
+     "kind": "verification",
+     "metric": "q3_fy27_sbc_pct_rev",
+     "operator": "<=",
+     "threshold": 25,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "D1-F1",
+     "kind": "falsification",
+     "metric": "q3_fy27_sbc_pct_rev",
+     "operator": ">=",
+     "threshold": 27,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "D1-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "D1-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "D2",
+   "verdict": "Inconclusive",
+   "leaf_nature": "text",
+   "conditions": [
+    {
+     "cid": "D2-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Q3 FY27 業績（季度截至 2026-10-31；公司未公布日期，資料商估計 2026-12-01）",
+     "status": "open"
+    },
+    {
+     "cid": "D2-F1",
+     "kind": "falsification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "至 Q4 FY27 業績",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "D2-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "D2-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "E1",
+   "verdict": "Inconclusive",
+   "leaf_nature": "text",
+   "conditions": [
+    {
+     "cid": "E1-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "至 Q4 FY27 業績",
+     "status": "open"
+    },
+    {
+     "cid": "E1-F1",
+     "kind": "falsification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "至 2027 年底",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "E1-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "E1-F1",
+     "assessment": "not_met"
+    }
+   ]
+  },
+  {
+   "id": "E2",
+   "verdict": "Inconclusive",
+   "leaf_nature": "text",
+   "conditions": [
+    {
+     "cid": "E2-V1",
+     "kind": "verification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "Microsoft Ignite（約 2026-11-17 至 11-20）",
+     "status": "open"
+    },
+    {
+     "cid": "E2-F1",
+     "kind": "falsification",
+     "metric": null,
+     "operator": "==",
+     "threshold": null,
+     "unit": "pct",
+     "window": "至 2027 年底",
+     "status": "open"
+    }
+   ],
+   "condition_assessments": [
+    {
+     "cid": "E2-V1",
+     "assessment": "not_met"
+    },
+    {
+     "cid": "E2-F1",
+     "assessment": "not_met"
+    }
+   ]
+  }
+ ],
+ "valuation": {
+  "snapshot_price": 270.04,
+  "scenarios": {
+   "bull": {
+    "target_price": 335.79
+   },
+   "base": {
+    "target_price": 287.0
+   },
+   "bear": {
+    "target_price": 143.92
+   }
+  }
+ },
+ "expected": {
+  "h0_score": 0.0425,
+  "h0_verdict": "Inconclusive",
+  "conviction": 0.3525,
+  "p_bull": 0.0213,
+  "p_base": 0.9787,
+  "p_bear": 0.0,
+  "pi_bull": 0.0,
+  "pi_base": 0.8815,
+  "pi_bear": 0.1185,
+  "er_verdict": 0.0667,
+  "er_price_implied": 0.0
+ },
+ "expected_branches": {
+  "A": {
+   "weight": 2.5,
+   "impact_grade": "致命",
+   "score": 0.5,
+   "conviction": 0.5853,
+   "verdict": "Trending positive"
+  },
+  "B": {
+   "weight": 2.5,
+   "impact_grade": "致命",
+   "score": -0.3333,
+   "conviction": 0.2879,
+   "verdict": "Inconclusive"
+  },
+  "C": {
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "score": 0.5,
+   "conviction": 0.5853,
+   "verdict": "Trending positive"
+  },
+  "D": {
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "score": -0.5,
+   "conviction": 0.2395,
+   "verdict": "Trending negative"
+  },
+  "E": {
+   "weight": 1.6,
+   "impact_grade": "重創",
+   "score": 0.0,
+   "conviction": 0.4,
+   "verdict": "Inconclusive"
+  }
+ }
+}

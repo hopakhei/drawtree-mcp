@@ -73,11 +73,11 @@ def test_validate_basic():
 
 
 def test_tool_handlers_set():
-    """The 13 tools advertised match what's wired."""
+    """The 15 tools advertised match what's wired."""
     expected = {
         # free
-        "validate_tree", "aggregate_tree", "commit_tree", "read_tree",
-        "suggest_framework", "balance",
+        "validate_tree", "aggregate_tree", "migrate_tree", "sweep_conditions",
+        "commit_tree", "read_tree", "suggest_framework", "balance",
         # paid
         "register_narrative", "enrich_branches", "suggest_falsification",
         "derive_scenario_values", "subscribe_alerts",

@@ -35,6 +35,8 @@ from mcp.types import TextContent, Tool
 
 from . import api_client, framework_retrieval
 from ._kernel.aggregation import aggregate, annotate_doc
+from ._kernel.migrate import migrate_v02_to_v03
+from ._kernel.sweep import sweep_conditions
 from ._kernel.validate import validate as validate_v02
 
 
@@ -66,6 +68,25 @@ async def tool_aggregate_tree(args: dict) -> dict:
     if not isinstance(tree, dict):
         return {"error": "tree must be a JSON object"}
     return aggregate(tree)
+
+
+async def tool_migrate_tree(args: dict) -> dict:
+    tree = args.get("tree")
+    if not isinstance(tree, dict):
+        return {"error": "tree must be a JSON object"}
+    doc, report = migrate_v02_to_v03(tree)
+    rep = validate_v02(doc)
+    return {"tree": doc, "report": report,
+            "validation": {"ok": not rep.errors, "errors": [{"code": i.code, "path": i.path, "message": i.message} for i in rep.errors],
+                           "warnings": [{"code": i.code, "path": i.path, "message": i.message} for i in rep.warnings]}}
+
+
+async def tool_sweep_conditions(args: dict) -> dict:
+    tree = args.get("tree")
+    if not isinstance(tree, dict):
+        return {"error": "tree must be a JSON object"}
+    out = sweep_conditions(tree, args.get("today"))
+    return {"tree": tree, **out}
 
 
 async def tool_commit_tree(args: dict) -> dict:
@@ -246,6 +267,8 @@ TOOL_HANDLERS = {
     # FREE
     "validate_tree": tool_validate_tree,
     "aggregate_tree": tool_aggregate_tree,
+    "migrate_tree": tool_migrate_tree,
+    "sweep_conditions": tool_sweep_conditions,
     "commit_tree": tool_commit_tree,
     "read_tree": tool_read_tree,
     "suggest_framework": tool_suggest_framework,
@@ -269,9 +292,10 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="validate_tree",
             description=(
-                "FREE. Validate a candidate Draw Tree v0.2 doc against the 9 protocol "
-                "invariants. Returns errors + warnings. The server's commit_tree refuses "
-                "to publish trees with errors."
+                "FREE. Validate a Draw Tree doc. v0.3 docs (drawtree_version 0.3 or any "
+                "impact_grade) get the full protocol: impact-grade branches, structured "
+                "conditions with assessments (gates E1-E7), evidence-ledger vocabularies, "
+                "reading guides. v0.2 docs get the 9 legacy invariants. Returns errors + warnings."
             ),
             inputSchema={
                 "type": "object", "required": ["tree"],
@@ -281,13 +305,41 @@ async def list_tools() -> list[Tool]:
         Tool(
             name="aggregate_tree",
             description=(
-                "FREE. Compute leaf -> branch -> H-0 verdict, conviction (0-1), and "
-                "expected return (if valuation present). Fibonacci-default branch "
-                "weights unless overridden."
+                "FREE. Compute leaf -> branch -> H-0 verdict, conviction (0-1), verdict-based "
+                "and price-implied scenario probabilities, expected return and a derivation "
+                "certificate. v0.3 semantics (tree_quant/4): impact-grade weights, kill "
+                "threshold 2.0, additive log-odds conviction. v0.2 docs keep legacy semantics."
             ),
             inputSchema={
                 "type": "object", "required": ["tree"],
                 "properties": {"tree": {"type": "object"}},
+            },
+        ),
+        Tool(
+            name="migrate_tree",
+            description=(
+                "FREE. Migrate a v0.2 doc to protocol v0.3 mechanically (weights -> impact "
+                "grades, falsification text -> conditions[], recent_evidence -> evidence_ledger, "
+                "legacy verdicts -> six states). Returns the new doc, a change list and a todo "
+                "list of fields the author must still supply, plus a validation report."
+            ),
+            inputSchema={
+                "type": "object", "required": ["tree"],
+                "properties": {"tree": {"type": "object"}},
+            },
+        ),
+        Tool(
+            name="sweep_conditions",
+            description=(
+                "FREE. Deterministic condition sweep (zero model calls): open deadline "
+                "conditions past due become expired_unfulfilled; scalar falsification "
+                "conditions whose observations[] cross the threshold become breached with a "
+                "permanent latch. Appends synthetic ledger rows. Run before re-judging."
+            ),
+            inputSchema={
+                "type": "object", "required": ["tree"],
+                "properties": {"tree": {"type": "object"},
+                               "today": {"type": "string", "description": "ISO date; default = today (UTC)"}},
             },
         ),
         Tool(
