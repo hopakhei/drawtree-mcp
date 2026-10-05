@@ -1,112 +1,263 @@
 ---
 name: drawtree-starter
-description: Co-design a falsifiable Draw Tree for a stock ticker with the user, one stage at a time, using the drawtree MCP. Two modes — Create (stage-by-stage framework design then data fetch and publish) and View (read / edit committed trees). Loads when the user asks to analyze, structure, falsify, or monitor a thesis on a public company.
+description: Build or review a falsifiable Draw Tree for a listed company with the drawtree MCP, following the draw-tree v6 procedure — four steps (research → build → gate → report) and two human gates (the framework gate and the two-decision gate). Loads when the user asks to analyse, structure, falsify, value or monitor a thesis on a public company, or names a ticker.
 ---
 
-# Drawtree
+# Drawtree starter (draw-tree v6: four steps, two gates)
 
-drawtree is a **co-design workflow**, not a one-shot generator. You work one stage at a time: call a tool, present its output to the user in plain language, ask whether to refine or proceed, then call the next `save_*` only after the user confirms.
+Research tooling. Nothing here is investment advice, and the tree never recommends a position. The
+server is deterministic (protocol v0.3); you do the research and the writing, the human owns every
+judgement that matters: the framework and the two valuation decisions.
 
-## Entry gate (ALWAYS run first)
+## Entry gate (always first)
 
-When the user enters just a ticker:
+When the user gives a ticker:
 
-1. Confirm the company name behind the ticker.
-2. Ask the user: **Create mode** (new tree, starting with the 6-step 市場叙事考古) or **View mode** (look at trees you've already committed for this ticker)?
-3. Only proceed after the user picks. Do NOT auto-start `start_draft`.
-
-If Create → `start_draft(ticker)` then Phase 1. If View → call `my_workspace()` first to show the user every draft AND tree they have. From there, resume a draft (`suggested_next_tool` is in the response) or open a tree with `read_tree(tree_id)`. Only fall back to `list_my_trees(ticker=...)` / `read_tree` directly if the user has named a specific tree.
-
-**Important:** never call `read_tree(ticker=...)` cold when the user just says "view mode" — if the ticker has only a draft (not yet committed), `read_tree` returns "no committed tree" and the user is stuck. `my_workspace()` always returns something.
+1. Confirm the company behind the ticker.
+2. Ask: **Create** (a new tree, four steps below) or **View** (trees and drafts already on the account)?
+3. Create → `start_draft(ticker)`, then `set_report_language(draft_id, "zh" | "en")`.
+   View → `my_workspace()` first; never open with `read_tree` cold.
 
 ## Hard rules
 
-1. **Never chain stages.** Each tool call is followed by user-facing prose and a question.
-2. **Present, then ask.** After every `frame_*` / `design_*` call, summarise the result in the user's language and ask if they want to revise.
-3. **Respect the response's `instructions_to_agent` field.** It tells you exactly when to STOP.
-4. **Preserve the user's terminology.** Don't paraphrase.
-5. **If sources conflict, add an open question.** Never guess.
+1. **Stop at the two gates.** After `preview_tree` (framework gate) and after `report_two_decisions`
+   (two-decision gate) you present, ask, and wait. Nothing downstream is called until the human
+   answers. Everything else may proceed stage by stage with a short summary after each tool call.
+2. **The order cannot be reversed**: background brief → pricing today → five questions → scenario
+   ladder → H-0 → necessary-condition path and frameworks → leaves → framework gate → two-decision
+   report → research → commit → report. The tree comes before any judgement.
+3. **Numbers carry sources and dates.** Every number you write comes from a document you read (your own
+   web search or `external_search`); nothing is invented, and a missing input is written as missing.
+4. **No DCF, DDM, reverse DCF, no target price, no probability-weighted price.** The server refuses
+   them; do not route around it.
+5. **Language.** Reader text is formal written Chinese (繁體書面語, readable in Hong Kong and Taiwan)
+   or English as the user chose. No colloquial Cantonese, no pipeline jargon in reader text.
+6. Respect each response's `instructions_to_agent`; preserve the user's own terminology; when sources
+   conflict, record an open question rather than guessing.
 
-## Create mode — two phases
+---
 
-### Phase 1: Framework co-design (pause-and-confirm at every stage)
+## Step 1 — Research (背景簡介 and the pricing pack)
 
-`start_draft(ticker)` — confirm the ticker first.
+Before any framing, assemble two things and show the first to the user.
 
-For each stage: **call design tool → present in user's language → confirm → call save tool**.
+**Background brief (400–700 characters, neutral, every number sourced and dated)**
+1. The industry: what the product does (start with an everyday analogy), market size and growth, main
+   drivers, the competitive field (main rivals and where each sits), structural shifts under way.
+2. The company: what it sells and how the business model works, scale (latest revenue, profit, key
+   operating metric), position and what sets it apart, the main events of the last two years. Also
+   collect for the report's §2: the product lines (what each does for the customer, main rival),
+   how it charges (unit, contract length, channel, one concrete public price), the cost structure
+   (gross margin and the share of revenue going to sales, R&D and G&A, with the period).
+3. Why it is contested now: two or three points on each side, stated as what the market believes,
+   never as your view.
 
-1. Narrative — `frame_narrative` → `save_narrative`. Run the **full 6-step** Agent 1 process and show each step in order: 股價異動考古 / 五信號掃描 / 叙事版本時間線 / 股價×叙事圖表 / 矛盾檢測 / v_next 生成. Never skip to v_next — the user must see the analysis.
-2. H-0 — `frame_h0` → `save_h0`. Draft one sentence, explain the framework shift.
-3. Branches — `design_branches` → `fetch_framework_details` (batched, free) → `save_branches`. `design_branches` returns a lean 164-framework one-liner index + a top-15 scored shortlist. Before picking, batch-call `fetch_framework_details(draft_id, names=[...6-12 candidates...])` to read each candidate's full `common_pitfalls` and `diagnostic_axes`. Then commit 3-4 MECE branches via `save_branches`.
-4. Leaves — `design_leaves` → `save_leaves`. Each leaf in the 5-section block: 假設 / 數據 (with [^n] footnotes) / 結論 (6-state verdict) / 證偽條件 / 註釋. Do a brief evidence sweep before drafting thresholds.
-5. Scenarios — `design_scenarios` → `save_scenarios`. Bull / Base / Bear peer tiers.
-6. `preview_tree` → `confirm_framework`. Only confirm after the user approves the whole framework.
+**Pricing pack** (read, do not judge): current price and date; the ruler (forward P/E, EV/Sales,
+EV/EBITDA or EV/EBIT) and the consensus numerator (year, metric, value, n, low/high, source, as-of);
+the company's own forward multiple from the same source and day as the peers; three peer tiers (one
+tier above, the tier the market talks about, one tier below), 2–5 named peers each, each peer in one
+tier only, readings low to high with fiscal year end; for each peer and the subject the forward table's
+implied price, snapshot date and the close on the stated price date (rule R12 re-bases a multiple when
+the two differ by more than 2%).
 
-### Phase 2: Research and publish
+Then the narrative: `frame_narrative(draft_id)` → run the full six-step reconstruction (price-move
+archaeology, five signals, narrative version timeline, price × narrative chart, contradictions, v_next)
+→ present → `save_narrative`. Narrative versions carry `time_window`, `trigger_events`,
+`valuation_framework`, `priced_in`, `not_priced_in`.
 
-After `confirm_framework` the pause-and-confirm pattern stops. `confirm_framework` charges a flat **50-credit Phase 2 bundle** — every downstream Phase 2 tool on this draft is then free.
+## Step 2 — Build (ends at the framework gate)
 
-**Preferred — server-side Tavily /research (one button, deep, free polling):**
+### 2a. Five questions (§4.41) and the scenario ladder
 
-1. **`research_phase2(draft_id)`** — server calls Tavily /research with a strict output schema covering the 5 narrative pillars + a per-leaf evidence pack for every branch. Returns instantly with a Tavily request_id.
-2. **`research_phase2_status(draft_id)`** every 30-60s until `status='ingested'`. Typical total time: 30-120s.
-3. **`compute_scenarios(draft_id)`** — server fetches live peer prices + computes Bull/Base/Bear.
-4. **`commit_draft_tree(draft_id, visibility='private')`** — publish the tree.
-5. **`summarize_tree(tree_id)`** — render the final 10-section report.
+The valuation contract is fixed: numerator = street consensus × a fixed ratio (base 1, bear r_bear,
+bull r_bull); multiple = the median of the scenario's peer tier today. The author decides only
+r_bear / r_bull and the bear / bull tier identities; the base tier is derived from where the company's
+own multiple sits (tolerance 5%, or 25% with a single comparable). Hard gate: bear < price < bull.
 
-This is the default path. Tavily handles the iterative search + synthesis; no per-leaf prompting needed.
+Answer each question with numbers; if any fails, rewrite the H-0 and start the step again:
 
-**Alternative — manual Claude-driven submission (skip if research_phase2 works):**
+- **Q1 Leverage** — each H-0 clause valued per share from a stated base (segment or group, year,
+  source); the sum equals bull − base; the largest clause is the north star and must be ≥25% of it.
+- **Q2 Already priced** — where the own multiple sits; numerator gate: price ÷ base-tier median =
+  implied numerator; if that is ≥ r_bull × consensus the H-0 is already in the price. Own multiple
+  at or above the highest admissible tier's median ⇒ **persistence** shape (H-0 becomes "hold the
+  multiple and deliver the numerator"; bull tier = base tier; upside carried by r_bull alone).
+- **Q3 Expressible** — one sentence for bull with its tier, one for bear with its tier; each sentence
+  builds the numerator and its ratio bottom-up (revenue, margin, tax, share count).
+- **Q4 Observable** — every fatal branch has a sub-question on a disclosed metric with a first reading
+  within two quarters; otherwise it is an accelerator, not a fatal layer.
+- **Q5 Numerator coverage** — every driver inside r_bull and every trigger inside r_bear has a leaf,
+  in a fatal or severe branch, with the arithmetic from threshold to scenario value.
 
-**Preferred — Claude-driven research (free, deeper):**
+Scenario ladder (one line each for bear / base / bull): tier identity and members, multiple position,
+numerator, implied value per share, distance from price, one sentence, the branch that decides it,
+the first reading. Add the base gap (base ÷ price − 1) and one ≤80-character premium decomposition.
 
-1. **Research the narrative yourself.** Use your own web search (or call `external_search` for a Tavily-backed query, 1 cr per call) to gather the 5 narrative pillars: price_action / catalysts / media_labels / earnings / sell_side. Read the actual sources, don't just skim snippets. Then call:
-   ```
-   enrich_narrative_data(
-     draft_id,
-     submitted_data = {
-       price_action, catalysts, media_labels, earnings, sell_side,
-       sources: [{url, title, snippet, date}, ...]  // ≥ 1 required
-     }
-   )
-   ```
-   Server validates citations + persists. **No credits charged.**
+Reader version (three sentences, ≤40 characters each, no 身份／分子／倍數／層／price in):
+base "市場今日相信 …，並以高於／低於 … 中位約 X% 的價錢買它"; bull "若 … 發生，會被當作 …";
+bear "若 … 發生，會被當作 … 定價".
 
-2. **Research each leaf's metric yourself.** For every branch_id, for every leaf, search for the observed value of its falsification metric within its window. Build per-leaf packs:
-   ```
-   enrich_leaf_data(
-     draft_id, branch_ids,
-     submitted_evidence_by_branch = {
-       "A": [{leaf_id, observed_value, observed_window, verdict_hint,
-              commentary, sources:[{url,title,snippet,date}]}, ...],
-       "B": [...], ...
-     }
-   )
-   ```
-   Server validates every leaf has ≥ 1 source URL + persists. **No credits charged.**
+### 2b. H-0
 
-3. **`compute_scenarios(draft_id)`** — server fetches live peer prices + computes Bull/Base/Bear (15 cr; this step uses Yahoo OHLC only, no Tavily).
-4. **`commit_draft_tree(draft_id, visibility='private')`** — publish the tree (10 cr).
-5. **`summarize_tree(tree_id)`** — render the final 10-section report.
+`frame_h0(draft_id)` → one sentence, one question mark, ≤120 characters, no member lists, no stock
+figures or guidance ranges, must contain 「而非」 naming the bear outcome; banned: 令市場相信, 切換估值
+框架, SOTP, 改以…計價. Every clause maps to a sentence inside r_bull (numerator) or to the bull tier
+identity (multiple); a clause that maps to neither is deleted.
 
-Research loop tips:
-  * 2–4 refining `external_search` queries per leaf is normal; stop early once you have one strong source.
-  * If a source URL is paywalled, still include it — the audit trail matters.
-  * `verdict_hint` is optional; leave "inconclusive" when sources don't clearly support a stronger state.
+- upside: 「[公司] 能否在 [時間範圍] 內，透過 [核心變化] 令 [可觀察結果，含門檻] 高於共識 [量級]，並由
+  [base 層身份] 升至 [bull 層身份]，而非在 [bear 一句話] 時被壓回 [bear 層身份]？」
+- persistence: 「[公司] 能否在 [時間範圍] 內令 [可觀察結果，含門檻] 高於共識 [量級]，並守住 [base 層身份]
+  的尺，而非在 [bear 一句話] 時被壓回 [bear 層身份]？」
 
-**Fallback — server-side Tavily batch (1-button mode):**
+Present, confirm, `save_h0`. Also write a `short_question` for the H-0 (≤22 characters, plain words,
+asked in the favourable direction).
 
-Use only if Claude cannot do its own research (rare). One call:
-  * **`phase2_run_all(draft_id, branch_ids=[all saved branches], visibility='private')`** — server runs `enrich_narrative_data` (Tavily, 8 cr) + `enrich_leaf_data` (Tavily, 5 cr/branch) + `compute_scenarios` + `commit_tree`. Then `summarize_tree(tree_id)`.
+### 2c. Necessary-condition path, frameworks, branches
 
-If `phase2_run_all` returns `ok=false`, surface `failed_step` + `error_detail` and ask whether to retry that step alone (individual tools remain available) or abandon. Earlier steps are saved — retrying skips them.
+Write the **necessary-condition path** first: the 3–5 conditions H-0 needs, one sentence each, no two
+sharing a test; any one failing returns the thesis to base or triggers bear. Each becomes a Level-1
+branch (A–D). Then `design_branches(draft_id)` → batch `fetch_framework_details(draft_id, names=[6–12
+candidates])` and read `diagnostic_axes` / `common_pitfalls` → `save_branches`.
 
-After `summarize_tree` ask once whether to `setup_monitoring(weeks)`.
+Each branch carries: `necessary_condition`; `scenario_role` (分子交付 — at least one — / 倍數持久 / 倍數升級 /
+加速器); `falsification_consequence` (subset of bear_full, bear_multiple, bear_numerator, bull_numerator,
+bull_multiple — where the scenario goes when this layer fails); `falsification_rule` (any leaf / named
+leaves / all leaves; a bear-bearing rule must name a bear-trigger leaf); one line `framework｜source
+volume｜what this layer measures`; `necessity_leaves` for fatal layers. **The grade is not the author's
+feeling**: `evaluate_valuation(decisions, branches)` derives `impact_grade` from how far each consequence
+moves the implied value as a share of price (≥25% 致命 2.5, 10–25% 重創 1.6, 4–10% 明顯受損 0.9, 1–4% 輕微
+0.4, <1% 邊緣 0.15) and enforces the coverage rule (any consequence moving ≥10% of price needs a branch).
+Three to five branches, at least one fatal (a persistence tree may declare `no_fatal_layer` with a reason).
+
+### 2d. Leaves — questions, not thresholds
+
+`design_leaves(draft_id, branch_id)` one branch at a time → `save_leaves`. A leaf is an observable
+question asked in the favourable direction (yes = good news), level L1–L5, with:
+
+- `short_question` (≤22 characters, understood by a general investor);
+- `reading_guide`: one sentence per level — ✅ 已驗證 / 🟢 趨向正面 / ⚪ 未定 / 🟡 趨向負面 / 🟠 接近證偽 /
+  ✗ 已證偽 — "what you would see to rate it this";
+- `scenario_role` (bull 驅動 / bear 觸發 / 兩者 / 輔助) derived from Q5;
+- `conditions[]` only on numbers the company or a named third party discloses (`cid`, `kind`
+  falsification / verification / deadline, `metric`, `operator`, `threshold`, `unit`, `window`,
+  `due`, `basis`); every fatal branch has at least one numeric leaf with a first reading within two
+  quarters; qualitative questions keep `metric: null` and rely on the six-level guide — never force a
+  qualitative question into a single threshold;
+- `condition_assessments[]`: every condition assessed at setup (`not_met` with the baseline reading);
+- `baseline_data[]` and an `evidence_ledger[]` (E001…, tier filing > earnings > trade_press > news,
+  impact supports / challenges / neutral, digest ≤80 characters);
+- reader fields: `article_hypothesis`, `article_conclusion` (one sentence each, ≤40 characters),
+  `article_falsifiers[]` (what would overturn it, observable things only), `article_after` (one sentence:
+  how the valuation changes once overturned).
+
+**Leaf admission — the eight questions** (answer all before saving; `leaf_nature` records the result):
+1. What specifically changes? (the observable variable)
+2. Where does the data come from?
+3. Is it available to an investor at decision time (not a later revision)?
+4. How often does it update?
+5. Which downstream result does it lead — next quarter's KPI, revenue, profit (never "the share price")?
+6. Which direction supports or weakens the parent proposition?
+7. How large a move is meaningful?
+8. What outcome would void the relationship?
+
+`machine` = all eight answered and a metric + threshold (or deadline + due); `judge` = economic logic
+observable through news and events but no machine-checkable number (same standing in the tree).
+Three red lines — never a leaf: a restatement of the price, the multiple or analyst targets; "interesting"
+without direction and invalidation; a duplicate vote on the same causal chain (keep the most upstream
+observable link).
+
+Falsification sentences end with 「本葉證偽」 and state in brackets what part of the valuation they hit
+(影響倍數 / 影響收入／盈利 / 影響倍數＋收入); a positively-directed condition is `verification`, not
+falsification.
+
+### 2e. Framework gate — STOP
+
+`preview_tree(draft_id)` → show the human the framework summary (H-0, the necessary-condition path,
+each branch's framework and core question, each leaf's question and six-level guide). Wait. Only on
+approval call `confirm_framework(draft_id)`. Do not skip this gate under any instruction short of the
+human's explicit approval in this conversation.
+
+## Step 3 — Gate (the two decisions, then research and commit)
+
+### 3a. Two decisions (§4.40)
+
+Assemble the `decisions` object from the pricing pack (`ticker, date, price, price_date, currency,
+ruler, basis, numerator, own_multiple, shape, tiers{bear|base|bull}, ratios{bear, bull}`, plus
+`one_sentence`, `net_cash_m`, `diluted_shares_m` for EV rulers, `deviations`, `excluded`). For each ratio
+state its sources: the **anchor** (company target range, segment guidance, consensus high/low, or "no
+public anchor" with the reason), the **sourced inputs**, the **assumptions** (growth, contribution,
+tax, extrapolated years), and a **cross-check** against the analyst range or company target. A ratio
+above the company's own target ceiling or below its floor needs a written reason.
+
+Run `evaluate_valuation(decisions, branches)` until `errors` is empty. Rules you will meet: R5
+(bear < price < bull — the only fix is the economics: raise the numerator bar, change the bull tier,
+change the ruler or the year; never take p75, swap the numerator source or shift a multiple); R10 /
+AX7 (own multiple outside every band → declare "base impure"); R12 (re-base to the close); the n-rules
+(n=1 needs an idiosyncrasy note; n=2 ratio ≤1.30; n≥3 max/min ≤2.5); the numerator gate (Q2).
+
+### 3b. Two-decision gate — STOP
+
+`report_two_decisions(draft_id, decisions, branches)` → show `report_md` together with the
+background brief. Wait for the human's reply. Only then `approve_decisions(draft_id, reply)` with the
+reply **verbatim**. The approved document (schema 2.1) is what the committed tree carries; changing a
+ratio or a tier identity later needs a new report and a new approval. `design_scenarios` /
+`save_scenarios` may still be used for the peer-tier skeleton, but the valuation of record is the
+approved document, and the server refuses DCF / DDM there too.
+
+### 3c. Research and commit
+
+1. `research_phase2(draft_id)` → `research_phase2_status(draft_id)` every 30–60 s until `ingested`
+   (server-side deep research for the narrative pillars and each leaf's evidence pack); or do the
+   research yourself with `enrich_narrative_data` and `enrich_leaf_data`, every leaf with ≥1 source URL.
+2. `compute_scenarios(draft_id)` for the live peer readings.
+3. `commit_draft_tree(draft_id, visibility="private")` — the server validates, aggregates, signs and
+   records the first version with provenance.
+
+## Step 4 — Report (chart and article)
+
+`summarize_tree(tree_id)` returns the material and the layout. Write the reader report in this order
+and with these rules; `read_committed_report(tree_id)` returns the stored Markdown verbatim.
+
+- **§1 three paragraphs**: what this industry does (everyday analogy first, then size and rivals) →
+  who the company is (founding, how it started, what it sells today, customers, channels) → why it is
+  worth looking at now (the contrast and the debate, last).
+- **§2 four blocks**: what it sells (table: product｜what it does for the customer｜main rivals) → how
+  it charges (with one price example) → where the money goes (cost per 100 of revenue) → the last
+  quarter (≤5 rows of figures).
+- **§3** market consensus and the narrative versions; **§4** the price chart with a colour band per
+  narrative version and a short reading note.
+- The H-0 in plain words, the tree (short questions and verdict icons), then per leaf: 現時判斷 → 甚麼會
+  推翻這個假設 → 推翻之後. Each branch opens with one paragraph (100–150 characters: what the readings
+  show, which way they lean, the next reading and its date).
+- The three scenarios against the current price: 樂觀／基準／悲觀 only, structural arithmetic and
+  distance from price; no weighted target, no directional opinion.
+- **Reader text (八成 STE100)**: one idea per sentence, ≤40 characters (hard limit 50); ≤3 sentences per
+  paragraph; one term per concept (每股盈利 not 分子; 收入; 估值倍數; 同業水平); never H-0, 身份, 本葉,
+  Level 1X, bull/base/bear in reader text; active voice with an explicit subject; no nested brackets;
+  lists for anything with more than one item; numbers with unit and period; abbreviations explained
+  on first use. Sources show the institution name only.
+
+Then ask once whether to `setup_monitoring(draft_id, weeks)`.
+
+## What monitoring does (so you can explain it)
+
+Every week the server runs an independent search, then a separate judgement per leaf that only sees
+the evidence pool (the judge cannot search). Each source carries a `source_tier` (primary / wire / trade
+/ aggregator / other); only primary or wire can settle a condition on its own. A verdict change must
+cite this week's evidence, must quote a real condition when it enters the falsification zone, cannot
+rest on price alone, and is dropped otherwise. Breached or expired conditions latch until superseded.
+Every run appends a signed version; `read_tree_versions`, `read_tree_state_at(tree_id, at)` and
+`diff_tree_versions` show exactly what the tree said on any date. `sweep_conditions` is the same
+deterministic deadline clock and breach latch, callable on any document.
 
 ## View mode
 
-Start with `my_workspace()` — returns drafts + trees together so the user sees every piece of work on their account in one screen. Then drill down with `read_tree(tree_id)` / `read_branch(tree_id, branch_id)` / `read_history(tree_id)` / `propose_edit(tree_id, diff)` (sandbox) / `apply_edit(tree_id, diff)` / `pause_monitoring` / `resume_monitoring` / `cancel_monitoring`. `list_my_drafts` and `list_my_trees(ticker=...)` remain available for targeted lookups.
+`my_workspace()` → `read_tree(tree_id)` / `read_branch` / `read_history` / `read_tree_versions` /
+`read_tree_state_at` / `diff_tree_versions` / `read_valuation_draft(draft_id)` / `propose_edit` (sandbox)
+→ `apply_edit` (records a new version) / `pause_monitoring` / `resume_monitoring` / `cancel_monitoring`.
+A v0.2 document pasted by the user: `migrate_tree` → fill the todo list → `validate_tree` →
+`aggregate_tree`.
 
 ## Account
 
-`credit_balance` is available if the user asks. Otherwise do not surface balance, charges, or costs.
+`credit_balance` only if asked. Never quote currency amounts or credit figures unprompted.

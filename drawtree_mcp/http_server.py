@@ -1,7 +1,8 @@
 """HTTPS MCP server for AI clients that speak the Model Context Protocol.
 
-Exposes the same 13 tools as the stdio server, but over Streamable HTTP
-transport so any remote-MCP-aware client can connect.
+Exposes the stdio server's kernel tools plus the draft (Create-mode), view,
+valuation-gate and point-in-time tools, over Streamable HTTP transport so any
+remote-MCP-aware client can connect.
 
 The auth model is:
   - Header: `Authorization: Bearer dt_xxxxxxxx`
@@ -83,8 +84,11 @@ _allowed_hosts = list(dict.fromkeys(_default_hosts + _env_hosts))
 mcp = FastMCP(
     "drawtree-mcp",
     instructions=(
-        "Draw Tree MCP server — turn investment theses into falsifiable graphs. "
-        "Free tools cover validate/aggregate/commit/read/suggest_framework/credit_balance. "
+        "Draw Tree MCP server — turn investment theses into falsifiable graphs (protocol v0.3). "
+        "Free tools cover validate/aggregate/migrate/sweep/commit/read/suggest_framework/credit_balance, "
+        "the valuation gate (evaluate_valuation / report_two_decisions / approve_decisions) and the "
+        "point-in-time reads (read_tree_versions / read_tree_state_at / diff_tree_versions). "
+        "Research tooling only: never phrase output as investment advice. "
         "Paid tools (register_narrative/enrich_branches/suggest_falsification/"
         "derive_scenario_values/subscribe_alerts) consume credits and auto-confirm "
         "in 24 hours unless refunded. NEVER mention currency, dollars, cents, "
@@ -406,9 +410,10 @@ def save_narrative(draft_id: str, narrative: dict) -> dict:
 
 @mcp.tool()
 def frame_h0(draft_id: str) -> dict:
-    """Stage 2 of 6. Returns the Level 0 sentence rules (30-60 chars,
-    name framework_from -> framework_to, single question mark) plus the
-    saved narrative. Your LLM produces the H-0 sentence. Then call save_h0."""
+    """Stage 2 of 6. Returns the H-0 sentence rules (one sentence, one question mark, ≤120 characters,
+    must contain 「而非」 naming the bear outcome, must not say 令市場相信／切換估值框架／SOTP／改以…計價)
+    plus the saved narrative. Draft the H-0 only after the five questions (§4.41) and the scenario
+    ladder; then call save_h0."""
     try:
         return api_client.draft_call("/frame_h0", {"draft_id": draft_id})
     except Exception as e:
@@ -823,8 +828,10 @@ def compute_scenarios(draft_id: str) -> dict:
 
 @mcp.tool()
 def commit_draft_tree(draft_id: str, visibility: str = "private") -> dict:
-    """Assemble draft into a v0.2 tree, validate, and publish to the ticker
-    store. Returns the new tree_id."""
+    """Assemble the draft into a tree, validate, and publish it with a signed, append-only version.
+    The valuation attached is the document approved via approve_decisions (protocol v0.3); a draft
+    without an approved document falls back to the legacy scenario skeleton and is marked as such.
+    Returns the new tree_id."""
     if visibility not in ("private", "unlisted", "public"):
         return {"error": "visibility must be private | unlisted | public"}
     try:
@@ -1051,11 +1058,12 @@ def read_branch(tree_id: str, branch_id: str) -> dict:
 
 @mcp.tool()
 def summarize_tree(tree_id: str) -> dict:
-    """Generate the final structured 11-section report for a committed tree
-    (company intro, revenue engines, catalysts, narrative versions, H-0,
-    hypothesis map, per-leaf deep analysis, tree summary, catalyst events,
-    three-scenario valuation, conclusion). Use this as the closing step of
-    the Create flow to present the full report back to the user."""
+    """Return the structured material and layout rules for the reader report of a committed tree
+    (§1 industry → company → why now; §2 what it sells / how it charges / where the money goes / last
+    quarter; §3 market consensus and narrative versions; §4 price chart with narrative-version bands;
+    H-0; the tree; per-leaf 現時判斷 → 甚麼會推翻這個假設 → 推翻之後; the three scenarios against the
+    current price). Reader-text rules (≤40-character sentences, one term per concept, 樂觀／基準／悲觀,
+    no internal jargon) are included. Use this as the closing step of the Create flow."""
     try:
         return api_client.view_get(f"/trees/by-id/{tree_id}/summarize")
     except Exception as e:
@@ -1133,6 +1141,120 @@ def abandon_draft(draft_id: str) -> dict:
     """Mark a draft as abandoned."""
     try:
         return api_client.draft_call(f"/{draft_id}/abandon")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+
+# ============================================================
+# VALUATION GATE — protocol v0.3 rules R1–R12, §4.40 two decisions
+# ============================================================
+# numerator(scenario) = street consensus × ratio(scenario); multiple(scenario) = the scenario tier's
+# median today; target = numerator × multiple (per_share) or (numerator × multiple + net cash) ÷ shares (ev).
+# The author decides only ratios.bear / ratios.bull and the bear / bull tier identities; the server
+# derives everything else and refuses DCF / DDM / reverse DCF. The human who owns the tree approves.
+
+@mcp.tool()
+def evaluate_valuation(decisions: dict, branches: list | None = None, language: str = "zh") -> dict:
+    """Free, stateless. Run the deterministic valuation gate on a `decisions` object: tier statistics
+    (§4.35 n-rules), derived multiples, implied bear/base/bull prices, R5 hard gate (bear < price < bull),
+    base-tier fit (R10 / AX7), numerator gate (Q2 already-in-the-price), R12 snapshot re-basing, and —
+    when `branches` are supplied — price-derived impact grades with the coverage rule.
+    Required keys: ticker, date, price, price_date, currency, ruler{multiple_basis, numerator_label,
+    period_label, fiscal_year}, basis (per_share|ev), numerator{value, n, low, high, source, as_of},
+    own_multiple{value, formula, source}, shape (persistence|upside), tiers{bear|base|bull:{identity,
+    members[{name, multiple, period, close?, snapshot_implied_price?, snapshot_date?, multiple_table?,
+    rebased?}]}}, ratios{bear, bull}. Iterate until `errors` is empty, then report_two_decisions."""
+    if not isinstance(decisions, dict):
+        return {"error": "decisions must be a JSON object"}
+    try:
+        return api_client.valuation_call("/evaluate", {"decisions": decisions, "branches": branches, "language": language})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def report_two_decisions(draft_id: str, decisions: dict, branches: list | None = None, language: str = "zh") -> dict:
+    """Evaluate and STORE the two decisions for a draft, returning `report_md` — the §4.40 report the
+    human must read before anything is committed: the ruler and numerator, the three tiers with members
+    and medians, the author's ratios with their anchors / sourced inputs / assumptions / cross-check, the
+    implied prices and the gate findings. STOP after this call: show report_md, ask for the reply, and
+    only then call approve_decisions with the reply verbatim. Re-reporting after an approval clears it."""
+    if not isinstance(decisions, dict):
+        return {"error": "decisions must be a JSON object"}
+    try:
+        return api_client.valuation_call("/report_two_decisions", {"draft_id": draft_id, "decisions": decisions,
+                                                                   "branches": branches, "language": language})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def approve_decisions(draft_id: str, reply: str) -> dict:
+    """Record the human's reply to the two-decision report (verbatim, 2–4000 chars) and build the
+    schema-2.1 valuation document that commit_draft_tree attaches to the tree. Refused until the stored
+    report has no errors. Changing a ratio or a tier identity afterwards needs a new report and approval."""
+    if not reply or len(reply.strip()) < 2:
+        return {"error": "reply required (the human's words, verbatim)"}
+    try:
+        return api_client.valuation_call("/approve_decisions", {"draft_id": draft_id, "reply": reply})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_valuation_draft(draft_id: str) -> dict:
+    """Read the stored two-decision report, gate findings, approval and valuation document for a draft."""
+    try:
+        return api_client.valuation_get(f"/drafts/{draft_id}")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+# ============================================================
+# POINT IN TIME — append-only, signed tree versions (protocol v0.3)
+# ============================================================
+# Every write (commit, apply_edit, weekly monitor, price refresh, narrative refresh, admin) appends a
+# content-addressed, Ed25519-signed version with provenance. Nothing is ever rewritten in place.
+
+@mcp.tool()
+def read_tree_versions(tree_id: str, limit: int = 100) -> dict:
+    """Version history of a tree, newest first: version_id, hash, signature, source (commit / apply_edit /
+    weekly_cron / price_refresh / narrative_refresh / …), actor, received_at, key_kind. Free."""
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/versions", params={"limit": limit})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_tree_version(tree_id: str, version_id: str) -> dict:
+    """One recorded version with its full payload, aggregation, provenance notes and signature. Free."""
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/versions/{version_id}")
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def read_tree_state_at(tree_id: str, at: str) -> dict:
+    """The tree exactly as the server held it at or before an ISO-8601 cutoff (e.g. 2026-10-03T13:30:00Z) —
+    the only read a backtest or a dispute may use. Returns an error when nothing had been recorded by then."""
+    if not at:
+        return {"error": "at required (ISO-8601 cutoff)"}
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/state_at", params={"at": at})
+    except Exception as e:
+        return {"error": str(e)}
+
+
+@mcp.tool()
+def diff_tree_versions(tree_id: str, from_version: str, to_version: str) -> dict:
+    """Structural diff between two recorded versions (lists matched by id); kernel-shaped documents also
+    get the protocol diff with leaf verdict transitions. Free."""
+    try:
+        return api_client.view_get(f"/trees/by-id/{tree_id}/versions/diff",
+                                   params={"from_version": from_version, "to_version": to_version})
     except Exception as e:
         return {"error": str(e)}
 

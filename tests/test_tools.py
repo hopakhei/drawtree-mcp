@@ -73,7 +73,7 @@ def test_validate_basic():
 
 
 def test_tool_handlers_set():
-    """The 15 tools advertised match what's wired."""
+    """The 20 tools advertised match what's wired."""
     expected = {
         # free
         "validate_tree", "aggregate_tree", "migrate_tree", "sweep_conditions",
@@ -83,6 +83,9 @@ def test_tool_handlers_set():
         "derive_scenario_values", "subscribe_alerts",
         # lifecycle
         "confirm_charge", "refund_charge",
+        # valuation gate + point in time (protocol v0.3)
+        "evaluate_valuation", "report_two_decisions", "approve_decisions",
+        "read_tree_versions", "read_tree_state_at",
     }
     actual = set(TOOL_HANDLERS.keys())
     assert actual == expected, f"missing: {expected - actual}; extra: {actual - expected}"
