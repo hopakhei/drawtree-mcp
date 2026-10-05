@@ -34,6 +34,8 @@ from starlette.routing import Mount, Route
 
 from . import api_client, framework_retrieval
 from ._kernel.aggregation import aggregate, annotate_doc
+from ._kernel.migrate import migrate_v02_to_v03
+from ._kernel.sweep import sweep_conditions as _sweep_conditions
 from ._kernel.validate import validate as validate_v02
 
 
@@ -104,9 +106,10 @@ mcp = FastMCP(
 
 @mcp.tool()
 def validate_tree(tree: dict) -> dict:
-    """Validate a candidate Draw Tree v0.2 doc against the 9 protocol invariants.
+    """Validate a Draw Tree doc (protocol v0.3; v0.2 docs get the legacy 9 invariants).
 
-    Free. Returns errors + warnings. commit_tree refuses to publish trees with errors.
+    Free. v0.3 adds impact-grade branches, structured conditions with assessments
+    (gates E1-E7), evidence-ledger vocabularies and reading guides. Returns errors + warnings.
     """
     rep = validate_v02(tree)
     return {
@@ -122,11 +125,41 @@ def validate_tree(tree: dict) -> dict:
 
 @mcp.tool()
 def aggregate_tree(tree: dict) -> dict:
-    """Compute leaf -> branch -> H-0 verdict, conviction (0-1), expected return.
+    """Compute leaf -> branch -> H-0 verdict, conviction, scenario probabilities, expected return.
 
-    Free. Fibonacci-default branch weights unless overridden.
+    Free. v0.3 semantics (tree_quant/4): impact-grade weights, kill threshold 2.0,
+    additive log-odds conviction, verdict-based and price-implied probabilities,
+    derivation certificate. v0.2 docs keep legacy semantics.
     """
     return aggregate(tree)
+
+
+@mcp.tool()
+def migrate_tree(tree: dict) -> dict:
+    """Migrate a v0.2 doc to protocol v0.3 mechanically. Free.
+
+    Weights -> impact grades, falsification text -> conditions[], recent_evidence ->
+    evidence_ledger, legacy verdicts -> six states. Returns the new doc, a change list,
+    the todo list the author must still fill, and a validation report.
+    """
+    doc, report = migrate_v02_to_v03(tree)
+    rep = validate_v02(doc)
+    return {"tree": doc, "report": report,
+            "validation": {"ok": not rep.errors,
+                           "errors": [{"code": i.code, "path": i.path, "message": i.message} for i in rep.errors],
+                           "warnings": [{"code": i.code, "path": i.path, "message": i.message} for i in rep.warnings]}}
+
+
+@mcp.tool()
+def sweep_conditions(tree: dict, today: str | None = None) -> dict:
+    """Deterministic condition sweep (zero model calls). Free. Run before re-judging.
+
+    Open deadline conditions past due -> expired_unfulfilled; scalar falsification
+    conditions whose observations[] cross the threshold -> breached with a permanent
+    latch. Synthetic ledger rows are appended so the next judgement must weigh them.
+    """
+    out = _sweep_conditions(tree, today)
+    return {"tree": tree, **out}
 
 
 @mcp.tool()

@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
-"""Draw Tree v0.2 reference validator.
+"""Draw Tree reference validator — v0.2 invariants plus the v0.3 protocol checks.
+
+v0.3 (see protocol.py) adds: impact-grade branches (3–5, ≥1 致命, a 分子交付 branch, grade ⇔ weight),
+structured conditions with assessments (fleet gates E1–E7), evidence ledger vocabularies, leaf reading
+guides and short questions, single-parent leaves, and rejects legacy verdicts and `chain` aggregation.
 
 Adds to v0.1:
   - Branch regex relaxed to ^[A-Z]$
@@ -21,7 +25,8 @@ from dataclasses import dataclass, field
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from .aggregation import aggregate  # noqa: E402
+from .aggregation import aggregate, hyps_list, is_v03  # noqa: E402
+from . import protocol as P  # noqa: E402
 
 
 HYP_ID_RE = re.compile(r"^[A-Z][1-9][0-9]*$")
@@ -360,20 +365,230 @@ def check_linked_trees(linked: list[dict], rep: Report):
                     f"hypothesis id {hyp!r} invalid")
 
 
+# ====================================================================== v0.3 checks
+
+def _numeric_condition(leaf: dict) -> bool:
+    return any(isinstance(c, dict) and c.get("metric") and isinstance(c.get("threshold"), (int, float))
+               and c.get("operator") in P.CONDITION_OPERATORS for c in leaf.get("conditions") or [])
+
+
+def _branch_fatal_default_ok(doc: dict) -> str | None:
+    nf = (doc.get("decisions") or {}).get("no_fatal_layer") or doc.get("no_fatal_layer") or {}
+    return str(nf.get("reason") or "").strip() or None
+
+
+def check_v03_branches(doc: dict, branches: list[dict], hypotheses: list[dict], rep: Report):
+    n = len(branches)
+    if not P.BRANCH_COUNT_MIN <= n <= P.BRANCH_COUNT_MAX:
+        rep.add("error", "V3_BRANCH_COUNT", "branches", f"{n} Level-1 branches; v0.3 requires {P.BRANCH_COUNT_MIN}–{P.BRANCH_COUNT_MAX}")
+    fatal_ids: list[str] = []
+    roles: list[str] = []
+    by_branch: dict[str, list[dict]] = {}
+    for h in hypotheses:
+        for pid in (h.get("parents") or [h.get("id", "?")[0]]):
+            by_branch.setdefault(pid, []).append(h)
+    for i, b in enumerate(branches):
+        bid = b.get("id", "?"); path = f"branches[{i}]"
+        g = b.get("impact_grade")
+        if g not in P.IMPACT_GRADES:
+            rep.add("error", "V3_IMPACT_GRADE", f"{path}.impact_grade", f"impact_grade {g!r} not in {list(P.IMPACT_GRADES)}")
+        else:
+            if g == "致命":
+                fatal_ids.append(bid)
+            w = b.get("weight")
+            if w is None:
+                rep.add("warning", "V3_WEIGHT_DERIVED", f"{path}.weight", f"weight omitted; derived from impact_grade = {P.IMPACT_GRADES[g]}")
+            else:
+                try:
+                    if abs(float(w) - P.IMPACT_GRADES[g]) > 1e-6:
+                        rep.add("error", "V3_WEIGHT_GRADE", f"{path}.weight", f"weight {w} ≠ {P.IMPACT_GRADES[g]} for grade {g}; weight is derived, not authored")
+                except (TypeError, ValueError):
+                    rep.add("error", "WEIGHT_TYPE", f"{path}.weight", f"weight must be numeric, got {w!r}")
+        if str(b.get("aggregation", "portfolio")).lower() != "portfolio":
+            rep.add("error", "V3_AGGREGATION", f"{path}.aggregation", "only `portfolio` is allowed in v0.3 (chain is legacy); use necessity_leaves for hard links")
+        role = str(b.get("scenario_role") or "")
+        if not any(r in role for r in P.BRANCH_ROLES):
+            rep.add("error", "V3_BRANCH_ROLE", f"{path}.scenario_role", f"scenario_role {role!r} not in {list(P.BRANCH_ROLES)}")
+        roles.append(role)
+        for k in ("necessary_condition", "falsification_rule", "framework"):
+            if not str(b.get(k) or "").strip():
+                rep.add("error", "V3_BRANCH_FIELD", f"{path}.{k}", f"branch.{k} is required in v0.3")
+        if b.get("framework") and str(b.get("framework")).count("｜") < 2:
+            rep.add("warning", "V3_FRAMEWORK_FORMAT", f"{path}.framework", "framework should read 名稱｜出處（冊名）｜本層量的是什麼")
+        wr = str(b.get("weight_rationale") or "")
+        if not wr.startswith(P.WEIGHT_RATIONALE_PREFIX):
+            rep.add("error", "V3_WEIGHT_RATIONALE", f"{path}.weight_rationale", f"must start with {P.WEIGHT_RATIONALE_PREFIX!r} and state the price impact of the falsification consequence")
+        fc = b.get("falsification_consequence")
+        if fc is not None and (not isinstance(fc, list) or not fc or any(c not in P.FALSIFICATION_CONSEQUENCES for c in fc)):
+            rep.add("error", "V3_CONSEQUENCE", f"{path}.falsification_consequence", f"must be a non-empty subset of {list(P.FALSIFICATION_CONSEQUENCES)}")
+        for lid in b.get("necessity_leaves") or []:
+            if lid not in {h.get("id") for h in by_branch.get(bid, [])}:
+                rep.add("error", "V3_NECESSITY_LEAF", f"{path}.necessity_leaves", f"{lid!r} is not a leaf of branch {bid}")
+        for lid in (b.get("leaf_weights") or {}):
+            if lid not in {h.get("id") for h in by_branch.get(bid, [])}:
+                rep.add("error", "V3_LEAF_WEIGHT_KEY", f"{path}.leaf_weights", f"{lid!r} is not a leaf of branch {bid}")
+    if not fatal_ids:
+        reason = _branch_fatal_default_ok(doc)
+        if reason:
+            rep.add("warning", "V3_NO_FATAL_DECLARED", "branches", f"no 致命 branch (declared no_fatal_layer: {reason[:80]})")
+        else:
+            rep.add("error", "V3_NO_FATAL", "branches", "no 致命 branch (F7); a persistence tree may declare decisions.no_fatal_layer.reason")
+    if not any("分子交付" in r for r in roles):
+        rep.add("error", "V3_NO_NUMERATOR_BRANCH", "branches", "no 分子交付 (numerator delivery) branch")
+    for bid in fatal_ids:
+        ls = by_branch.get(bid, [])
+        if not ls:
+            rep.add("error", "V3_FATAL_EMPTY", f"branches[{bid}]", "致命 branch has no leaves")
+        elif not any(_numeric_condition(h) for h in ls):
+            rep.add("error", "V3_FATAL_NO_NUMERIC", f"branches[{bid}]", "致命 branch has no leaf with a numeric metric condition (F4 / Q4)")
+
+
+def check_v03_leaves(hypotheses: list[dict], rep: Report):
+    for h in hypotheses:
+        hid = h.get("id", "?"); path = f"hypotheses[{hid}]"
+        if len(h.get("parents") or []) > 1:
+            rep.add("error", "V3_MULTI_PARENT", f"{path}.parents", "v0.3 leaves have exactly one parent branch")
+        verdict = h.get("verdict")
+        if verdict not in P.VERDICT_SIX:
+            rep.add("error", "V3_VERDICT", f"{path}.verdict", f"verdict {verdict!r} must be one of the six states (legacy values are not accepted in v0.3)")
+        for k in ("title", "hypothesis_full"):
+            if not str(h.get(k) or "").strip():
+                rep.add("error", "HYP_FULL_EMPTY" if k == "hypothesis_full" else "HYP_TITLE_EMPTY", path, f"{k} is empty")
+        if not (h.get("baseline_data") or []):
+            rep.add("error", "BASELINE_EMPTY", path, "baseline_data is empty — every leaf needs an evidentiary anchor")
+        for j, ev in enumerate(h.get("baseline_data") or []):
+            ok, reason = has_source_refs(ev)
+            if not ok:
+                rep.add("error", "EVIDENCE_SOURCE", f"{path}.baseline_data[{j}]", f"missing source ref: {reason}")
+        role = str(h.get("scenario_role") or "")
+        if not any(r in role for r in P.LEAF_ROLES):
+            rep.add("error", "V3_LEAF_ROLE", f"{path}.scenario_role", f"scenario_role {role!r} not in {list(P.LEAF_ROLES)}")
+        ln = h.get("leaf_nature")
+        if ln is not None and ln not in P.LEAF_NATURE:
+            rep.add("error", "V3_LEAF_NATURE", f"{path}.leaf_nature", f"leaf_nature {ln!r} not in {list(P.LEAF_NATURE)}")
+        rg = h.get("reading_guide") or {}
+        if not all(str(rg.get(k) or "").strip() for k in P.SIX_LEVELS):
+            rep.add("error", "V3_READING_GUIDE", f"{path}.reading_guide", f"needs one sentence for each of {list(P.SIX_LEVELS)}")
+        sq = str(h.get("short_question") or "")
+        if not sq or len(sq) > P.SHORT_QUESTION_MAX or not sq.endswith(("？", "?")):
+            rep.add("error", "V3_SHORT_QUESTION", f"{path}.short_question", f"short_question must be a question of ≤{P.SHORT_QUESTION_MAX} chars")
+        # --- conditions (fleet §8 E1–E7)
+        conds = h.get("conditions")
+        if not isinstance(conds, list) or not conds:
+            rep.add("error", "V3_CONDITIONS_MISSING", f"{path}.conditions", "every leaf needs ≥1 structured condition (falsification / verification / deadline)")
+            conds = []
+        assessments = [a for a in (h.get("condition_assessments") or []) if isinstance(a, dict)]
+        assessed = {str(a.get("cid")) for a in assessments}
+        for a in assessments:
+            if a.get("assessment") not in P.ASSESSMENTS:
+                rep.add("error", "V3_ASSESSMENT", f"{path}.condition_assessments", f"assessment {a.get('assessment')!r} not in {list(P.ASSESSMENTS)}")
+        seen: set[str] = set()
+        hv = verdict or "Inconclusive"
+        fired_or_met: set[str] = set()
+        has_falsification_kind = False
+        for c in conds:
+            if not isinstance(c, dict):
+                rep.add("error", "V3_COND_SHAPE", f"{path}.conditions", "condition entry is not an object"); continue
+            cid = str(c.get("cid") or "")
+            cp = f"{path}.conditions[{cid or '?'}]"
+            if not cid:
+                rep.add("error", "V3_COND_CID", cp, "condition missing cid (E1)"); continue
+            if cid in seen:
+                rep.add("error", "V3_COND_DUP", cp, f"duplicate cid {cid!r} (E1)")
+            seen.add(cid)
+            kind = c.get("kind", "falsification")
+            if kind not in P.CONDITION_KINDS:
+                rep.add("error", "V3_COND_KIND", cp, f"kind {kind!r} not in {list(P.CONDITION_KINDS)} (E1)")
+            st = c.get("status", "open")
+            if st not in P.CONDITION_STATUS:
+                rep.add("error", "V3_COND_STATUS", cp, f"status {st!r} not in {list(P.CONDITION_STATUS)} (E1)")
+            op = c.get("operator")
+            if op is not None and op not in P.CONDITION_OPERATORS:
+                rep.add("error", "V3_COND_OPERATOR", cp, f"operator {op!r} not in {list(P.CONDITION_OPERATORS)} (E1)")
+            if not str(c.get("text") or "").strip():
+                rep.add("error", "V3_COND_TEXT", cp, "condition text is empty")
+            if c.get("metric") and not isinstance(c.get("threshold"), (int, float)):
+                rep.add("error", "V3_COND_THRESHOLD", cp, "metric set but threshold is not numeric")
+            if kind == "deadline" and not (c.get("due") and c.get("basis")):
+                rep.add("error", "V3_DEADLINE_BASIS", cp, "deadline condition needs due and basis{text,url}")
+            sup = c.get("superseded")
+            if sup is not None and (not isinstance(sup, dict) or len(str(sup.get("reason") or "").strip()) < P.SUPERSEDED_REASON_MIN):
+                rep.add("error", "V3_SUPERSEDED_REASON", cp, f"superseded requires a reason of ≥{P.SUPERSEDED_REASON_MIN} chars (E4)")
+            if kind in ("falsification", "deadline"):
+                has_falsification_kind = True
+                if st in ("breached", "expired_unfulfilled", "met"):
+                    fired_or_met.add(cid)
+                    if hv in P.POSITIVE_VERDICTS and sup is None:
+                        rep.add("error", "V3_E2_GOALPOST", cp, f"condition {st} but verdict still {hv!r} and not superseded — downgrade or supersede (E2)")
+                    if cid not in assessed:
+                        rep.add("error", "V3_E3_UNADDRESSED", cp, f"{st} condition has no condition_assessments entry (E3)")
+        unassessed = sorted(seen - assessed)
+        if unassessed:
+            rep.add("error", "V3_E7_UNASSESSED", f"{path}.condition_assessments", f"conditions never assessed: {unassessed[:6]} (E7)")
+        if hv in P.FALSIFICATION_VERDICTS and has_falsification_kind:
+            met_assess = {str(a.get("cid")) for a in assessments if a.get("assessment") == "met"}
+            if not (fired_or_met | met_assess):
+                rep.add("warning", "V3_E5_UNSUPPORTED_DOWNGRADE", path, f"verdict {hv!r} but no falsification/deadline condition is met/breached/expired and none assessed met (E5)")
+        # --- evidence ledger
+        for j, e in enumerate(h.get("evidence_ledger") or []):
+            if not isinstance(e, dict):
+                continue
+            ep = f"{path}.evidence_ledger[{e.get('eid') or j}]"
+            if not e.get("eid"):
+                rep.add("error", "V3_LEDGER_EID", ep, "ledger row needs an eid")
+            tier = str(e.get("tier") or "")
+            if tier in P.EVIDENCE_TIERS_EXTRA:
+                rep.add("warning", "V3_LEDGER_TIER_EXTRA", ep, f"tier {tier!r} is tolerated but not canonical ({list(P.EVIDENCE_TIERS)})")
+            elif tier not in P.EVIDENCE_TIERS:
+                rep.add("error", "V3_LEDGER_TIER", ep, f"tier {tier!r} not in {list(P.EVIDENCE_TIERS)}")
+            imp = str(e.get("impact") or "")
+            if imp in P.EVIDENCE_IMPACT_LEGACY:
+                rep.add("warning", "V3_LEDGER_IMPACT_LEGACY", ep, f"impact {imp!r} → use {P.EVIDENCE_IMPACT_LEGACY[imp]!r}")
+            elif imp not in P.EVIDENCE_IMPACT:
+                rep.add("error", "V3_LEDGER_IMPACT", ep, f"impact {imp!r} not in {list(P.EVIDENCE_IMPACT)}")
+            if tier in P.SOURCED_TIERS and str(e.get("date") or "").strip() and not str(e.get("url") or "").strip():
+                rep.add("warning", "V3_E6_UNSOURCED", ep, "dated news/earnings/filing evidence without a URL cannot be verified (E6)")
+
+
+def check_v03_root(root: dict, rep: Report):
+    q = str(root.get("question") or "")
+    body = re.sub(r"[\[\]（）()、，。？?；：:\s]", "", q)
+    if len(body) > P.H0_QUESTION_MAX:
+        rep.add("warning", "V3_H0_LENGTH", "root.question", f"H-0 is {len(body)} chars; fleet rule is ≤{P.H0_QUESTION_MAX}")
+    if q and (q.count("？") + q.count("?")) != 1:
+        rep.add("warning", "V3_H0_ONE_QUESTION", "root.question", "H-0 should be a single question with one question mark")
+
+
+def check_v03(doc: dict, branches: list[dict], hypotheses: list[dict], rep: Report):
+    check_v03_root(doc.get("root") or {}, rep)
+    check_v03_branches(doc, branches, hypotheses, rep)
+    check_v03_leaves(hypotheses, rep)
+    for m in (str((doc.get("valuation") or {}).get("methodology_primary") or ""),):
+        if any(b in m for b in ("DCF", "DDM")):
+            rep.add("error", "V3_BANNED_METHOD", "valuation.methodology_primary", "DCF / DDM / reverse DCF are not allowed; use peer-tier multiples on consensus numerators")
+
+
 def validate(doc: dict) -> Report:
     rep = Report()
-    if doc.get("drawtree_version") != "0.2":
+    v03 = is_v03(doc)
+    if str(doc.get("drawtree_version")) not in ("0.2", "0.3"):
         rep.add("warning", "VERSION", "$.drawtree_version",
-                f"drawtree_version is {doc.get('drawtree_version')!r}; this validator targets 0.2")
+                f"drawtree_version is {doc.get('drawtree_version')!r}; this validator targets 0.2 and 0.3")
+    if v03 and str(doc.get("drawtree_version")) != "0.3":
+        rep.add("warning", "VERSION", "$.drawtree_version",
+                "branches carry impact_grade; set drawtree_version to \"0.3\"")
 
     consensus = doc.get("consensus") or {}
     root = doc.get("root") or {}
     branches = doc.get("branches") or []
-    hypotheses = doc.get("hypotheses") or []
+    hypotheses = hyps_list(doc)
 
     check_root(root, consensus, rep)
     check_decomposition(root, branches, hypotheses, rep)
-    check_leaves(hypotheses, rep)
+    if v03:
+        check_v03(doc, branches, hypotheses, rep)
+    else:
+        check_leaves(hypotheses, rep)
     check_acyclic(branches, hypotheses, rep)
     check_tracking_events(doc.get("tracking_events") or [], rep)
     check_aggregation_block(doc.get("aggregation") or {}, rep)
